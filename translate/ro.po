@@ -1352,21 +1352,6 @@ msgstr[0] "%1 acțiune · mediu %2"
 msgstr[1] "%1 acțiuni · mediu %2"
 msgstr[2] "%1 de acțiuni · mediu %2"
 
-#: contents/ui/tooltip/SingleTooltipCard.qml
-msgctxt "@title:column"
-msgid "Details"
-msgstr "Detalii"
-
-#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
-msgctxt "@title:column"
-msgid "Price"
-msgstr "Preț"
-
-#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
-msgctxt "@title:column"
-msgid "Change"
-msgstr "Modificare"
-
 #: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "%1 stock"
 msgid_plural "%1 stocks"
@@ -1404,6 +1389,16 @@ msgctxt "@title:column"
 msgid "Market"
 msgstr "Piață"
 
+#: contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Price"
+msgstr "Preț"
+
+#: contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Change"
+msgstr "Modificare"
+
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "Market Monitor"
 msgstr "Monitor bursier"
@@ -1430,6 +1425,10 @@ msgstr "se încarcă…"
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "Updated"
 msgstr "Actualizat"
+
+#~ msgctxt "@title:column"
+#~ msgid "Details"
+#~ msgstr "Detalii"
 
 #~ msgid "The selected file is not a Plasma Stock Monitor backup."
 #~ msgstr "Fișierul selectat nu este o copie de siguranță a aplicației Monitor de acțiuni Plasma."

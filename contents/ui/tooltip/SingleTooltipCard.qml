@@ -1,9 +1,10 @@
 import QtQuick
 import org.kde.kirigami as Kirigami
 
-// Tooltip card for the single-stock view. It uses the same title bar, column header,
-// row height, fonts and colours as the multi-stock card, so both tooltips read as the
-// same kind of card instead of a custom table next to Plasma's default tooltip.
+// Compact tooltip card for a single stock. Unlike the list card it is a quote summary:
+// the name and update state in the title bar, a large price with its change, and one
+// muted line with the period, market status and session date. Extended-hours and
+// portfolio figures appear as extra compact lines only when they exist.
 Item {
     id: card
     property var applet: null
@@ -13,14 +14,10 @@ Item {
     readonly property bool cached: applet ? applet.showingCachedData : false
     readonly property color textColor: Kirigami.Theme.textColor
     readonly property color mutedColor: Kirigami.Theme.disabledTextColor
-
-    readonly property int contentWidth: 344
-    readonly property int labelWidth: 150
-    readonly property int priceWidth: 90
-    readonly property int changeWidth: 104
     readonly property int rightWidth: cached ? 170 : 100
+    readonly property int contentWidth: card.width - 24
 
-    implicitWidth: 368
+    implicitWidth: Math.min(368, Math.max(300, Math.ceil(desiredWidth)))
     width: implicitWidth
     height: implicitHeight
     implicitHeight: 44 + body.implicitHeight + 12
@@ -28,7 +25,24 @@ Item {
     Kirigami.Theme.colorSet: Kirigami.Theme.Window
     Kirigami.Theme.inherit: false
 
+    FontMetrics {
+        id: titleMetrics
+        font.family: Kirigami.Theme.defaultFont.family
+        font.pixelSize: 13
+        font.weight: Font.DemiBold
+    }
+    FontMetrics {
+        id: metaMetrics
+        font.family: Kirigami.Theme.defaultFont.family
+        font.pixelSize: 10
+    }
+
+    readonly property real desiredWidth: Math.max(240,
+        titleMetrics.advanceWidth(titleText) + rightWidth + 8,
+        metaMetrics.advanceWidth(metaText)) + 24
+
     readonly property string titleText: {
+
         if (!applet) return "";
         var title = applet.nameAndTicker(applet.singleCompanyName,
                                          applet.displayTicker(applet.singleTicker));
@@ -61,90 +75,63 @@ Item {
                                          ? i18n("Updated %1", applet.lastUpdated) : ""
     readonly property string rightText: cached ? cacheText : updateText
 
-    readonly property var rows: {
+    readonly property bool loading: !applet || applet.currentPrice === ""
+                                    || applet.currentPrice === "---"
+    readonly property string priceText: loading ? i18n("Loading…") : applet.currentPrice
+    readonly property string changeText: loading || !applet || applet.priceChange === ""
+                                         ? "" : applet.priceChange + " (" + applet.percentChange + ")"
+    readonly property bool isPos: applet ? applet.isPositive : true
+
+    readonly property var ext: applet ? applet.extendedQuote(applet.singleTicker) : null
+    readonly property bool hasExt: !!ext
+
+    readonly property string metaText: {
         var rev = revision;
-        if (!applet) return [];
-        var out = [];
-        var price = applet.currentPrice;
-        if (price === "" || price === "---") {
-            out.push({ kind: "note", text: i18n("Loading…") });
-            return out;
-        }
-        out.push({
-            kind: "data",
-            label: applet.chartPeriodLabel,
-            price: price,
-            change: applet.priceChange !== ""
-                    ? applet.priceChange + " (" + applet.percentChange + ")" : "",
-            isPos: applet.isPositive
-        });
-
-        var ext = applet.extendedQuote(applet.singleTicker);
-        if (ext) {
-            out.push({
-                kind: "data",
-                label: ext.label,
-                price: ext.price,
-                change: ext.change !== "" ? ext.change + " (" + ext.pct + ")" : "",
-                isPos: ext.isPos
-            });
-        }
-
-        if (applet.showExtendedHours && applet.isMarketClosedFor(applet.singleTicker)) {
-            out.push({ kind: "note", label: i18n("Session"), text: i18n("Market closed") });
-        }
-
-        if (applet.showPortfolioMode && applet.hasPortfolioEntry) {
-            var p = applet.portfolioSummary;
-            var sym = applet.getCurrencySymbol(p.currency);
-            out.push({
-                kind: "note",
-                label: i18n("Position"),
-                text: i18np("%1 share · avg %2", "%1 shares · avg %2",
-                            p.shares, applet.formatMoney(sym, p.avgCost, false))
-            });
-            out.push({
-                kind: "data",
-                label: i18n("P/L"),
-                price: applet.formatMoney(sym, p.plValue, true),
-                change: applet.formatNumber(p.plPercent, true) + "%",
-                isPos: p.plIsPos
-            });
-        }
-        return out;
+        if (!applet) return "";
+        var parts = [];
+        if (applet.chartPeriodLabel !== "") parts.push(applet.chartPeriodLabel);
+        if (applet.showExtendedHours && applet.isMarketClosedFor(applet.singleTicker))
+            parts.push(i18n("Market closed"));
+        if (sessionText !== "") parts.push(sessionText);
+        return parts.join(" · ");
     }
+
+
+    readonly property string positionText: {
+        if (!applet || !applet.showPortfolioMode || !applet.hasPortfolioEntry) return "";
+        var p = applet.portfolioSummary;
+        var sym = applet.getCurrencySymbol(p.currency);
+        return i18n("Position") + ": "
+               + i18np("%1 share · avg %2", "%1 shares · avg %2",
+                       p.shares, applet.formatMoney(sym, p.avgCost, false));
+    }
+
+    readonly property string plText: {
+        if (!applet || !applet.showPortfolioMode || !applet.hasPortfolioEntry) return "";
+        var p = applet.portfolioSummary;
+        var sym = applet.getCurrencySymbol(p.currency);
+        return i18n("P/L") + " "
+               + applet.formatMoney(sym, p.plValue, true)
+               + " (" + applet.formatNumber(p.plPercent, true) + "%)";
+    }
+
+    readonly property bool plIsPos: applet && applet.hasPortfolioEntry
+                                    ? applet.portfolioSummary.plIsPos : true
 
     Item {
         width: card.width
         height: 36
 
-        Row {
+        Text {
             x: 12; y: 0
             width: card.width - 24 - card.rightWidth
             height: 36
-            spacing: 4
-
-            Text {
-                id: mainTitle
-                width: 124
-                height: parent.height
-                text: card.titleText
-                color: card.textColor
-                font.pixelSize: Math.round(Kirigami.Theme.defaultFont.pixelSize * 1.1)
-                font.weight: Font.DemiBold
-                elide: Text.ElideRight
-                verticalAlignment: Text.AlignVCenter
-            }
-            Text {
-                height: parent.height
-                width: Math.max(0, parent.width - mainTitle.width - parent.spacing)
-                visible: text !== ""
-                text: card.sessionText
-                color: card.mutedColor
-                font.pixelSize: Math.max(9, Kirigami.Theme.defaultFont.pixelSize - 1)
-                elide: Text.ElideRight
-                verticalAlignment: Text.AlignVCenter
-            }
+            text: card.titleText
+            color: card.textColor
+            font.pixelSize: 13
+            font.weight: Font.DemiBold
+            elide: Text.ElideRight
+            verticalAlignment: Text.AlignVCenter
         }
         Text {
             anchors.right: parent.right
@@ -154,7 +141,7 @@ Item {
             text: card.rightText
             color: card.cached ? (card.applet ? card.applet.warningTextColor : card.mutedColor)
                                : card.mutedColor
-            font.pixelSize: Math.max(9, Kirigami.Theme.defaultFont.pixelSize - 1)
+            font.pixelSize: 11
             horizontalAlignment: Text.AlignRight
             elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
@@ -166,91 +153,96 @@ Item {
         x: 12
         y: 44
         width: card.contentWidth
-        spacing: 0
+        spacing: 4
 
         Row {
             width: parent.width
-            height: 17
+            height: 24
 
             Text {
-                width: card.labelWidth; height: parent.height
-                text: i18nc("@title:column", "Details")
-                color: card.mutedColor
-                font.pixelSize: Math.max(9, Math.round(Kirigami.Theme.defaultFont.pixelSize * 0.8))
-                font.letterSpacing: 0.5
-                font.capitalization: Font.AllUppercase
+                width: parent.width / 2
+                height: parent.height
+                text: card.priceText
+                color: card.textColor
+                font.pixelSize: card.loading ? 12 : 18
+                font.weight: Font.DemiBold
+                elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
             }
             Text {
-                width: card.priceWidth; height: parent.height
-                text: i18nc("@title:column", "Price")
-                color: card.mutedColor
-                font.pixelSize: Math.max(9, Math.round(Kirigami.Theme.defaultFont.pixelSize * 0.8))
-                font.letterSpacing: 0.5
-                font.capitalization: Font.AllUppercase
+                width: parent.width / 2
+                height: parent.height
+                text: card.changeText
+                color: card.isPos ? card.applet.positiveColor : card.applet.negativeColor
+                font.pixelSize: 12
+                font.weight: Font.DemiBold
                 horizontalAlignment: Text.AlignRight
-                verticalAlignment: Text.AlignVCenter
-            }
-            Text {
-                width: card.changeWidth; height: parent.height
-                text: i18nc("@title:column", "Change")
-                color: card.mutedColor
-                font.pixelSize: Math.max(9, Math.round(Kirigami.Theme.defaultFont.pixelSize * 0.8))
-                font.letterSpacing: 0.5
-                font.capitalization: Font.AllUppercase
-                horizontalAlignment: Text.AlignRight
+                elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
             }
         }
 
-        Item {
+        Row {
             width: parent.width
-            height: 5
+            height: 18
+            visible: card.hasExt
+
+            Text {
+                width: parent.width - 84 - 96; height: parent.height
+                text: card.ext ? card.ext.label : ""
+                color: card.mutedColor
+                font.pixelSize: 11
+                elide: Text.ElideRight
+                verticalAlignment: Text.AlignVCenter
+            }
+            Text {
+                width: 84; height: parent.height
+                text: card.ext ? card.ext.price : ""
+                color: card.textColor
+                font.pixelSize: 12
+                horizontalAlignment: Text.AlignRight
+                elide: Text.ElideRight
+                verticalAlignment: Text.AlignVCenter
+            }
+            Text {
+                width: 96; height: parent.height
+                text: card.ext && card.ext.change !== ""
+                      ? card.ext.change + " (" + card.ext.pct + ")" : ""
+                color: card.ext && card.ext.isPos ? card.applet.positiveColor
+                                                  : card.applet.negativeColor
+                font.pixelSize: 12
+                horizontalAlignment: Text.AlignRight
+                elide: Text.ElideRight
+                verticalAlignment: Text.AlignVCenter
+            }
         }
 
-        Repeater {
-            model: card.rows
-            delegate: Item {
-                id: rowItem
-                required property var modelData
-                width: card.contentWidth
-                height: 20
+        Text {
+            width: parent.width
+            visible: text !== ""
+            text: card.positionText
+            color: card.mutedColor
+            font.pixelSize: 10
+            wrapMode: Text.WordWrap
+        }
 
-                Row {
-                    anchors.fill: parent
+        Text {
+            width: parent.width
+            visible: text !== ""
+            text: card.plText
+            color: card.plIsPos ? card.applet.positiveColor : card.applet.negativeColor
+            font.pixelSize: 11
+            font.weight: Font.DemiBold
+            wrapMode: Text.WordWrap
+        }
 
-                    Text {
-                        width: card.labelWidth; height: parent.height
-                        text: modelData.label !== undefined ? modelData.label : ""
-                        color: card.mutedColor
-                        font.pixelSize: Kirigami.Theme.defaultFont.pixelSize
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    Text {
-                        width: modelData.kind === "note" ? card.priceWidth + card.changeWidth : card.priceWidth
-                        height: parent.height
-                        text: modelData.kind === "note"
-                              ? modelData.text
-                              : (modelData.price !== undefined ? modelData.price : "")
-                        color: modelData.kind === "note" ? card.mutedColor : card.textColor
-                        font.pixelSize: Kirigami.Theme.defaultFont.pixelSize
-                        horizontalAlignment: modelData.kind === "note" ? Text.AlignLeft : Text.AlignRight
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    Text {
-                        visible: modelData.kind !== "note"
-                        width: card.changeWidth; height: parent.height
-                        text: modelData.change !== undefined ? modelData.change : ""
-                        color: modelData.isPos ? card.applet.positiveColor : card.applet.negativeColor
-                        font.pixelSize: Kirigami.Theme.defaultFont.pixelSize
-                        horizontalAlignment: Text.AlignRight
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                }
-            }
+        Text {
+            width: parent.width
+            visible: text !== ""
+            text: card.metaText
+            color: card.mutedColor
+            font.pixelSize: 10
+            wrapMode: Text.WordWrap
         }
     }
 }

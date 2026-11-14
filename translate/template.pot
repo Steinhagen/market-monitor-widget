@@ -1342,21 +1342,6 @@ msgid_plural "%1 shares · avg %2"
 msgstr[0] ""
 msgstr[1] ""
 
-#: contents/ui/tooltip/SingleTooltipCard.qml
-msgctxt "@title:column"
-msgid "Details"
-msgstr ""
-
-#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
-msgctxt "@title:column"
-msgid "Price"
-msgstr ""
-
-#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
-msgctxt "@title:column"
-msgid "Change"
-msgstr ""
-
 #: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "%1 stock"
 msgid_plural "%1 stocks"
@@ -1391,6 +1376,16 @@ msgstr ""
 #: contents/ui/tooltip/TooltipCard.qml
 msgctxt "@title:column"
 msgid "Market"
+msgstr ""
+
+#: contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Price"
+msgstr ""
+
+#: contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Change"
 msgstr ""
 
 #: contents/ui/tooltip/TooltipContent.qml
