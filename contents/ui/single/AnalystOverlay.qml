@@ -32,6 +32,15 @@ Item {
                                        ? (applet.isLightTheme ? "#171a1c" : "#f3f5f6")
                                        : Kirigami.Theme.textColor
 
+    // An item-based Popup is rendered in the window overlay, outside the clipping
+    // ancestors (the chart and the stock card). Size and position it against the window
+    // height, not only this item's bounds: a card taller than the window loses its last
+    // rows and the lower part of its scrollbar, which then cannot be dragged.
+    readonly property real windowHeight: {
+        var overlay = Overlay.overlay;
+        return overlay && overlay.height > 0 ? overlay.height : analystRoot.height;
+    }
+
     FontMetrics {
         id: axisMetrics
         font.pixelSize: 9
@@ -48,6 +57,14 @@ Item {
     Connections {
         target: analystRoot.applet
         function onSingleTickerChanged() { if (detailsPopup) detailsPopup.close(); }
+    }
+
+    // Resizing the widget while the details card is open must not push it outside the
+    // window; positionPopup() clamps the card against the window edges.
+    Connections {
+        target: analystRoot.Window.window
+        function onWidthChanged() { analystRoot.positionPopup(); }
+        function onHeightChanged() { analystRoot.positionPopup(); }
     }
 
     // The price range used by the chart, so the width reserved by its price scale can
@@ -428,10 +445,24 @@ Item {
 
     function positionPopup() {
         if (!detailsPopup || !detailsPopup.opened) return;
-        var x = popupAnchor.x - detailsPopup.width / 2;
-        var y = popupAnchor.y - detailsPopup.height - 8;
-        detailsPopup.x = Math.max(8, Math.min(analystRoot.width - detailsPopup.width - 8, x));
-        detailsPopup.y = Math.max(8, Math.min(analystRoot.height - detailsPopup.height - 8, y));
+        // The popup's x/y are local to this item, but the card itself is shown in the
+        // window overlay. Keep it within the chart column horizontally, and translate the
+        // window's top and bottom into local coordinates vertically, so the card can also
+        // use the space above the chart and never ends up under the panel edge.
+        var originY = analystRoot.mapToItem(null, 0, 0).y;
+        var left = 8;
+        var right = analystRoot.width - 8;
+        var top = 8 - originY;
+        var bottom = analystRoot.windowHeight - 8 - originY;
+        var width = detailsPopup.width;
+        var height = detailsPopup.height;
+        var x = popupAnchor.x - width / 2;
+        // Prefer above the marker; drop below it only when the card fits there.
+        var above = popupAnchor.y - height - 8;
+        var below = popupAnchor.y + 22;
+        var y = above >= top ? above : (below + height <= bottom ? below : above);
+        detailsPopup.x = Math.max(left, Math.min(right - width, x));
+        detailsPopup.y = Math.max(top, Math.min(bottom - height, y));
     }
 
     function openPopup(marker, mark) {
@@ -687,6 +718,10 @@ Item {
         parent: analystRoot
         width: Math.min(analystRoot.detailsWidth(detailsPopup.mark),
                         Math.max(200, analystRoot.width - 16))
+        // The list keeps its natural height (capped below) but the whole card must stay
+        // inside the window; the column layout then shrinks the Flickable instead of
+        // pushing the last rows and the scrollbar outside the visible area.
+        height: Math.min(implicitHeight, Math.max(160, analystRoot.windowHeight - 16))
         padding: 10
         modal: false
         focus: true
@@ -878,27 +913,38 @@ Item {
 
                     Rectangle {
                         id: entriesHandle
+                        // The thumb must span the full visible range of the list. The old
+                        // position used visibleArea.yPosition directly, so at the end of
+                        // the list the thumb stopped short of the track's bottom.
+                        readonly property real maxScroll: Math.max(0, entriesFlick.contentHeight - entriesFlick.height)
+                        readonly property real travel: Math.max(0, entriesBar.height - height)
+                        readonly property real progress: maxScroll > 0
+                                                         ? Math.max(0, Math.min(1, entriesFlick.contentY / maxScroll))
+                                                         : 0
                         x: 1
                         width: 6
                         radius: 3
                         color: analystRoot.popupText
                         opacity: 0.35
-                        height: Math.max(24, entriesFlick.visibleArea.heightRatio * entriesBar.height)
-                        y: entriesFlick.visibleArea.yPosition * (entriesBar.height - height)
+                        height: Math.max(20, Math.min(entriesBar.height,
+                                entriesFlick.visibleArea.heightRatio * entriesBar.height))
+                        y: progress * travel
 
                         MouseArea {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
-                            property real lastY: 0
-                            onPressed: lastY = mouse.y
-                            onPositionChanged: if (pressed) {
-                                var maxScroll = entriesFlick.contentHeight - entriesFlick.height;
-                                var maxHandle = entriesBar.height - entriesHandle.height;
-                                if (maxScroll > 0 && maxHandle > 0) {
-                                    entriesFlick.contentY = Math.max(0, Math.min(maxScroll,
-                                        entriesFlick.contentY + (mouse.y - lastY) / maxHandle * maxScroll));
-                                    lastY = mouse.y;
-                                }
+                            // Grab offset inside the thumb, so dragging keeps the thumb
+                            // under the cursor even as the MouseArea itself moves.
+                            property real grabY: 0
+                            onPressed: (mouse) => grabY = mouse.y
+                            onPositionChanged: (mouse) => {
+                                if (!pressed || entriesHandle.travel <= 0
+                                        || entriesHandle.maxScroll <= 0) return;
+                                var pointerY = mapToItem(entriesBar, mouse.x, mouse.y).y;
+                                var top = Math.max(0, Math.min(entriesHandle.travel,
+                                                                pointerY - grabY));
+                                entriesFlick.contentY = top / entriesHandle.travel
+                                                        * entriesHandle.maxScroll;
                             }
                         }
                     }
