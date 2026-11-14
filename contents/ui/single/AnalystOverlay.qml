@@ -444,7 +444,7 @@ Item {
     }
 
     function positionPopup() {
-        if (!detailsPopup || !detailsPopup.opened) return;
+        if (!detailsPopup || !detailsPopup.visible) return;
         // The popup's x/y are local to this item, but the card itself is shown in the
         // window overlay. Keep it within the chart column horizontally, and translate the
         // window's top and bottom into local coordinates vertically, so the card can also
@@ -468,9 +468,10 @@ Item {
     function openPopup(marker, mark) {
         selectedMark = mark;
         popupAnchor = marker.mapToItem(analystRoot, marker.width / 2, 0);
+        detailsPopup.opacity = 0;
         detailsPopup.open();
         positionPopup();
-        Qt.callLater(positionPopup);
+        revealTimer.restart();
     }
 
     Repeater {
@@ -567,7 +568,7 @@ Item {
     Item {
         id: hoverCard
         readonly property var mark: analystRoot.hoverMark
-        visible: analystRoot.hoverMark !== null && !detailsPopup.opened
+        visible: analystRoot.hoverMark !== null && !detailsPopup.visible
         z: 200
         width: analystRoot.hoverCardWidth(hoverCard.mark)
         height: cardContent.implicitHeight + 20
@@ -711,6 +712,28 @@ Item {
         }
     }
 
+    // The details card is revealed only after its content has been laid out; see the
+    // size handlers in the Popup below. The short delay is restarted on every size
+    // change, so the card never becomes visible at an intermediate position.
+    Timer {
+        id: revealTimer
+        interval: 30
+        repeat: false
+        onTriggered: {
+            analystRoot.positionPopup();
+            revealAnimation.restart();
+        }
+    }
+    NumberAnimation {
+        id: revealAnimation
+        target: detailsPopup
+        property: "opacity"
+        from: 0
+        to: 1
+        duration: 120
+        easing.type: Easing.OutCubic
+    }
+
     // Details popup for the selected marker group, using the same card language as
     // the hover card: direction badge, firm/date, action caption and old -> new target.
     Popup {
@@ -728,10 +751,32 @@ Item {
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
         readonly property var mark: analystRoot.selectedMark
 
-        onOpened: analystRoot.positionPopup()
-        onHeightChanged: if (opened) analystRoot.positionPopup()
-        onWidthChanged: if (opened) analystRoot.positionPopup()
-        onClosed: analystRoot.selectedMark = null
+        // The content is laid out a frame after open(), so the card starts with only its
+        // header height. Keep it invisible while the delegates settle, then reveal it at
+        // the final position; otherwise it flashes above the marker and jumps into place.
+        onHeightChanged: {
+            if (!visible) return;
+            analystRoot.positionPopup();
+            if (opacity < 1) {
+                revealAnimation.stop();
+                opacity = 0;
+                revealTimer.restart();
+            }
+        }
+        onWidthChanged: {
+            if (!visible) return;
+            analystRoot.positionPopup();
+            if (opacity < 1) {
+                revealAnimation.stop();
+                opacity = 0;
+                revealTimer.restart();
+            }
+        }
+        onClosed: {
+            analystRoot.selectedMark = null;
+            revealTimer.stop();
+            revealAnimation.stop();
+        }
 
         background: CardSurface {
             applet: analystRoot.applet
