@@ -357,6 +357,7 @@ PlasmoidItem {
         // Before the startup timer sends its first request, so the placeholders are
         // replaced by the previous values while the network comes up.
         root.readCachedQuotes();
+        root.updateTooltipItem();
     }
 
     function getCurrencySymbol(code) {
@@ -688,6 +689,7 @@ PlasmoidItem {
             root.chartReferencePrice = 0;
             root.readCachedQuotes();
         }
+        root.updateTooltipItem();
         refreshData();
     }
     onMultiTickersChanged: { root.clearStockRows(); refreshData(); }
@@ -740,9 +742,56 @@ PlasmoidItem {
     // nothing about the stocks. Put the quotes in it instead: the heading names the stock
     // (or the number of stocks) and the body lists the prices and changes, in the
     // same gain/loss colours as the rest of the widget.
-    toolTipMainText: tooltipContent.title
-    toolTipSubText: tooltipContent.body
+    // The custom card supplies the multi-mode tooltip; do not evaluate the rich-text
+    // title/body there (they would also duplicate the card content).
+    toolTipMainText: (root.isMultiMode || root.singleStockTooltip) ? ""
+                     : (tooltipContentLoader.item ? tooltipContentLoader.item.title : "")
+    toolTipSubText: (root.isMultiMode || root.singleStockTooltip) ? ""
+                    : (tooltipContentLoader.item ? tooltipContentLoader.item.body : "")
     toolTipTextFormat: Text.RichText
+
+    // Both modes use a custom card with the same title bar, column headers and row
+    // style. The rich-text text above is only a fallback while the single card is
+    // being created.
+    property Item multiStockTooltip: null
+    property Item singleStockTooltip: null
+    property bool tooltipItemPending: false
+    // The multi card has its own table; the single card mirrors its title bar, header,
+    // fonts and colours. Both replace Plasma's default rich-text tooltip.
+    toolTipItem: root.isMultiMode ? root.multiStockTooltip : root.singleStockTooltip
+
+    function updateTooltipItem() {
+        if (!root.isMultiMode) {
+            if (!root.singleStockTooltip)
+                root.singleStockTooltip = singleStockTooltipComponent.createObject(null);
+            return;
+        }
+        if (root.multiStockTooltip || root.tooltipItemPending) return;
+        // The card reads the list count and rows, so wait until the rows exist. Creating
+        // it while the model is still being filled also confused the binding evaluator.
+        if (stockModel.count === 0) return;
+        root.tooltipItemPending = true;
+        Qt.callLater(function() {
+            root.tooltipItemPending = false;
+            if (root.isMultiMode && !root.multiStockTooltip && stockModel.count > 0)
+                root.multiStockTooltip = multiStockTooltipComponent.createObject(null);
+        });
+    }
+
+    Component {
+        id: multiStockTooltipComponent
+        TooltipCard {
+            applet: root
+            stockList: stockModel
+        }
+    }
+
+    Component {
+        id: singleStockTooltipComponent
+        SingleTooltipCard {
+            applet: root
+        }
+    }
 
     // ListModel rows do not notify property reads through get(), so the body is bound to
     // this counter and the connections below bump it whenever the model changes.
@@ -751,15 +800,23 @@ PlasmoidItem {
     Connections {
         target: stockModel
         function onDataChanged() { root.tooltipRevision++ }
-        function onRowsInserted() { root.tooltipRevision++ }
+        function onRowsInserted() { root.tooltipRevision++; root.updateTooltipItem(); }
         function onRowsRemoved() { root.tooltipRevision++ }
-        function onModelReset() { root.tooltipRevision++ }
+        function onModelReset() { root.tooltipRevision++; root.updateTooltipItem(); }
     }
 
-    TooltipContent {
-        id: tooltipContent
-        applet: root
-        stockList: stockModel
+    // Fallback for the single-stock tooltip while its custom card is being created; the
+    // list never uses this rich-text content.
+    Loader {
+        id: tooltipContentLoader
+        active: !root.isMultiMode && root.singleStockTooltip === null
+        visible: false
+        sourceComponent: Component {
+            TooltipContent {
+                applet: root
+                stockList: stockModel
+            }
+        }
     }
 
     // Whether a list row still shows its restored value. Reading tooltipRevision makes

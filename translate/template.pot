@@ -68,7 +68,7 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: contents/ui/components/PositionLine.qml contents/ui/tooltip/TooltipContent.qml
+#: contents/ui/components/PositionLine.qml contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "P/L"
 msgstr ""
 
@@ -161,7 +161,7 @@ msgctxt "@item:short stock market session"
 msgid "After"
 msgstr ""
 
-#: contents/ui/list/WatchRow.qml contents/ui/tooltip/TooltipContent.qml
+#: contents/ui/list/WatchRow.qml contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "Market closed"
 msgstr ""
 
@@ -1181,7 +1181,7 @@ msgid_plural "%1 actions"
 msgstr[0] ""
 msgstr[1] ""
 
-#: contents/ui/single/AnalystOverlay.qml contents/ui/tooltip/TooltipContent.qml
+#: contents/ui/single/AnalystOverlay.qml contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "… and %1 more"
 msgstr ""
 
@@ -1271,7 +1271,7 @@ msgstr ""
 msgid "Could not update headlines"
 msgstr ""
 
-#: contents/ui/SingleStockView.qml
+#: contents/ui/SingleStockView.qml contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
 msgid "Updated %1"
 msgstr ""
 
@@ -1316,15 +1316,86 @@ msgstr ""
 msgid "Session of %1"
 msgstr ""
 
-#: contents/ui/tooltip/TooltipContent.qml
-msgid "Market Monitor"
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
+msgid "session of %1"
 msgstr ""
 
-#: contents/ui/tooltip/TooltipContent.qml
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
+msgid "cache from %1"
+msgstr ""
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "Loading…"
+msgstr ""
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "Session"
+msgstr ""
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "Position"
+msgstr ""
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "%1 share · avg %2"
+msgid_plural "%1 shares · avg %2"
+msgstr[0] ""
+msgstr[1] ""
+
+#: contents/ui/tooltip/SingleTooltipCard.qml
+msgctxt "@title:column"
+msgid "Details"
+msgstr ""
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Price"
+msgstr ""
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Change"
+msgstr ""
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "%1 stock"
 msgid_plural "%1 stocks"
 msgstr[0] ""
 msgstr[1] ""
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgctxt "@item:market status"
+msgid "Closed"
+msgstr ""
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgctxt "@item:market status"
+msgid "Open"
+msgstr ""
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgctxt "@item:market status"
+msgid "Pre"
+msgstr ""
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgctxt "@item:market status"
+msgid "After"
+msgstr ""
+
+#: contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Symbol"
+msgstr ""
+
+#: contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Market"
+msgstr ""
+
+#: contents/ui/tooltip/TooltipContent.qml
+msgid "Market Monitor"
+msgstr ""
 
 #: contents/ui/tooltip/TooltipContent.qml
 msgctxt "@info:tooltip"
@@ -1342,46 +1413,8 @@ msgid "%1 · %2"
 msgstr ""
 
 #: contents/ui/tooltip/TooltipContent.qml
-msgctxt "@item:market status"
-msgid "Closed"
-msgstr ""
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgctxt "@item:market status"
-msgid "Open"
-msgstr ""
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgctxt "@item:market status"
-msgid "Pre"
-msgstr ""
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgctxt "@item:market status"
-msgid "After"
-msgstr ""
-
-#: contents/ui/tooltip/TooltipContent.qml
 msgid "loading…"
 msgstr ""
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgid "Loading…"
-msgstr ""
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgid "Session"
-msgstr ""
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgid "Position"
-msgstr ""
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgid "%1 share · avg %2"
-msgid_plural "%1 shares · avg %2"
-msgstr[0] ""
-msgstr[1] ""
 
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "Updated"

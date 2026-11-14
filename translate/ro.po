@@ -68,7 +68,7 @@ msgstr "%1 la %2"
 msgid "Value"
 msgstr "Valoare"
 
-#: contents/ui/components/PositionLine.qml contents/ui/tooltip/TooltipContent.qml
+#: contents/ui/components/PositionLine.qml contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "P/L"
 msgstr "P/L"
 
@@ -165,7 +165,7 @@ msgctxt "@item:short stock market session"
 msgid "After"
 msgstr "După"
 
-#: contents/ui/list/WatchRow.qml contents/ui/tooltip/TooltipContent.qml
+#: contents/ui/list/WatchRow.qml contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "Market closed"
 msgstr "Piața este închisă"
 
@@ -1190,7 +1190,7 @@ msgstr[0] "%1 acțiune"
 msgstr[1] "%1 acțiuni"
 msgstr[2] "%1 de acțiuni"
 
-#: contents/ui/single/AnalystOverlay.qml contents/ui/tooltip/TooltipContent.qml
+#: contents/ui/single/AnalystOverlay.qml contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "… and %1 more"
 msgstr "… și încă %1"
 
@@ -1280,7 +1280,7 @@ msgstr "Nu există titluri recente pentru %1"
 msgid "Could not update headlines"
 msgstr "Titlurile nu au putut fi actualizate"
 
-#: contents/ui/SingleStockView.qml
+#: contents/ui/SingleStockView.qml contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
 msgid "Updated %1"
 msgstr "Actualizat %1"
 
@@ -1325,16 +1325,88 @@ msgstr "Sesiunea de ieri"
 msgid "Session of %1"
 msgstr "Sesiunea din %1"
 
-#: contents/ui/tooltip/TooltipContent.qml
-msgid "Market Monitor"
-msgstr "Monitor bursier"
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
+msgid "session of %1"
+msgstr "ședința de %1"
 
-#: contents/ui/tooltip/TooltipContent.qml
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
+msgid "cache from %1"
+msgstr "cache din %1"
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "Loading…"
+msgstr "Se încarcă…"
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "Session"
+msgstr "Sesiune"
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "Position"
+msgstr "Poziție"
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "%1 share · avg %2"
+msgid_plural "%1 shares · avg %2"
+msgstr[0] "%1 acțiune · mediu %2"
+msgstr[1] "%1 acțiuni · mediu %2"
+msgstr[2] "%1 de acțiuni · mediu %2"
+
+#: contents/ui/tooltip/SingleTooltipCard.qml
+msgctxt "@title:column"
+msgid "Details"
+msgstr "Detalii"
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Price"
+msgstr "Preț"
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Change"
+msgstr "Modificare"
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "%1 stock"
 msgid_plural "%1 stocks"
 msgstr[0] "%1 acțiune"
 msgstr[1] "%1 acțiuni"
 msgstr[2] "%1 de acțiuni"
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgctxt "@item:market status"
+msgid "Closed"
+msgstr "Închisă"
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgctxt "@item:market status"
+msgid "Open"
+msgstr "Deschisă"
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgctxt "@item:market status"
+msgid "Pre"
+msgstr "Pre"
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgctxt "@item:market status"
+msgid "After"
+msgstr "După"
+
+#: contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Symbol"
+msgstr "Simbol"
+
+#: contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Market"
+msgstr "Piață"
+
+#: contents/ui/tooltip/TooltipContent.qml
+msgid "Market Monitor"
+msgstr "Monitor bursier"
 
 #: contents/ui/tooltip/TooltipContent.qml
 msgctxt "@info:tooltip"
@@ -1352,47 +1424,8 @@ msgid "%1 · %2"
 msgstr "%1 · %2"
 
 #: contents/ui/tooltip/TooltipContent.qml
-msgctxt "@item:market status"
-msgid "Closed"
-msgstr "Închisă"
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgctxt "@item:market status"
-msgid "Open"
-msgstr "Deschisă"
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgctxt "@item:market status"
-msgid "Pre"
-msgstr "Pre"
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgctxt "@item:market status"
-msgid "After"
-msgstr "După"
-
-#: contents/ui/tooltip/TooltipContent.qml
 msgid "loading…"
 msgstr "se încarcă…"
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgid "Loading…"
-msgstr "Se încarcă…"
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgid "Session"
-msgstr "Sesiune"
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgid "Position"
-msgstr "Poziție"
-
-#: contents/ui/tooltip/TooltipContent.qml
-msgid "%1 share · avg %2"
-msgid_plural "%1 shares · avg %2"
-msgstr[0] "%1 acțiune · mediu %2"
-msgstr[1] "%1 acțiuni · mediu %2"
-msgstr[2] "%1 de acțiuni · mediu %2"
 
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "Updated"
