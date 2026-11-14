@@ -5,7 +5,7 @@ All notable changes to Market Monitor are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0] - 2026-11-14
+## [1.0] - 2026-11-15
 
 Initial release of Market Monitor, a stock, crypto and currency widget for KDE
 Plasma 6. It continues the Plasma Stock Monitor widget under a new name. The
@@ -15,6 +15,8 @@ pre-rename history is in [docs/CHANGELOG-legacy.md](docs/CHANGELOG-legacy.md).
 
 - Single-stock and multi-stock views, including a side-by-side two-column layout
   with a draggable splitter.
+- Unified tooltip cards for the watchlist and single-stock views, with the session
+  date, update or cache state and a compact summary in single mode.
 - Reference-line and candlestick charts with an optional trading-volume strip,
   ranges from 1D to Max, in-chart range and style controls, hover details, a price
   scale and a time axis.
@@ -47,5 +49,11 @@ pre-rename history is in [docs/CHANGELOG-legacy.md](docs/CHANGELOG-legacy.md).
   not migrated. Backups exported with the old id still import.
 - Use the analyst cards' rounded, bordered surface for the market status popup.
 - Replace the app icon with a Breeze-style candle-chart tile.
+
+### Fixed
+
+- Importing a backup no longer briefly shows the previous watchlist entries next
+  to the imported ones.
+- Analyst target markers now use a drawn, consistently centred up/down triangle.
 
 [1.0]: https://github.com/Steinhagen/market-monitor-widget/releases/tag/v1.0
