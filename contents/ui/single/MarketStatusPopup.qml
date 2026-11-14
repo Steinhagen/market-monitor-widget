@@ -20,7 +20,13 @@ Popup {
     readonly property bool dataAvailable: host !== null && host !== undefined
                                          && host.marketDataAvailable
 
-    width: parent ? Math.min(360, Math.max(240, parent.width - 8)) : 340
+    // Follow the content instead of a fixed width: the old 240-360 range left a gap
+    // between the text and the right-aligned tags. The card still has to fit the parent
+    // card, so a narrow widget caps it.
+    readonly property real maxCardWidth: parent
+                                         ? Math.max(160, Math.min(360, parent.width - 8))
+                                         : 340
+    width: Math.min(maxCardWidth, Math.max(200, implicitWidth))
     padding: 10
     modal: false
     focus: false
