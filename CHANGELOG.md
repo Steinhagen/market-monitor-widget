@@ -8,10 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0] - 2026-11-14
 
 Initial release of Market Monitor, a stock, crypto and currency widget for KDE
-Plasma 6. It continues the Plasma Stock Monitor widget under a new name; the
-applet id, configuration keys and backup format id are unchanged, so existing
-widgets and backups keep working. The pre-rename history is in
-[docs/CHANGELOG-legacy.md](docs/CHANGELOG-legacy.md).
+Plasma 6. It continues the Plasma Stock Monitor widget under a new name. The
+pre-rename history is in [docs/CHANGELOG-legacy.md](docs/CHANGELOG-legacy.md).
 
 ### Added
 
@@ -40,5 +38,13 @@ widgets and backups keep working. The pre-rename history is in
 - Configurable mouse actions for the widget.
 - Ki18n localization with a complete Romanian translation.
 - KDE Store packaging and automatic `.plasmoid` builds for version tags.
+
+### Changed
+
+- Rename the applet id from `io.github.steinhagen.plasmastockmonitor` to
+  `io.github.steinhagen.marketmonitor`, and move the translation domain with it.
+  Widgets placed under the old id have to be added again; their old settings are
+  not migrated. Backups exported with the old id still import.
+- Use the analyst cards' rounded, bordered surface for the market status popup.
 
 [1.0]: https://github.com/Steinhagen/market-monitor-widget/releases/tag/v1.0

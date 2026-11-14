@@ -4,7 +4,12 @@
 // configuration page. Keeping this in a small library (instead of in the page) makes
 // the format easy to test and keeps the QML side focused on the UI.
 
-var APPLICATION_ID = "io.github.steinhagen.plasmastockmonitor";
+// Backups written before the Market Monitor rename carry the old Plasma Stock
+// Monitor id. They use the same format 1 schema (plus the legacy theme keys), so
+// accepting the old id is enough to import them alongside current backups; new
+// exports use the current id.
+var APPLICATION_ID = "io.github.steinhagen.marketmonitor";
+var LEGACY_APPLICATION_ID = "io.github.steinhagen.plasmastockmonitor";
 var FORMAT_VERSION = 1;
 
 // "Portfolio and watchlist" data. These settings are exported together with the lots
@@ -442,7 +447,9 @@ function parseBackup(text) {
 
     if (!isObject(root)) return failure("notBackup");
 
-    if (root.application !== undefined && root.application !== APPLICATION_ID) {
+    if (root.application !== undefined
+            && root.application !== APPLICATION_ID
+            && root.application !== LEGACY_APPLICATION_ID) {
         return failure("notBackup");
     }
     if (root.format !== undefined) {

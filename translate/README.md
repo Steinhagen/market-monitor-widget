@@ -12,7 +12,7 @@ Romanian (`ro`) is the first language and is complete.
 Plasma derives the translation domain from the applet id in `metadata.json`:
 
 ```
-plasma_applet_io.github.steinhagen.plasmastockmonitor
+plasma_applet_io.github.steinhagen.marketmonitor
 ```
 
 and registers `<package>/contents/locale` as the domain's locale directory
@@ -21,7 +21,7 @@ path `translations` defined as `contents/locale`). The compiled catalogs must
 therefore live at:
 
 ```
-contents/locale/<language>/LC_MESSAGES/plasma_applet_io.github.steinhagen.plasmastockmonitor.mo
+contents/locale/<language>/LC_MESSAGES/plasma_applet_io.github.steinhagen.marketmonitor.mo
 ```
 
 The widget name and description shown in the "Add Widgets" dialog are not part of

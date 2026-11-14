@@ -1,12 +1,12 @@
 # Translation template for Market Monitor.
 # Copyright (C) 2026 The Market Monitor authors
-# This file is distributed under the same license as the plasma_applet_io.github.steinhagen.plasmastockmonitor package.
+# This file is distributed under the same license as the plasma_applet_io.github.steinhagen.marketmonitor package.
 # Distributed under the GPL-3.0-or-later, like the widget.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: plasma_applet_io.github.steinhagen.plasmastockmonitor\n"
+"Project-Id-Version: plasma_applet_io.github.steinhagen.marketmonitor\n"
 "Report-Msgid-Bugs-To: https://github.com/Steinhagen/market-monitor-widget\n"
 "POT-Creation-Date: 2026-11-08 16:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -1199,6 +1199,22 @@ msgctxt "@item:chart style"
 msgid "Candles"
 msgstr ""
 
+#: contents/ui/single/MarketStatusPopup.qml
+msgid "Market data"
+msgstr ""
+
+#: contents/ui/single/MarketStatusPopup.qml
+msgid "Yahoo quote %1"
+msgstr ""
+
+#: contents/ui/single/MarketStatusPopup.qml
+msgid "may be delayed"
+msgstr ""
+
+#: contents/ui/single/MarketStatusPopup.qml
+msgid "The market is open; waiting for its first regular quote."
+msgstr ""
+
 #: contents/ui/single/NewsPane.qml
 msgid "More on BVB"
 msgstr ""
@@ -1222,22 +1238,6 @@ msgstr ""
 #: contents/ui/single/QuoteBlock.qml
 msgctxt "@item:compact quote"
 msgid "Regular"
-msgstr ""
-
-#: contents/ui/single/StockHeader.qml
-msgid "Market data"
-msgstr ""
-
-#: contents/ui/single/StockHeader.qml
-msgid "Yahoo quote %1"
-msgstr ""
-
-#: contents/ui/single/StockHeader.qml
-msgid "may be delayed"
-msgstr ""
-
-#: contents/ui/single/StockHeader.qml
-msgid "The market is open; waiting for its first regular quote."
 msgstr ""
 
 #: contents/ui/single/StockHeader.qml

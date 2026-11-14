@@ -20,7 +20,7 @@
     "Description": "Modernized market monitor for KDE with badge UI and custom colors.",
     "Description[ro]": "Monitor bursier modernizat pentru KDE, cu acțiuni, criptomonede și valute, interfață cu insigne și culori personalizate.",
     "Icon": "/icon.png",
-    "Id": "io.github.steinhagen.plasmastockmonitor",
+    "Id": "io.github.steinhagen.marketmonitor",
     "Version": "1.0",
     "Website": "https://github.com/Steinhagen/market-monitor-widget",
     "License": "GPL-3.0+"
