@@ -493,15 +493,15 @@ Item {
             // Filled triangles mean a real increase/decrease. The neutral actions use
             // shapes rather than text glyphs so all markers have a comparable visual
             // size and the 16x14 item stays easy to click.
-            Text {
+            TrendArrow {
                 anchors.centerIn: parent
-                visible: marker.modelData.direction === "up"
-                         || marker.modelData.direction === "down"
-                text: marker.modelData.direction === "up" ? "▲" : "▼"
+                arrowWidth: 6
+                arrowHeight: 7
+                up: marker.modelData.direction === "up"
                 color: marker.accent
                 opacity: 0.95
-                font.pixelSize: 9
-                font.bold: true
+                visible: marker.modelData.direction === "up"
+                         || marker.modelData.direction === "down"
             }
             // Maintained target: a short bar, meaning "unchanged".
             Rectangle {
@@ -623,8 +623,18 @@ Item {
                                            hoverEntry.accent.b, 0.16)
                             border.width: 1
                             border.color: hoverEntry.accent
+                            TrendArrow {
+                                anchors.centerIn: parent
+                                arrowWidth: 8; arrowHeight: 8
+                                up: hoverEntry.modelData.kind === "up"
+                                color: hoverEntry.accent
+                                visible: hoverEntry.modelData.kind === "up"
+                                         || hoverEntry.modelData.kind === "down"
+                            }
                             Text {
                                 anchors.centerIn: parent
+                                visible: hoverEntry.modelData.kind !== "up"
+                                         && hoverEntry.modelData.kind !== "down"
                                 text: analystRoot.hoverGlyph(hoverEntry.modelData)
                                 color: hoverEntry.accent
                                 font.pixelSize: 10
@@ -869,8 +879,18 @@ Item {
                                            popupEntry.accent.b, 0.16)
                             border.width: 1
                             border.color: popupEntry.accent
+                            TrendArrow {
+                                anchors.centerIn: parent
+                                arrowWidth: 8; arrowHeight: 8
+                                up: popupEntry.modelData.kind === "up"
+                                color: popupEntry.accent
+                                visible: popupEntry.modelData.kind === "up"
+                                         || popupEntry.modelData.kind === "down"
+                            }
                             Text {
                                 anchors.centerIn: parent
+                                visible: popupEntry.modelData.kind !== "up"
+                                         && popupEntry.modelData.kind !== "down"
                                 text: analystRoot.hoverGlyph(popupEntry.modelData)
                                 color: popupEntry.accent
                                 font.pixelSize: 10
