@@ -35,7 +35,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          zip -q -r "dist/plasma-stock-monitor-${VERSION}.plasmoid" \
+          zip -q -r "dist/market-monitor-${VERSION}.plasmoid" \
             metadata.json contents LICENSE
           (cd dist && sha256sum ./*.plasmoid > SHA256SUMS)
         env:
@@ -45,7 +45,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          package="dist/plasma-stock-monitor-${VERSION}.plasmoid"
+          package="dist/market-monitor-${VERSION}.plasmoid"
           test -s "$package"
           unzip -Z1 "$package" | grep -qx "metadata.json"
           unzip -Z1 "$package" | grep -qx "contents/ui/main.qml"
@@ -57,7 +57,7 @@ jobs:
       - name: Create the GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          name: "Plasma Stock Monitor ${{ steps.app.outputs.version }}"
+          name: "Market Monitor ${{ steps.app.outputs.version }}"
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |

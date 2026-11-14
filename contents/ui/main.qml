@@ -736,7 +736,7 @@ PlasmoidItem {
 
     // --- TOOLTIP ---
     // Plasma's fallback tooltip for an applet is the name and the description from
-    // metadata.json ("Plasma Stock Monitor" / "Modernized stock monitor for KDE…"), which says
+    // metadata.json ("Market Monitor" / "Modernized market monitor for KDE…"), which says
     // nothing about the stocks. Put the quotes in it instead: the heading names the stock
     // (or the number of stocks) and the body lists the prices and changes, in the
     // same gain/loss colours as the rest of the widget.

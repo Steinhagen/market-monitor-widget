@@ -64,9 +64,9 @@ released `.plasmoid` both contain working translations.
    widget chooser:
 
    ```json
-   "Name": "Plasma Stock Monitor",
+   "Name": "Market Monitor",
    "Name[de]": "…",
-   "Description": "Modernized stock monitor for KDE with badge UI and custom colors.",
+   "Description": "Modernized market monitor for KDE with badge UI and custom colors.",
    "Description[de]": "…"
    ```
 

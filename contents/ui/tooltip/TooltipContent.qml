@@ -11,11 +11,11 @@ Item {
             var title = applet.nameAndTicker(applet.singleCompanyName, applet.displayTicker(applet.singleTicker));
             var badge = applet.exchangeBadge(applet.singleTicker, applet.singleExchange);
             if (badge !== "") title += " · " + badge;
-            return title !== "" ? title : i18n("Plasma Stock Monitor");
+            return title !== "" ? title : i18n("Market Monitor");
         }
         var n = stockList.count;
         if (n === 0)
-            return i18n("Plasma Stock Monitor");
+            return i18n("Market Monitor");
         var count = i18np("%1 stock", "%1 stocks", n);
         if (applet.showingCachedData)
             return i18nc("@info:tooltip", "%1 · %2 · cached data from %3",

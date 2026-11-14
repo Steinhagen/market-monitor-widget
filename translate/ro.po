@@ -1,15 +1,15 @@
-# Romanian translation of Plasma Stock Monitor.
-# Copyright (C) 2026 The Plasma Stock Monitor authors
+# Romanian translation of Market Monitor.
+# Copyright (C) 2026 The Market Monitor authors
 # This file is distributed under the same license as the plasma_applet_io.github.steinhagen.plasmastockmonitor package.
 # Distributed under the GPL-3.0-or-later, like the widget.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: plasma_applet_io.github.steinhagen.plasmastockmonitor\n"
-"Report-Msgid-Bugs-To: https://github.com/Steinhagen/plasma-stock-monitor\n"
+"Report-Msgid-Bugs-To: https://github.com/Steinhagen/market-monitor-widget\n"
 "POT-Creation-Date: 2026-11-08 16:15+0200\n"
 "PO-Revision-Date: 2026-11-08 16:30+0200\n"
-"Last-Translator: Plasma Stock Monitor translators\n"
+"Last-Translator: Market Monitor translators\n"
 "Language-Team: Romanian <ro@li.org>\n"
 "Language: ro\n"
 "MIME-Version: 1.0\n"
@@ -530,8 +530,8 @@ msgid "The selected file is not valid JSON."
 msgstr "Fișierul selectat nu conține JSON valid."
 
 #: contents/ui/settings/pages/importExport.qml
-msgid "The selected file is not a Plasma Stock Monitor backup."
-msgstr "Fișierul selectat nu este o copie de siguranță a aplicației Monitor de acțiuni Plasma."
+msgid "The selected file is not a Market Monitor backup."
+msgstr "Fișierul selectat nu este o copie de siguranță a aplicației Monitor bursier."
 
 #: contents/ui/settings/pages/importExport.qml
 msgid "This backup was created by a newer version of the widget."
@@ -1326,8 +1326,8 @@ msgid "Session of %1"
 msgstr "Sesiunea din %1"
 
 #: contents/ui/tooltip/TooltipContent.qml
-msgid "Plasma Stock Monitor"
-msgstr "Monitor de acțiuni Plasma"
+msgid "Market Monitor"
+msgstr "Monitor bursier"
 
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "%1 stock"
@@ -1397,6 +1397,12 @@ msgstr[2] "%1 de acțiuni · mediu %2"
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "Updated"
 msgstr "Actualizat"
+
+#~ msgid "The selected file is not a Plasma Stock Monitor backup."
+#~ msgstr "Fișierul selectat nu este o copie de siguranță a aplicației Monitor de acțiuni Plasma."
+
+#~ msgid "Plasma Stock Monitor"
+#~ msgstr "Monitor de acțiuni Plasma"
 
 #~ msgid "Showing the latest %1 of %2 actions — click for details"
 #~ msgstr "Se afișează ultimele %1 din %2 acțiuni — faceți clic pentru detalii"

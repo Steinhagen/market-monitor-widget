@@ -60,8 +60,8 @@ rm -f "$DIR/infiles.list"
 # xgettext writes a placeholder charset; the sources are UTF-8.
 sed -i 's/"Content-Type: text\/plain; charset=CHARSET\\n"/"Content-Type: text\/plain; charset=UTF-8\\n"/' "$DIR/template.pot.new"
 # Replace xgettext's placeholder header lines with something meaningful.
-sed -i 's/^# SOME DESCRIPTIVE TITLE\.$/# Translation template for Plasma Stock Monitor./' "$DIR/template.pot.new"
-sed -i "s/^# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER$/# Copyright (C) $(date +%Y) The Plasma Stock Monitor authors/" "$DIR/template.pot.new"
+sed -i 's/^# SOME DESCRIPTIVE TITLE\.$/# Translation template for Market Monitor./' "$DIR/template.pot.new"
+sed -i "s/^# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER$/# Copyright (C) $(date +%Y) The Market Monitor authors/" "$DIR/template.pot.new"
 sed -i 's/^# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR\.$/# Distributed under the GPL-3.0-or-later, like the widget./' "$DIR/template.pot.new"
 # Keep the creation date stable when nothing else changed, so the diff stays readable.
 if [ -f "$DIR/template.pot" ]; then

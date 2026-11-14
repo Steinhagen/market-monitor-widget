@@ -114,7 +114,7 @@ Item {
     function defaultFileName() {
         var suffix = page.scope === "data" ? "portfolio" : (page.scope === "settings" ? "settings" : "backup");
         var now = new Date();
-        return "plasma-stock-monitor-" + suffix + "-"
+        return "market-monitor-" + suffix + "-"
                 + now.getFullYear() + "-" + page.pad(now.getMonth() + 1) + "-" + page.pad(now.getDate())
                 + ".json";
     }
@@ -177,7 +177,7 @@ Item {
         case "invalidJson":
             return i18n("The selected file is not valid JSON.");
         case "notBackup":
-            return i18n("The selected file is not a Plasma Stock Monitor backup.");
+            return i18n("The selected file is not a Market Monitor backup.");
         case "newerFormat":
             return i18n("This backup was created by a newer version of the widget.");
         case "invalidPortfolio":

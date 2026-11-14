@@ -1,8 +1,8 @@
 # Architecture
 
-Status: target structure for Plasma Stock Monitor. The tree below is the destination,
+Status: target structure for Market Monitor. The tree below is the destination,
 not the current layout; the current code is being moved towards it in phases (see the
-end of this file). Reviewed with the 1.7 feature set on 2026-11-14.
+end of this file). Reviewed with the 1.0 feature set on 2026-11-14.
 
 ## Why this exists
 

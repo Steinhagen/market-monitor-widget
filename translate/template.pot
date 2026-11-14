@@ -1,5 +1,5 @@
-# Translation template for Plasma Stock Monitor.
-# Copyright (C) 2026 The Plasma Stock Monitor authors
+# Translation template for Market Monitor.
+# Copyright (C) 2026 The Market Monitor authors
 # This file is distributed under the same license as the plasma_applet_io.github.steinhagen.plasmastockmonitor package.
 # Distributed under the GPL-3.0-or-later, like the widget.
 #
@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: plasma_applet_io.github.steinhagen.plasmastockmonitor\n"
-"Report-Msgid-Bugs-To: https://github.com/Steinhagen/plasma-stock-monitor\n"
+"Report-Msgid-Bugs-To: https://github.com/Steinhagen/market-monitor-widget\n"
 "POT-Creation-Date: 2026-11-08 16:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
@@ -526,7 +526,7 @@ msgid "The selected file is not valid JSON."
 msgstr ""
 
 #: contents/ui/settings/pages/importExport.qml
-msgid "The selected file is not a Plasma Stock Monitor backup."
+msgid "The selected file is not a Market Monitor backup."
 msgstr ""
 
 #: contents/ui/settings/pages/importExport.qml
@@ -1317,7 +1317,7 @@ msgid "Session of %1"
 msgstr ""
 
 #: contents/ui/tooltip/TooltipContent.qml
-msgid "Plasma Stock Monitor"
+msgid "Market Monitor"
 msgstr ""
 
 #: contents/ui/tooltip/TooltipContent.qml

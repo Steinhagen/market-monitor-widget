@@ -1,10 +1,10 @@
-# Plasma Stock Monitor
+# Market Monitor
 
 A clean stock, crypto and currency widget for **KDE Plasma 6**, powered by Yahoo Finance.
 
 [![KDE Store](https://img.shields.io/badge/KDE%20Store-Install-blue)](https://store.kde.org/p/2381512/)
 
-![Plasma Stock Monitor](screenshots/main.png)
+![Market Monitor](screenshots/main.png)
 
 ## Features
 
@@ -25,19 +25,19 @@ A clean stock, crypto and currency widget for **KDE Plasma 6**, powered by Yahoo
 
 ### KDE Store
 
-Install **Plasma Stock Monitor** from the [KDE Store](https://store.kde.org/p/2381512/).
+Install **Market Monitor** from the [KDE Store](https://store.kde.org/p/2381512/).
 
-You can also open **Add Widgets → Get New Widgets → Download New Plasma Widgets** on your desktop or panel and search for **Plasma Stock Monitor**.
+You can also open **Add Widgets → Get New Widgets → Download New Plasma Widgets** on your desktop or panel and search for **Market Monitor**.
 
 ### From source
 
 ```bash
-git clone https://github.com/Steinhagen/plasma-stock-monitor.git
-cd plasma-stock-monitor
+git clone https://github.com/Steinhagen/market-monitor-widget.git
+cd market-monitor-widget
 kpackagetool6 --type Plasma/Applet --install .
 ```
 
-Then right-click the desktop or panel, choose **Add Widgets**, and search for **Plasma Stock Monitor**.
+Then right-click the desktop or panel, choose **Add Widgets**, and search for **Market Monitor**.
 
 To update an existing source installation, use `--upgrade` instead of `--install`.
 
@@ -70,7 +70,7 @@ It needs the Qt 6 declarative tools (`qmltestrunner`); see [tests/README.md](tes
 
 ## Credits
 
-Plasma Stock Monitor is a fork of [Stock Monitor](https://github.com/vpsone/stock-monitor-widget) by [vps (vpsone)](https://github.com/vpsone), with UI contributions by [Cenk Tekin](https://github.com/cenktekin) (badge UI, gain/loss color picker and price precision). The fork is maintained by [Viorel-Cătălin Răpițeanu (Steinhagen)](https://github.com/Steinhagen).
+Market Monitor is a fork of [Stock Monitor](https://github.com/vpsone/stock-monitor-widget) by [vps (vpsone)](https://github.com/vpsone), with UI contributions by [Cenk Tekin](https://github.com/cenktekin) (badge UI, gain/loss color picker and price precision). The fork is maintained by [Viorel-Cătălin Răpițeanu (Steinhagen)](https://github.com/Steinhagen).
 
 Parts of this fork were developed with the assistance of AI coding tools.
 
