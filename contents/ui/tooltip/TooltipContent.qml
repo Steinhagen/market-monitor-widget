@@ -1,4 +1,5 @@
 import QtQuick
+import org.kde.kirigami as Kirigami
 import "../core/Text.js" as Text
 
 Item {
@@ -96,12 +97,23 @@ Item {
                 if (stockList.get(a).ticker === applet.panelTicker) { activeRow = a; break; }
             }
             var visible = tooltipWindow(stockList.count, activeRow, maxRows);
+            var hiddenAbove = visible.start;
+            var hiddenBelow = stockList.count - visible.end;
+            // Two "… and N more" rows would make the card one row taller than a window
+            // with only one of them. When both ends are hidden, trade one stock row for
+            // the two counters so the tooltip keeps the same height while the selection
+            // moves through the list.
+            if (hiddenAbove > 0 && hiddenBelow > 0 && stockList.count > maxRows) {
+                visible = tooltipWindow(stockList.count, activeRow, maxRows - 1);
+                hiddenAbove = visible.start;
+                hiddenBelow = stockList.count - visible.end;
+            }
             var moreRow = function(hidden, atTop) {
                 return "<tr><td></td><td colspan=\"4\" style=\""
                        + (atTop ? "padding-bottom:2px;" : "padding-top:2px;") + "\">"
                        + muted(i18n("… and %1 more", hidden)) + "</td></tr>";
             };
-            if (visible.start > 0) rows.push(moreRow(visible.start, true));
+            if (hiddenAbove > 0) rows.push(moreRow(hiddenAbove, true));
 
             var tickerStyle = "padding-right:16px; padding-top:1px; padding-bottom:1px;";
             for (var i = visible.start; i < visible.end; i++) {
@@ -129,9 +141,14 @@ Item {
                                                ext ? ext.change : row.change,
                                                ext ? ext.pct : row.pct) + "</td></tr>");
             }
-            if (visible.end < stockList.count) rows.push(moreRow(stockList.count - visible.end, false));
+            if (hiddenBelow > 0) rows.push(moreRow(hiddenBelow, false));
+            // A fixed table width keeps the tooltip from resizing as the scroll wheel
+            // moves the selection and a different window of rows is shown. It matches
+            // the maximum text width of Plasma's default tooltip.
+            var tableWidth = Math.round(Kirigami.Units.gridUnit * 20);
             return rows.length > 0
-                   ? "<table cellspacing=\"0\" cellpadding=\"0\">" + rows.join("") + "</table>"
+                   ? "<table width=\"" + tableWidth + "\" cellspacing=\"0\" cellpadding=\"0\">"
+                     + rows.join("") + "</table>"
                    : i18n("Loading…");
         }
 
