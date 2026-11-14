@@ -4,7 +4,6 @@ import "../components"
 import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
-import org.kde.plasma.core as PlasmaCore
 
 // The name, exchange badge, market status and the Chart/News switch at the top of the
 // single-stock view. The parent supplies the width the name may use.
@@ -167,125 +166,20 @@ RowLayout {
         // the row by a pixel or two, but never make the header taller than before.
         Layout.maximumHeight: headerNameColumn.implicitHeight
         spacing: 10
-        // Not bound to marketStatusTip.visible: a child reads as hidden while its
+        // Not bound to marketStatusAnchor.visible: a child reads as hidden while its
         // parent is, so the row could never show again. Without this, an empty row
         // would still keep its margin from the name while the status is hidden.
         visible: host.marketSessionText !== "" || applet.newsAvailable
 
-        // The status (open/closed) doubles as the data-freshness affordance: its
-        // tooltip says how often the widget polls and when Yahoo last quoted this
-        // instrument, so delayed exchange data is visible without extra chrome.
-        PlasmaCore.ToolTipArea {
-            id: marketStatusTip
+        // The status (open/closed) doubles as the data-freshness affordance: hovering
+        // it shows the card with the widget's polling interval and the quote timestamp,
+        // so delayed exchange data is visible without extra chrome.
+        Item {
+            id: marketStatusAnchor
             Layout.alignment: applet.newsAvailable ? Qt.AlignVCenter : Qt.AlignTop
             implicitWidth: marketStatusRow.implicitWidth
             implicitHeight: marketStatusRow.implicitHeight
             visible: host.marketSessionText !== ""
-            active: host.marketDataAvailable
-            mainText: i18n("Market data")
-            mainItem: ColumnLayout {
-                implicitWidth: 340
-                spacing: 5
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 6
-
-                    Rectangle {
-                        width: 6
-                        height: 6
-                        radius: 3
-                        color: host.marketSessionColor
-                        Layout.alignment: Qt.AlignVCenter
-                    }
-
-                    Text {
-                        text: i18n("Market data")
-                        color: Kirigami.Theme.textColor
-                        font.pixelSize: 12
-                        font.weight: Font.DemiBold
-                        Layout.alignment: Qt.AlignVCenter
-                    }
-
-                    Item { Layout.fillWidth: true }
-
-                    Rectangle {
-                        Layout.alignment: Qt.AlignVCenter
-                        implicitWidth: marketTipRefreshLabel.implicitWidth + 12
-                        implicitHeight: marketTipRefreshLabel.implicitHeight + 4
-                        radius: height / 2
-                        color: Qt.rgba(Kirigami.Theme.textColor.r,
-                                       Kirigami.Theme.textColor.g,
-                                       Kirigami.Theme.textColor.b, 0.06)
-                        border.width: 1
-                        border.color: Qt.rgba(Kirigami.Theme.textColor.r,
-                                              Kirigami.Theme.textColor.g,
-                                              Kirigami.Theme.textColor.b, 0.12)
-
-                        Text {
-                            id: marketTipRefreshLabel
-                            anchors.centerIn: parent
-                            text: host.marketDataRefreshLabel
-                            color: Kirigami.Theme.disabledTextColor
-                            font.pixelSize: 9
-                        }
-                    }
-                }
-
-                Text {
-                    Layout.fillWidth: true
-                    visible: text !== ""
-                    text: host.marketDataUpdatedLine
-                    color: Kirigami.Theme.textColor
-                    font.pixelSize: 11
-                    wrapMode: Text.WordWrap
-                }
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 8
-                    visible: host.marketDataQuoteTime !== ""
-
-                    Text {
-                        text: i18n("Yahoo quote %1", host.marketDataQuoteTime)
-                        color: Kirigami.Theme.disabledTextColor
-                        font.pixelSize: 10
-                        Layout.alignment: Qt.AlignVCenter
-                    }
-
-                    Item { Layout.fillWidth: true }
-
-                    Rectangle {
-                        Layout.alignment: Qt.AlignVCenter
-                        implicitWidth: marketTipDelayLabel.implicitWidth + 12
-                        implicitHeight: marketTipDelayLabel.implicitHeight + 4
-                        radius: height / 2
-                        color: host.marketDataWarnBackground
-                        border.width: 1
-                        border.color: Qt.rgba(host.marketDataWarnColor.r,
-                                              host.marketDataWarnColor.g,
-                                              host.marketDataWarnColor.b, 0.28)
-
-                        Text {
-                            id: marketTipDelayLabel
-                            anchors.centerIn: parent
-                            text: i18n("may be delayed")
-                            color: host.marketDataWarnColor
-                            font.pixelSize: 9
-                            font.weight: Font.DemiBold
-                        }
-                    }
-                }
-
-                Text {
-                    Layout.fillWidth: true
-                    visible: host.waitingForFirstQuote
-                    text: i18n("The market is open; waiting for its first regular quote.")
-                    color: Kirigami.Theme.disabledTextColor
-                    font.pixelSize: 10
-                    wrapMode: Text.WordWrap
-                }
-            }
 
             RowLayout {
                 id: marketStatusRow
@@ -309,6 +203,25 @@ RowLayout {
                     // the dot and the icons; this lifts the text by 1 px (the dot
                     // stays centered on the taller cell).
                     Layout.bottomMargin: applet.newsAvailable ? 2 : 0
+                }
+            }
+
+            HoverHandler {
+                id: marketStatusHover
+                enabled: host.marketDataAvailable
+                onHoveredChanged: {
+                    if (hovered)
+                        marketStatusPopup.scheduleShow();
+                    else
+                        marketStatusPopup.scheduleHide();
+                }
+                // Data can arrive while the pointer is already resting on the status;
+                // start the card without requiring the pointer to move away and back.
+                onEnabledChanged: {
+                    if (enabled && hovered)
+                        marketStatusPopup.scheduleShow();
+                    else if (!enabled)
+                        marketStatusPopup.scheduleHide();
                 }
             }
         }
@@ -341,5 +254,17 @@ RowLayout {
             }
         }
     }
-}
 
+    // The hover card for the market status. It replaces Plasma's ToolTipArea because
+    // only a card drawn by the applet can use the same surface as the analyst cards.
+    MarketStatusPopup {
+        id: marketStatusPopup
+        // Position relative to the card, not the short header row, so the popup can
+        // drop below the header without being clamped to the header's own height.
+        parent: header.parent
+        applet: header.applet
+        host: header.host
+        anchorItem: marketStatusAnchor
+        belowItem: header
+    }
+}

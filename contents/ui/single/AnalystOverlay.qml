@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
+import "../components"
 import "../domain/analysts.js" as Analyst
 
 // Analyst price-target markers overlaid on the chart. The component owns the geometry,
@@ -27,9 +28,6 @@ Item {
     property var hoverSource: null
     property point hoverAnchor: Qt.point(0, 0)
 
-    readonly property color popupBackground: applet && applet.appDrawnSurface
-                                             ? (applet.isLightTheme ? "#ffffff" : "#1a1a1a")
-                                             : Kirigami.Theme.backgroundColor
     readonly property color popupText: applet && applet.appDrawnSurface
                                        ? (applet.isLightTheme ? "#171a1c" : "#f3f5f6")
                                        : Kirigami.Theme.textColor
@@ -549,13 +547,9 @@ Item {
            ? analystRoot.hoverAnchor.y - height - 10
            : Math.max(4, Math.min(analystRoot.height - height - 4, analystRoot.hoverAnchor.y + 16))
 
-        Rectangle {
+        CardSurface {
             anchors.fill: parent
-            radius: 8
-            color: analystRoot.popupBackground
-            border.width: 1
-            border.color: applet && applet.isLightTheme
-                          ? Qt.rgba(0, 0, 0, 0.16) : Qt.rgba(1, 1, 1, 0.18)
+            applet: analystRoot.applet
         }
 
         Column {
@@ -704,12 +698,8 @@ Item {
         onWidthChanged: if (opened) analystRoot.positionPopup()
         onClosed: analystRoot.selectedMark = null
 
-        background: Rectangle {
-            color: analystRoot.popupBackground
-            radius: 8
-            border.width: 1
-            border.color: applet && applet.isLightTheme
-                          ? Qt.rgba(0, 0, 0, 0.16) : Qt.rgba(1, 1, 1, 0.18)
+        background: CardSurface {
+            applet: analystRoot.applet
         }
 
         contentItem: ColumnLayout {

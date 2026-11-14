@@ -4,7 +4,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import org.kde.kirigami as Kirigami
 import org.kde.plasma.core as PlasmaCore
 import "single"
 import "components"
@@ -166,10 +165,9 @@ Rectangle {
             : i18n("Updated %1", applet.lastUpdated);
     }
     readonly property string marketDataRefreshLabel: i18n("Refresh %1 min", applet.refreshIntervalMinutes)
-    // Amber is too bright on a light tooltip and too dim on a dark one; pick a shade
-    // that stays readable on the Plasma tooltip background.
-    readonly property color marketDataWarnColor: Kirigami.Theme.backgroundColor.hslLightness > 0.5
-                                                 ? "#8a5a00" : "#e0b25a"
+    // Amber is too bright on a light card and too dim on a dark one; pick a shade
+    // that stays readable on the market-status card, whichever surface it uses.
+    readonly property color marketDataWarnColor: applet.isLightTheme ? "#8a5a00" : "#e0b25a"
     readonly property color marketDataWarnBackground: Qt.rgba(marketDataWarnColor.r,
                                                                marketDataWarnColor.g,
                                                                marketDataWarnColor.b, 0.10)
