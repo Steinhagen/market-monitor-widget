@@ -192,7 +192,7 @@ Item {
                 width: card.symbolWidth; height: parent.height
                 text: i18nc("@title:column", "Symbol")
                 color: card.mutedColor
-                font.pixelSize: Math.max(9, Math.round(Kirigami.Theme.defaultFont.pixelSize * 0.8))
+                font.pixelSize: Math.max(10, Math.round(Kirigami.Theme.defaultFont.pixelSize * 0.9))
                 font.letterSpacing: 0.5
                 font.capitalization: Font.AllUppercase
                 verticalAlignment: Text.AlignVCenter
@@ -201,7 +201,7 @@ Item {
                 width: card.marketWidth; height: parent.height
                 text: i18nc("@title:column", "Market")
                 color: card.mutedColor
-                font.pixelSize: Math.max(9, Math.round(Kirigami.Theme.defaultFont.pixelSize * 0.8))
+                font.pixelSize: Math.max(10, Math.round(Kirigami.Theme.defaultFont.pixelSize * 0.9))
                 font.letterSpacing: 0.5
                 font.capitalization: Font.AllUppercase
                 verticalAlignment: Text.AlignVCenter
@@ -210,7 +210,7 @@ Item {
                 width: card.priceWidth; height: parent.height
                 text: i18nc("@title:column", "Price")
                 color: card.mutedColor
-                font.pixelSize: Math.max(9, Math.round(Kirigami.Theme.defaultFont.pixelSize * 0.8))
+                font.pixelSize: Math.max(10, Math.round(Kirigami.Theme.defaultFont.pixelSize * 0.9))
                 font.letterSpacing: 0.5
                 font.capitalization: Font.AllUppercase
                 horizontalAlignment: Text.AlignRight
@@ -220,7 +220,7 @@ Item {
                 width: card.changeWidth; height: parent.height
                 text: i18nc("@title:column", "Change")
                 color: card.mutedColor
-                font.pixelSize: Math.max(9, Math.round(Kirigami.Theme.defaultFont.pixelSize * 0.8))
+                font.pixelSize: Math.max(10, Math.round(Kirigami.Theme.defaultFont.pixelSize * 0.9))
                 font.letterSpacing: 0.5
                 font.capitalization: Font.AllUppercase
                 horizontalAlignment: Text.AlignRight
