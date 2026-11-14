@@ -46,5 +46,6 @@ pre-rename history is in [docs/CHANGELOG-legacy.md](docs/CHANGELOG-legacy.md).
   Widgets placed under the old id have to be added again; their old settings are
   not migrated. Backups exported with the old id still import.
 - Use the analyst cards' rounded, bordered surface for the market status popup.
+- Replace the app icon with a Breeze-style candle-chart tile.
 
 [1.0]: https://github.com/Steinhagen/market-monitor-widget/releases/tag/v1.0
