@@ -36,6 +36,14 @@ Item {
     Kirigami.Theme.colorSet: Kirigami.Theme.Window
     Kirigami.Theme.inherit: false
 
+    // Measured with the same font as the exchange badge, so the ticker column can
+    // reserve exactly its width plus the spacing before the market column.
+    FontMetrics {
+        id: badgeMetrics
+        font.family: Kirigami.Theme.defaultFont.family
+        font.pixelSize: Math.max(9, Kirigami.Theme.defaultFont.pixelSize - 2)
+    }
+
     function statusText(ticker) {
         if (applet.isMarketClosedFor(ticker))
             return i18nc("@item:market status", "Closed");
@@ -255,7 +263,8 @@ Item {
                         width: card.symbolWidth; height: parent.height
                         spacing: 3
                         Text {
-                            width: parent.width - (modelData.badge !== "" ? 36 : 0)
+                            width: Math.min(implicitWidth, Math.max(0, parent.width - (modelData.badge !== ""
+                                ? Math.ceil(badgeMetrics.advanceWidth(modelData.badge)) + 5 : 0)))
                             height: parent.height
                             text: modelData.ticker
                             color: card.textColor
@@ -268,7 +277,9 @@ Item {
                             id: tickerBadge
                             text: modelData.badge
                             visible: text !== ""
+                            height: parent.height
                             color: card.mutedColor
+                            font.family: Kirigami.Theme.defaultFont.family
                             font.pixelSize: Math.max(9, Kirigami.Theme.defaultFont.pixelSize - 2)
                             verticalAlignment: Text.AlignVCenter
                         }
