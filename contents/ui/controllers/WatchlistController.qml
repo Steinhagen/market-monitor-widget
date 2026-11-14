@@ -37,6 +37,19 @@ Item {
         return list;
     }
 
+    // True when the model already holds exactly these tickers in this order.
+    function rowsMatch(targetTickers) {
+        if (rows.count !== targetTickers.length) return false;
+        for (var i = 0; i < targetTickers.length; i++) {
+            if (rows.get(i).ticker !== targetTickers[i]) return false;
+        }
+        return true;
+    }
+
+    function isConfiguredTicker(symbol) {
+        return configuredTickers().indexOf(symbol) !== -1;
+    }
+
     // Creates the list placeholders in display order and keeps the panel selection.
     function ensureRows(targetTickers) {
         var defaultPanelTicker = targetTickers.length > 0 ? targetTickers[0] : "";
@@ -45,7 +58,7 @@ Item {
                              ? applet.manualPanelTickerOverride : defaultPanelTicker;
         applet.singleTicker = applet.panelTicker;
 
-        if (rows.count === targetTickers.length) return;
+        if (rowsMatch(targetTickers)) return;
         rows.clear();
         targetTickers.forEach(function(cleanSymbol) {
             rows.append({
@@ -96,7 +109,11 @@ Item {
     }
 
     function processRow(symbol, json, range) {
+        // A reply for a request started before the watchlist changed must not put a
+        // removed symbol back into the model (for example after a backup import).
+        if (!isConfiguredTicker(symbol)) return;
         var listRange = range || applet.chartRange;
+
         // When both views use the same range, the chart can reuse this response. With a
         // chart-only range, the chart is refreshed by its own request instead.
         if (applet.isMultiMode && symbol === applet.panelTicker

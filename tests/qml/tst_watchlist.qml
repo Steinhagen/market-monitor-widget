@@ -96,4 +96,32 @@ TestCase {
         verify(o.applet.lastUpdated !== "");
         compare(o.single.calls, 1);
     }
+
+    function test_ensureRows_rebuildsWhenTickersChange() {
+        var o = make();
+        o.controller.ensureRows(["SAP.DE", "TLV.RO"]);
+        compare(o.controller.model.count, 2);
+        // Same number of tickers, different symbols: the old rows must not be kept.
+        o.applet.multiTickers = "AAPL, MSFT";
+        o.controller.ensureRows(["AAPL", "MSFT"]);
+        compare(o.controller.model.count, 2);
+        compare(o.controller.model.get(0).ticker, "AAPL");
+        compare(o.controller.model.get(1).ticker, "MSFT");
+    }
+
+    function test_processRow_ignoresRemovedTicker() {
+        var o = make();
+        o.applet.multiTickers = "NVDA, AMD";
+        o.controller.ensureRows(["NVDA", "AMD"]);
+        var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-sap-1d.json")));
+        // A reply left over from the previous watchlist must not add its row back.
+        o.controller.processRow("SAP.DE", json, "1D");
+        compare(o.controller.model.count, 2);
+        compare(o.controller.model.get(0).ticker, "NVDA");
+        compare(o.controller.model.get(1).ticker, "AMD");
+        // Replies for configured symbols still update their rows.
+        o.controller.processRow("NVDA", json, "1D");
+        compare(o.controller.model.count, 2);
+        verify(o.controller.model.get(0).price.indexOf("213.45") >= 0);
+    }
 }
