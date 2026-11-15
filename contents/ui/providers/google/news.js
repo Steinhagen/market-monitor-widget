@@ -121,8 +121,9 @@ function splitPublisher(title, publisher) {
 
 // `text` is the RSS body. Returns [{id, title, publisher, source, link, time}], newest
 // first and at most `limit` items.
-function parse(text, limit) {
+function parse(text, limit, lang) {
     var xml = String(text === undefined || text === null ? "" : text);
+    var language = String(lang || "");
     var blocks = xml.match(/<item\b[\s\S]*?<\/item>/gi) || [];
     var items = [];
     var seen = {};
@@ -146,6 +147,7 @@ function parse(text, limit) {
             title: title,
             publisher: publisher,
             source: SOURCE,
+            lang: language,
             link: link,
             time: parseRfc822(tagText(block, "pubDate"))
         });
@@ -158,6 +160,8 @@ function parse(text, limit) {
 // Provider entry point. The query needs the company name, so a null name (the quote has
 // not supplied it yet) is reported as `needsName` and retried by the caller. A reply
 // that is not RSS (a redirect, or Google's rate limit) is an error, not "no headlines".
+// In multilingual mode one feed is fetched per language; each item keeps its language
+// code so the view can label it.
 function fetch(ctx, done) {
     if (ctx.name === null) {
         done([], "", { needsName: true });
@@ -167,27 +171,72 @@ function fetch(ctx, done) {
         done([], "", {});
         return;
     }
-    var url = feedUrl(ctx.name, ctx.locale);
-    if (url === "") {
-        done([], "", {});
-        return;
-    }
-    Http.getText(url, { timeout: 20000 }, function(body, error) {
-        if (error) {
-            done([], error.message, {});
+    var languages = ctx.languages && ctx.languages.length
+                    ? ctx.languages : [{ code: "", locale: ctx.locale }];
+    var remaining = languages.length;
+    var all = [];
+    var failed = 0;
+    var finished = false;
+    var finish = function(items, error, flags) {
+        if (finished) return;
+        finished = true;
+        done(items, error, flags || {});
+    };
+
+    var collect = function(items, error) {
+        remaining--;
+        if (error) failed++;
+        all = all.concat(items || []);
+        if (remaining > 0) return;
+        if (all.length === 0) {
+            finish([], failed === languages.length ? "unexpected reply" : "");
             return;
         }
-        if (String(body).indexOf("<rss") < 0) {
-            done([], "unexpected reply", {});
+        all.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });
+        var seen = {};
+        var merged = [];
+        for (var i = 0; i < all.length; i++) {
+            var item = all[i];
+            var keys = ["l:" + String(item.link || "").toLowerCase(),
+                        "t:" + String(item.title || "").toLowerCase()];
+            var duplicate = false;
+            for (var k = 0; k < keys.length; k++) {
+                if (keys[k].length > 2 && seen[keys[k]]) duplicate = true;
+            }
+            if (duplicate) continue;
+            for (var m = 0; m < keys.length; m++) {
+                if (keys[m].length > 2) seen[keys[m]] = true;
+            }
+            merged.push(item);
+        }
+        finish(merged, "");
+    };
+
+    var fetchLanguage = function(language) {
+        var url = feedUrl(ctx.name, language.locale);
+        if (url === "") {
+            collect([], "");
             return;
         }
-        var items;
-        try {
-            items = parse(body, ctx.limit);
-        } catch (e) {
-            done([], "could not parse the reply: " + e, {});
-            return;
-        }
-        done(items, "", {});
-    });
+        Http.getText(url, { timeout: 20000 }, function(body, error) {
+            if (error) {
+                collect([], error.message);
+                return;
+            }
+            if (String(body).indexOf("<rss") < 0) {
+                collect([], "unexpected reply");
+                return;
+            }
+            var items;
+            try {
+                items = parse(body, ctx.limit, language.code);
+            } catch (e) {
+                collect([], "could not parse the reply: " + e);
+                return;
+            }
+            collect(items, "");
+        });
+    };
+
+    for (var i = 0; i < languages.length; i++) fetchLanguage(languages[i]);
 }

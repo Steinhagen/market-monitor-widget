@@ -422,23 +422,67 @@ msgid "Show news headlines in the single-stock view"
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
+msgid "News language:"
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local language only"
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local language, English fallback"
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "English only"
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Several languages"
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Yahoo Finance is English-only. Google follows the selected languages; in Several languages mode it is queried once per language. BVB uses its Romanian or English attachment."
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local headlines first; Yahoo Finance English headlines are appended as backup."
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Languages:"
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Select the languages you want to see. Each headline gets a small language badge."
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
 msgid "News sources:"
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Yahoo Finance"
+msgid "Yahoo Finance (English)"
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "BVB (Romanian symbols)"
+msgid "BVB (Romanian/English, .RO symbols)"
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Google (search by company name)"
+msgid "Google (selected languages)"
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
 msgid "Select at least one news source."
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Select at least one language."
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local-only mode needs Google or BVB enabled."
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
@@ -1264,6 +1308,14 @@ msgid "Headlines unavailable"
 msgstr ""
 
 #: contents/ui/SingleStockView.qml
+msgid "No headlines in the local language for %1"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgid "No English headlines for %1"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
 msgid "No recent headlines for %1"
 msgstr ""
 
@@ -1326,10 +1378,6 @@ msgstr ""
 
 #: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "Loading…"
-msgstr ""
-
-#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
-msgid "Session"
 msgstr ""
 
 #: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
@@ -1409,6 +1457,10 @@ msgstr ""
 
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "loading…"
+msgstr ""
+
+#: contents/ui/tooltip/TooltipContent.qml
+msgid "Session"
 msgstr ""
 
 #: contents/ui/tooltip/TooltipContent.qml

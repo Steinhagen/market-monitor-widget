@@ -18,10 +18,120 @@ Item {
     readonly property var items: entry ? entry.items : []
     // At least one enabled source can serve the shown symbol. The main item uses this
     // for the chart/news switch and to close the pane when every source is turned off.
-    readonly property bool available: applet ? NewsRegistry.hasAny(applet, applet.singleTicker || "") : false
+    readonly property bool available: applet
+        ? effectiveSources(applet, applet.singleTicker || "").length > 0 : false
 
     function newsKey(symbol) {
         return Cache.key(symbol);
+    }
+
+    // Which sources the language mode actually uses. Yahoo is English-only, so local
+    // mode skips it; BVB headlines are Romanian, so English mode skips BVB.
+    function localLanguageCode() {
+        var name = String(Qt.locale().name || "");
+        return name.substring(0, 2).toLowerCase();
+    }
+
+    // Supported Google News editions for the multilingual picker.
+    readonly property var newsLocales: ({
+        ro: "ro_RO", en: "en_US", fr: "fr_FR", de: "de_DE", es: "es_ES",
+        it: "it_IT", pt: "pt_BR", nl: "nl_NL", pl: "pl_PL", cs: "cs_CZ",
+        hu: "hu_HU", bg: "bg_BG", el: "el_GR", tr: "tr_TR", sv: "sv_SE",
+        da: "da_DK", no: "no_NO", fi: "fi_FI", ru: "ru_RU", uk: "uk_UA"
+    })
+
+    function selectedLanguageCodes() {
+        var parts = String(applet.newsLanguages || "").split(",");
+        var codes = [];
+        for (var i = 0; i < parts.length; i++) {
+            var code = parts[i].trim().toLowerCase();
+            if (code === "" || !newsLocales[code] || codes.indexOf(code) >= 0) continue;
+            codes.push(code);
+        }
+        return codes;
+    }
+
+    // Languages to query for the current mode. Other modes use the system/English
+    // edition; multilingual mode uses exactly the languages selected in the settings.
+    function activeLanguages() {
+        var mode = String(applet.newsLanguage || "systemFallback");
+        var localCode = localLanguageCode();
+        var local = { code: localCode, locale: Qt.locale().name, local: true };
+        if (mode === "english")
+            return [{ code: "en", locale: "en_US", local: localCode === "en" }];
+        if (mode !== "multi") return [local];
+        var codes = selectedLanguageCodes();
+        var languages = [];
+        for (var i = 0; i < codes.length; i++) {
+            var code = codes[i];
+            languages.push({
+                code: code,
+                locale: code === localCode ? Qt.locale().name : newsLocales[code],
+                local: code === localCode
+            });
+        }
+        return languages;
+    }
+
+    function effectiveSources(settings, symbol) {
+        var sources = NewsRegistry.enabledSources(settings, symbol);
+        var language = String(settings.newsLanguage || "systemFallback");
+        var result = [];
+        var codes = language === "multi" ? selectedLanguageCodes() : [];
+        for (var i = 0; i < sources.length; i++) {
+            var id = sources[i].id;
+            if (language === "system" && id === "yahoo") continue;
+            if (language === "multi") {
+                if (codes.length === 0) continue;
+                if (id === "yahoo" && codes.indexOf("en") < 0) continue;
+                if (id === "bvb" && codes.indexOf("ro") < 0) continue;
+            }
+            result.push(sources[i]);
+        }
+        return result;
+    }
+
+    function sourceLists(sourceItems, ids) {
+        var lists = [];
+        for (var i = 0; i < ids.length; i++)
+            lists.push((sourceItems || {})[ids[i]] || []);
+        return NewsModel.merge(lists);
+    }
+
+    // What the pane shows for the current language mode. In fallback mode the English
+    // list is used only after every source replied and there is no local headline.
+    function visibleItems(sourceItems, completed) {
+        var language = String(applet.newsLanguage || "systemFallback");
+        if (language === "multi")
+            return selectedLanguageCodes().length > 0 ? mergeSourceItems(sourceItems) : [];
+        if (language === "english") return sourceLists(sourceItems, ["yahoo", "google", "bvb"]);
+        var local = sourceLists(sourceItems, ["google", "bvb"]);
+        if (language === "system") return local;
+        // "Local with English backup": keep the local headlines first and append the
+        // Yahoo English ones after them. Showing English only when the local list was
+        // completely empty made this mode indistinguishable from local-only, because
+        // Google's local edition almost always returns at least one headline.
+        var result = [];
+        var seen = {};
+        var add = function (items) {
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var keys = ["l:" + String(item.link || "").toLowerCase(),
+                            "t:" + String(item.title || "").toLowerCase()];
+                var duplicate = false;
+                for (var k = 0; k < keys.length; k++) {
+                    if (keys[k].length > 2 && seen[keys[k]]) duplicate = true;
+                }
+                if (duplicate) continue;
+                for (var m = 0; m < keys.length; m++) {
+                    if (keys[m].length > 2) seen[keys[m]] = true;
+                }
+                result.push(item);
+            }
+        };
+        add(local);
+        add(sourceLists(sourceItems, ["yahoo"]));
+        return result;
     }
 
     // Copy-on-write, so bindings on newsCache (and newsEntry) re-evaluate.
@@ -88,13 +198,13 @@ Item {
         sourceNeedsName[source.id] = !!(flags && flags.needsName);
 
         var changes = { sourceItems: sourceItems, sourceNeedsName: sourceNeedsName };
-        changes.items = mergeSourceItems(sourceItems);
         changes.loaded = true;
+        changes.remaining = Math.max(0, (entry.remaining || 0) - 1);
+        changes.pending = changes.remaining > 0;
+        changes.items = visibleItems(sourceItems, !changes.pending);
         var hasItems = changes.items.length > 0;
         changes.error = entry.error || (failed && (!source.optional || !hasItems));
         if (!failed) changes.time = Date.now();
-        changes.remaining = Math.max(0, (entry.remaining || 0) - 1);
-        changes.pending = changes.remaining > 0;
         setNewsEntry(key, changes);
         if (failed) console.log("News headlines (" + source.id + "): " + error);
     }
@@ -104,7 +214,9 @@ Item {
         source.fetch({
             symbol: symbol,
             name: newsCompanyName(symbol),
-            locale: Qt.locale().name,
+            locale: applet.newsLanguage === "english" ? "en_US" : Qt.locale().name,
+            language: applet.newsLanguage,
+            languages: activeLanguages(),
             limit: applet.newsCount
         }, function(items, error, flags) {
             if (generation !== newsGeneration) return;
@@ -131,7 +243,7 @@ Item {
             // interval, the next time the pane opens, or the refresh button.
             if (Cache.isThrottled(entry, 60000, now)) return;
         }
-        var sources = NewsRegistry.enabledSources(applet, sym);
+        var sources = effectiveSources(applet, sym);
         if (sources.length === 0) return;
         setNewsEntry(key, { pending: true, remaining: sources.length,
                             attempt: now, error: false, sourceNeedsName: {} });
@@ -151,7 +263,7 @@ Item {
         if (name === null) return;
 
         var retry = [];
-        var sources = NewsRegistry.enabledSources(applet, sym);
+        var sources = effectiveSources(applet, sym);
         for (var i = 0; i < sources.length; i++) {
             var source = sources[i];
             var items = (entry.sourceItems || {})[source.id] || [];
@@ -193,7 +305,8 @@ Item {
         if (clean === "") return;
         var name = newsCompanyName(clean);
         var query = (name === null || name === "") ? clean : name;
-        var url = GoogleNews.searchPageUrl(query, Qt.locale().name);
+        var url = GoogleNews.searchPageUrl(query,
+            applet.newsLanguage === "english" ? "en_US" : Qt.locale().name);
         if (url !== "") Qt.openUrlExternally(url);
     }
 

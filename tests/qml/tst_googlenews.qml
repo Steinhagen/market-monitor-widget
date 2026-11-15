@@ -9,6 +9,7 @@ TestCase {
     function test_localeParams() {
         compare(GoogleNews.localeParams("ro_RO"), "&hl=ro&gl=RO&ceid=RO:ro");
         compare(GoogleNews.localeParams("de_DE"), "&hl=de&gl=DE&ceid=DE:de");
+        compare(GoogleNews.localeParams("fr_FR"), "&hl=fr&gl=FR&ceid=FR:fr");
         // Google's English editions need a region, so English always uses en-US.
         compare(GoogleNews.localeParams("en_GB"), "&hl=en-US&gl=US&ceid=US:en");
         compare(GoogleNews.localeParams("C"), "&hl=en-US&gl=US&ceid=US:en");
@@ -49,6 +50,8 @@ TestCase {
         for (var j = 1; j < items.length; j++)
             verify(items[j - 1].time >= items[j].time);
         compare(GoogleNews.parse(Fixture.read(Qt.resolvedUrl("../fixtures/google-news-sap.xml")), 2).length, 2);
+        var localized = GoogleNews.parse(Fixture.read(Qt.resolvedUrl("../fixtures/google-news-sap.xml")), 2, "fr");
+        compare(localized[0].lang, "fr");
     }
 
     function test_parseRejectsHtml() {

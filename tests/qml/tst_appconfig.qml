@@ -9,6 +9,8 @@ TestCase {
         property string ticker: "SAP.DE"
         property bool showNews: true
         property int newsCount: 100
+        property string newsLanguage: "english"
+        property string newsLanguages: "ro,en,fr"
         property int symbolDisplayMode: 9
         property string mouseRowLeftAction: ""
         property bool showExtendedHours: false
@@ -33,6 +35,8 @@ TestCase {
         var config = make(null);
         compare(config.ticker, "AAPL");
         compare(config.newsCount, 24);
+        compare(config.newsLanguage, "systemFallback");
+        compare(config.newsLanguages, "en");
         compare(config.newsRefreshMinutes, 30);
         compare(config.symbolDisplayMode, 0);
         compare(config.mouseRowLeftAction, "select");
@@ -45,11 +49,22 @@ TestCase {
         compare(config.ticker, "SAP.DE");
         compare(config.showNews, true);
         compare(config.newsCount, 50);
+        compare(config.newsLanguage, "english");
+        compare(config.newsLanguages, "ro,en,fr");
+        fake.newsLanguages = "";
+        compare(make(fake).newsLanguages, "");
+        fake.newsLanguages = "ro,en,fr";
         compare(config.symbolDisplayMode, 2);
         compare(config.mouseRowLeftAction, "select");
         compare(config.showExtendedHours, false);
         // An intentionally emptied ticker list stays empty.
         compare(config.multiTickers, "");
+    }
+
+    function test_newsLanguageFallsBackForUnknownValues() {
+        fake.newsLanguage = "bogus";
+        compare(make(fake).newsLanguage, "systemFallback");
+        fake.newsLanguage = "english";
     }
 
     function test_panelShowMarketStatus() {

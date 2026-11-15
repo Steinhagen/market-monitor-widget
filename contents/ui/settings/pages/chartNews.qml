@@ -11,6 +11,7 @@ Item {
     Component.onCompleted: {
         ConfigWindow.apply(page, Window.window);
         Qt.callLater(function() { ConfigWindow.apply(page, Window.window); });
+        Qt.callLater(page.syncLanguageChecks);
     }
     Window.onWindowChanged: ConfigWindow.apply(page, Window.window)
 
@@ -29,12 +30,75 @@ Item {
     property alias cfg_newsSourceGoogle: newsGoogleSwitch.checked
     property alias cfg_newsCount: newsCountSpin.value
     property alias cfg_newsRefreshMinutes: newsRefreshSpin.value
+    property string cfg_newsLanguage
+    property string cfg_newsLanguages
     property string cfg_chartRange
 
     onCfg_chartRangeChanged: {
         var idx = rangeCombo.indexOfValue(cfg_chartRange)
         if (idx >= 0) rangeCombo.currentIndex = idx
     }
+
+    onCfg_newsLanguageChanged: {
+        var idx = newsLanguageCombo.indexOfValue(cfg_newsLanguage)
+        if (idx >= 0) newsLanguageCombo.currentIndex = idx
+    }
+
+    readonly property var languageOptions: [
+        { code: "ro", name: "Română" },
+        { code: "en", name: "English" },
+        { code: "fr", name: "Français" },
+        { code: "de", name: "Deutsch" },
+        { code: "es", name: "Español" },
+        { code: "it", name: "Italiano" },
+        { code: "pt", name: "Português" },
+        { code: "nl", name: "Nederlands" },
+        { code: "pl", name: "Polski" },
+        { code: "cs", name: "Čeština" },
+        { code: "hu", name: "Magyar" },
+        { code: "bg", name: "Български" },
+        { code: "el", name: "Ελληνικά" },
+        { code: "tr", name: "Türkçe" },
+        { code: "sv", name: "Svenska" },
+        { code: "da", name: "Dansk" },
+        { code: "no", name: "Norsk" },
+        { code: "fi", name: "Suomi" },
+        { code: "ru", name: "Русский" },
+        { code: "uk", name: "Українська" }
+    ]
+
+    function languageSelected(code) {
+        return ("," + String(cfg_newsLanguages || "") + ",").indexOf("," + code + ",") >= 0;
+    }
+
+    function setLanguage(code, on) {
+        var list = String(cfg_newsLanguages || "").split(",")
+            .map(function (value) { return value.trim().toLowerCase(); })
+            .filter(function (value) { return value !== ""; });
+        var index = list.indexOf(code);
+        if (on && index < 0) list.push(code);
+        else if (!on && index >= 0) list.splice(index, 1);
+        var value = list.join(",");
+        if (value !== cfg_newsLanguages) cfg_newsLanguages = value;
+    }
+
+    function hasSelectedLanguage() {
+        for (var i = 0; i < languageOptions.length; i++) {
+            if (languageSelected(languageOptions[i].code)) return true;
+        }
+        return false;
+    }
+
+    function syncLanguageChecks() {
+        if (!languageRepeater) return;
+        for (var i = 0; i < languageRepeater.count; i++) {
+            var check = languageRepeater.itemAt(i);
+            var option = page.languageOptions[i];
+            if (check && option) check.checked = languageSelected(option.code);
+        }
+    }
+
+    onCfg_newsLanguagesChanged: Qt.callLater(syncLanguageChecks)
 
     ScrollView {
         anchors.fill: parent
@@ -135,23 +199,91 @@ Item {
                 text: i18n("Show news headlines in the single-stock view")
             }
 
+            ComboBox {
+                id: newsLanguageCombo
+                Kirigami.FormData.label: i18n("News language:")
+                enabled: newsSwitch.checked
+                model: [
+                    { value: "system", text: i18n("Local language only") },
+                    { value: "systemFallback", text: i18n("Local language, English fallback") },
+                    { value: "english", text: i18n("English only") },
+                    { value: "multi", text: i18n("Several languages") }
+                ]
+                textRole: "text"
+                valueRole: "value"
+                onActivated: page.cfg_newsLanguage = currentValue
+                Component.onCompleted: {
+                    if (page.cfg_newsLanguage === "") page.cfg_newsLanguage = "systemFallback";
+                    var idx = indexOfValue(page.cfg_newsLanguage);
+                    if (idx >= 0) currentIndex = idx;
+                }
+            }
+
+            Label {
+                Layout.fillWidth: true
+                Layout.maximumWidth: Kirigami.Units.gridUnit * 22
+                text: i18n("Yahoo Finance is English-only. Google follows the selected languages; in Several languages mode it is queried once per language. BVB uses its Romanian or English attachment.")
+                wrapMode: Text.WordWrap
+                font.pixelSize: 10
+                color: Kirigami.Theme.disabledTextColor
+            }
+
+            Label {
+                Layout.fillWidth: true
+                Layout.maximumWidth: Kirigami.Units.gridUnit * 22
+                visible: newsSwitch.checked && page.cfg_newsLanguage === "systemFallback"
+                text: i18n("Local headlines first; Yahoo Finance English headlines are appended as backup.")
+                wrapMode: Text.WordWrap
+                font.pixelSize: 10
+                color: Kirigami.Theme.disabledTextColor
+            }
+
+            GridLayout {
+                Kirigami.FormData.label: i18n("Languages:")
+                columns: 2
+                columnSpacing: 12
+                enabled: newsSwitch.checked && page.cfg_newsLanguage === "multi"
+
+                Repeater {
+                    id: languageRepeater
+                    model: page.languageOptions
+                    delegate: CheckBox {
+                        required property var modelData
+                        text: modelData.name
+                        checked: page.languageSelected(modelData.code)
+                        onToggled: page.setLanguage(modelData.code, checked)
+                    }
+                }
+            }
+
+            Label {
+                Layout.fillWidth: true
+                Layout.maximumWidth: Kirigami.Units.gridUnit * 22
+                text: i18n("Select the languages you want to see. Each headline gets a small language badge.")
+                wrapMode: Text.WordWrap
+                font.pixelSize: 10
+                color: Kirigami.Theme.disabledTextColor
+            }
+
             ColumnLayout {
                 Kirigami.FormData.label: i18n("News sources:")
                 spacing: 0
 
                 CheckBox {
                     id: newsYahooSwitch
-                    text: i18n("Yahoo Finance")
-                    enabled: newsSwitch.checked
+                    text: i18n("Yahoo Finance (English)")
+                    enabled: newsSwitch.checked && page.cfg_newsLanguage !== "system"
+                             && (page.cfg_newsLanguage !== "multi" || page.languageSelected("en"))
                 }
                 CheckBox {
                     id: newsBvbSwitch
-                    text: i18n("BVB (Romanian symbols)")
-                    enabled: newsSwitch.checked
+                    text: i18n("BVB (Romanian/English, .RO symbols)")
+                    enabled: newsSwitch.checked && page.cfg_newsLanguage !== "english"
+                             && (page.cfg_newsLanguage !== "multi" || page.languageSelected("ro"))
                 }
                 CheckBox {
                     id: newsGoogleSwitch
-                    text: i18n("Google (search by company name)")
+                    text: i18n("Google (selected languages)")
                     enabled: newsSwitch.checked
                 }
                 Label {
@@ -164,6 +296,28 @@ Item {
                     font.pixelSize: 10
                     color: Kirigami.Theme.disabledTextColor
                 }
+            }
+
+            Label {
+                Layout.fillWidth: true
+                Layout.maximumWidth: Kirigami.Units.gridUnit * 22
+                visible: newsSwitch.checked && page.cfg_newsLanguage === "multi"
+                         && !page.hasSelectedLanguage()
+                text: i18n("Select at least one language.")
+                wrapMode: Text.WordWrap
+                font.pixelSize: 10
+                color: Kirigami.Theme.negativeTextColor
+            }
+
+            Label {
+                Layout.fillWidth: true
+                Layout.maximumWidth: Kirigami.Units.gridUnit * 22
+                visible: newsSwitch.checked && page.cfg_newsLanguage === "system"
+                         && !newsGoogleSwitch.checked && !newsBvbSwitch.checked
+                text: i18n("Local-only mode needs Google or BVB enabled.")
+                wrapMode: Text.WordWrap
+                font.pixelSize: 10
+                color: Kirigami.Theme.negativeTextColor
             }
 
             Label {

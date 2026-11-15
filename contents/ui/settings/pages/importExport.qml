@@ -56,6 +56,8 @@ Item {
     property bool cfg_newsSourceGoogle
     property int cfg_newsCount
     property int cfg_newsRefreshMinutes
+    property string cfg_newsLanguage
+    property string cfg_newsLanguages
     property bool cfg_limitHours
     property bool cfg_skipWeekendRefresh
     property int cfg_startHour

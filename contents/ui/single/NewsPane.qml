@@ -62,6 +62,7 @@ Item {
                         id: newsRow
                         required property var modelData
                         required property int index
+                        readonly property string langLabel: String(modelData.lang || "").toUpperCase()
                         width: newsList.rowWidth
                         height: newsRowColumn.implicitHeight + 13
                         // The full title, only when the row had to shorten it.
@@ -100,16 +101,41 @@ Item {
                                 color: pane.applet.tickerColor
                                 font.pixelSize: 11
                             }
-                            Text {
+                            RowLayout {
                                 Layout.fillWidth: true
-                                readonly property string age: pane.applet.newsAge(newsRow.modelData.time)
-                                text: newsRow.modelData.publisher !== ""
-                                      ? (age !== "" ? newsRow.modelData.publisher + " · " + age : newsRow.modelData.publisher)
-                                      : age
-                                textFormat: Text.PlainText
-                                elide: Text.ElideRight
-                                color: pane.applet.secondaryTextColor
-                                font.pixelSize: 9
+                                spacing: 4
+
+                                Rectangle {
+                                    visible: newsRow.langLabel !== ""
+                                    Layout.alignment: Qt.AlignVCenter
+                                    width: languageText.implicitWidth + 8
+                                    height: 13
+                                    radius: 3
+                                    color: Qt.rgba(pane.applet.tickerColor.r,
+                                                   pane.applet.tickerColor.g,
+                                                   pane.applet.tickerColor.b, 0.12)
+                                    Text {
+                                        id: languageText
+                                        anchors.centerIn: parent
+                                        text: newsRow.langLabel
+                                        color: pane.applet.secondaryTextColor
+                                        font.pixelSize: 8
+                                        font.bold: true
+                                    }
+                                }
+
+                                Text {
+                                    Layout.fillWidth: true
+                                    readonly property string age: pane.applet.newsAge(newsRow.modelData.time)
+                                    readonly property string details: newsRow.modelData.publisher !== ""
+                                          ? (age !== "" ? newsRow.modelData.publisher + " · " + age : newsRow.modelData.publisher)
+                                          : age
+                                    text: details
+                                    textFormat: Text.PlainText
+                                    elide: Text.ElideRight
+                                    color: pane.applet.secondaryTextColor
+                                    font.pixelSize: 9
+                                }
                             }
                         }
 

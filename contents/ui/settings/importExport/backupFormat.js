@@ -52,6 +52,8 @@ var SETTINGS_KEYS = [
     "newsSourceYahoo",
     "newsSourceBvb",
     "newsSourceGoogle",
+    "newsLanguage",
+    "newsLanguages",
     "newsCount",
     "newsRefreshMinutes",
     "limitHours",
@@ -283,6 +285,25 @@ function validateValue(key, value) {
     if (key === "ticker" || key === "selectedTicker") {
         if (typeof value !== "string") return failure("invalidValue", key);
         return { ok: true, value: value.trim().toUpperCase() };
+    }
+
+    if (key === "newsLanguages") {
+        if (typeof value !== "string") return failure("invalidValue", key);
+        var parts = value.split(",");
+        var clean = [];
+        for (var i = 0; i < parts.length; i++) {
+            var part = parts[i].trim().toLowerCase();
+            if (part === "") continue;
+            if (!/^[a-z]{2}$/.test(part)) return failure("invalidValue", key);
+            if (clean.indexOf(part) < 0) clean.push(part);
+        }
+        return { ok: true, value: clean.join(",") };
+    }
+
+    if (key === "newsLanguage") {
+        if (value !== "system" && value !== "systemFallback" && value !== "english" && value !== "multi")
+            return failure("invalidValue", key);
+        return { ok: true, value: value };
     }
 
     if (key === "multiTickers") {

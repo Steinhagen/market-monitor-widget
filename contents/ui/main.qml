@@ -291,6 +291,8 @@ PlasmoidItem {
     property bool newsSourceGoogle: app.config.newsSourceGoogle
     property int newsCount: app.config.newsCount
     property int newsRefreshMinutes: app.config.newsRefreshMinutes
+    property string newsLanguage: app.config.newsLanguage
+    property string newsLanguages: app.config.newsLanguages
     // "chart" or "news": what the single-stock view shows below the quote. Not persisted:
     // the widget always starts on the chart, so a login never fetches news.
     property string singleViewPane: "chart"
@@ -453,6 +455,8 @@ PlasmoidItem {
     onNewsSourceYahooChanged: Qt.callLater(root.refreshNewsSources)
     onNewsSourceBvbChanged: Qt.callLater(root.refreshNewsSources)
     onNewsSourceGoogleChanged: Qt.callLater(root.refreshNewsSources)
+    onNewsLanguageChanged: Qt.callLater(root.refreshNewsSources)
+    onNewsLanguagesChanged: Qt.callLater(root.refreshNewsSources)
     // A larger count must not wait for the next interval.
     onNewsCountChanged: {
         newsController.invalidate();

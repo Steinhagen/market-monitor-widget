@@ -146,6 +146,14 @@
             <label>Use Google as a news source (search by company name)</label>
             <default>true</default>
         </entry>
+        <entry name="newsLanguage" type="String">
+            <label>News language: system, systemFallback, english or multi</label>
+            <default>systemFallback</default>
+        </entry>
+        <entry name="newsLanguages" type="String">
+            <label>Languages shown in multilingual mode (comma-separated codes)</label>
+            <default>en</default>
+        </entry>
         <entry name="newsCount" type="Int">
             <label>Number of headlines to show per source</label>
             <default>24</default>

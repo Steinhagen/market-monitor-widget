@@ -96,6 +96,7 @@ function parse(data, symbol, allowBase, limit) {
             title: title,
             publisher: decodeEntities(item.publisher).trim(),
             source: YAHOO_SOURCE,
+            lang: "en",
             link: link,
             time: Number(item.providerPublishTime) || 0
         });

@@ -20,6 +20,8 @@ TestCase {
             newsSourceYahoo: true,
             newsSourceBvb: true,
             newsSourceGoogle: true,
+            newsLanguage: "english",
+            newsLanguages: "ro,en,fr",
             themePreset: 0,
             themeColors: 0
         };
@@ -39,6 +41,8 @@ TestCase {
         compare(lots[0].ticker, "TLV.RO");
         compare(lots[0].currency, "RON");
         compare(parsed.settings.newsSourceGoogle, true);
+        compare(parsed.settings.newsLanguage, "english");
+        compare(parsed.settings.newsLanguages, "ro,en,fr");
         compare(parsed.settings.showNews, true);
         compare(parsed.settings.refreshInterval, 5);
     }
@@ -123,6 +127,12 @@ TestCase {
 
         var chartRange = Backup.parseBackup('{"settings":{"chartRange":"2D"}}');
         compare(chartRange.code, "invalidValue");
+
+        var language = Backup.parseBackup('{"settings":{"newsLanguage":"bogus"}}');
+        compare(language.code, "invalidValue");
+        var multi = Backup.parseBackup('{"settings":{"newsLanguage":"multi"}}');
+        verify(multi.ok);
+        compare(multi.settings.newsLanguage, "multi");
     }
 
     function test_invalidPortfolio() {

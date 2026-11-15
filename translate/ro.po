@@ -426,24 +426,68 @@ msgid "Show news headlines in the single-stock view"
 msgstr "Afișează titlurile știrilor în vizualizarea unei singure acțiuni"
 
 #: contents/ui/settings/pages/chartNews.qml
+msgid "News language:"
+msgstr "Limba știrilor:"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local language only"
+msgstr "Doar limba locală"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local language, English fallback"
+msgstr "Limba locală, cu engleza ca rezervă"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "English only"
+msgstr "Doar engleză"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Several languages"
+msgstr "Mai multe limbi"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Yahoo Finance is English-only. Google follows the selected languages; in Several languages mode it is queried once per language. BVB uses its Romanian or English attachment."
+msgstr "Yahoo Finance are doar știri în engleză. Google urmează limbile selectate; în modul „Mai multe limbi” este interogat o dată pentru fiecare limbă. BVB folosește atașamentul în română sau în engleză."
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local headlines first; Yahoo Finance English headlines are appended as backup."
+msgstr "Întâi știrile locale; titlurile Yahoo Finance în engleză sunt adăugate ca rezervă."
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Languages:"
+msgstr "Limbi:"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Select the languages you want to see. Each headline gets a small language badge."
+msgstr "Selectați limbile pe care doriți să le vedeți. Fiecare știre primește un mic badge de limbă."
+
+#: contents/ui/settings/pages/chartNews.qml
 msgid "News sources:"
 msgstr "Surse de știri:"
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Yahoo Finance"
-msgstr "Yahoo Finance"
+msgid "Yahoo Finance (English)"
+msgstr "Yahoo Finance (engleză)"
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "BVB (Romanian symbols)"
-msgstr "BVB (simboluri românești)"
+msgid "BVB (Romanian/English, .RO symbols)"
+msgstr "BVB (română/engleză, simboluri .RO)"
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Google (search by company name)"
-msgstr "Google (căutare după numele companiei)"
+msgid "Google (selected languages)"
+msgstr "Google (limbile selectate)"
 
 #: contents/ui/settings/pages/chartNews.qml
 msgid "Select at least one news source."
 msgstr "Selectați cel puțin o sursă de știri."
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Select at least one language."
+msgstr "Selectați cel puțin o limbă."
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local-only mode needs Google or BVB enabled."
+msgstr "Modul „Doar limba locală” necesită Google sau BVB activat."
 
 #: contents/ui/settings/pages/chartNews.qml
 msgid "Headlines from the sources selected above. Yahoo Finance covers general news; Google adds a web search by company name; BVB provides the issuer's announcements for symbols ending in .RO. Switch with the icons next to the market status. Not available in the list-only view."
@@ -1273,6 +1317,14 @@ msgid "Headlines unavailable"
 msgstr "Titluri indisponibile"
 
 #: contents/ui/SingleStockView.qml
+msgid "No headlines in the local language for %1"
+msgstr "Nu există titluri în limba locală pentru %1"
+
+#: contents/ui/SingleStockView.qml
+msgid "No English headlines for %1"
+msgstr "Nu există titluri în engleză pentru %1"
+
+#: contents/ui/SingleStockView.qml
 msgid "No recent headlines for %1"
 msgstr "Nu există titluri recente pentru %1"
 
@@ -1336,10 +1388,6 @@ msgstr "cache din %1"
 #: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "Loading…"
 msgstr "Se încarcă…"
-
-#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
-msgid "Session"
-msgstr "Sesiune"
 
 #: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "Position"
@@ -1423,8 +1471,54 @@ msgid "loading…"
 msgstr "se încarcă…"
 
 #: contents/ui/tooltip/TooltipContent.qml
+msgid "Session"
+msgstr "Sesiune"
+
+#: contents/ui/tooltip/TooltipContent.qml
 msgid "Updated"
 msgstr "Actualizat"
+
+#~ msgid "local"
+#~ msgstr "local"
+
+#~ msgid "Yahoo Finance is English-only. Google follows the selected language; in Several languages mode it is queried once per language. BVB uses its Romanian or English attachment."
+#~ msgstr "Yahoo Finance are doar știri în engleză. Google urmează limba selectată; în modul „Mai multe limbi” este interogat o dată pentru fiecare limbă. BVB folosește atașamentul în română sau în engleză."
+
+#~ msgid "Also show:"
+#~ msgstr "Afișează și:"
+
+#~ msgid "English"
+#~ msgstr "Engleză"
+
+#~ msgid "French"
+#~ msgstr "Franceză"
+
+#~ msgid "The local language is always included."
+#~ msgstr "Limba locală este întotdeauna inclusă."
+
+#~ msgid "Yahoo Finance is English-only. Google follows the selected language, and BVB uses its Romanian or English attachment, depending on the language mode."
+#~ msgstr "Yahoo Finance are doar știri în engleză. Google urmează limba selectată, iar BVB folosește atașamentul în română sau în engleză, în funcție de modul de limbă."
+
+#~ msgid "Google (selected language)"
+#~ msgstr "Google (limba selectată)"
+
+#~ msgid "Yahoo Finance is English-only. Google follows the selected language, and BVB headlines are in Romanian, so BVB is not used in English-only mode."
+#~ msgstr "Yahoo Finance are doar știri în engleză. Google urmează limba selectată, iar titlurile BVB sunt în română, așa că BVB nu este folosit în modul „Doar engleză”."
+
+#~ msgid "BVB (Romanian, .RO symbols)"
+#~ msgstr "BVB (română, simboluri .RO)"
+
+#~ msgid "English-only mode needs Yahoo Finance or Google enabled."
+#~ msgstr "Modul „Doar engleză” necesită Yahoo Finance sau Google activat."
+
+#~ msgid "Yahoo Finance"
+#~ msgstr "Yahoo Finance"
+
+#~ msgid "BVB (Romanian symbols)"
+#~ msgstr "BVB (simboluri românești)"
+
+#~ msgid "Google (search by company name)"
+#~ msgstr "Google (căutare după numele companiei)"
 
 #~ msgctxt "@title:column"
 #~ msgid "Details"

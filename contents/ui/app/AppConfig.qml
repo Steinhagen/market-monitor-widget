@@ -80,6 +80,11 @@ QtObject {
     readonly property bool newsSourceGoogle: flag("newsSourceGoogle", true)
     readonly property int newsCount: clamped("newsCount", 24, 5, 50)
     readonly property int newsRefreshMinutes: clamped("newsRefreshMinutes", 30, 10, 240)
+    readonly property string newsLanguages: rawText("newsLanguages", "en")
+    readonly property string newsLanguage: {
+        var value = text("newsLanguage", "systemFallback");
+        return ["system", "systemFallback", "english", "multi"].indexOf(value) >= 0 ? value : "systemFallback";
+    }
 
     // Portfolio
     readonly property bool showPortfolioMode: flag("showPortfolioMode", false)

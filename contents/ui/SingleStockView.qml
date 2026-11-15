@@ -91,6 +91,10 @@ Rectangle {
         if (!newsEntry || newsEntry.pending || (!newsEntry.loaded && !newsEntry.error))
             return i18n("Loading headlines…");
         if (newsEntry.error) return i18n("Headlines unavailable");
+        if (applet.newsLanguage === "system")
+            return i18n("No headlines in the local language for %1", applet.displayTicker(applet.singleTicker));
+        if (applet.newsLanguage === "english")
+            return i18n("No English headlines for %1", applet.displayTicker(applet.singleTicker));
         return i18n("No recent headlines for %1", applet.displayTicker(applet.singleTicker));
     }
     // A failed update keeps the headlines that are already shown and says so here.
