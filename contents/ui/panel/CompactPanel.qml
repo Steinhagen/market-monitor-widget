@@ -13,6 +13,8 @@ MouseArea {
     implicitWidth: {
         // An explicit width from the settings wins. Otherwise reserve room for the
         // current values, with the widest configured value as a floor in fixed mode.
+        if (compactRoot.oneRow)
+            return panelRow.implicitWidth + (Kirigami.Units.smallSpacing * 2);
         if (compactRoot.useFixedWidth && Plasmoid.configuration.panelWidth > 0)
             return Plasmoid.configuration.panelWidth;
         var content = Math.max(compactRoot.currentContent, panelRow.implicitWidth);
@@ -23,13 +25,35 @@ MouseArea {
     // Never paint outside the rectangle the panel gives the applet. In a vertical
     // panel that rectangle is only as wide as the panel, so the content has to fit
     // (or elide) rather than spill over the neighbouring applets.
-    clip: true
+    clip: false
     // Keep a stable compact height so the panel does not shrink the applet in a
     // feedback loop on short panels.
-    implicitHeight: Math.max(28, panelRow.implicitHeight)
+    // Stable vertical height: the rows keep their normal minimum heights even
+    // when a long value uses a smaller font, so neighbouring applets cannot move.
+    readonly property real verticalHeight: {
+        var s = compactRoot.textScale;
+        var rows = 2;
+        var h = Math.ceil(12 * s) + Math.ceil(13 * s);
+        if (!compactRoot.alternatePrice && !applet.hideChangePercentage) {
+            rows += 1;
+            h += Math.ceil(12 * s);
+        }
+        if (applet.panelShowMarketStatus) {
+            rows += 1;
+            h += Math.ceil(10 * s);
+        }
+        return h + (rows - 1) * 4;
+    }
+    implicitHeight: applet.isVerticalPanel
+                    ? Math.max(28, Math.ceil(compactRoot.verticalHeight))
+                    : Math.max(28, panelRow.implicitHeight, twoRow.implicitHeight) + 2
     // Follow the clock's responsive behaviour: two rows with type scaled to the
     // available height, and a single readable row when two rows cannot fit.
     readonly property bool oneRow: !applet.isVerticalPanel && height > 0 && height < 28
+    // Alternation is only available in the horizontal two-row layout.
+    readonly property bool alternatePrice: applet.panelAlternate
+                                          && !compactRoot.oneRow
+                                          && !applet.isVerticalPanel
     readonly property real twoRowScale: {
         if (height <= 0) return 1;
         return Math.max(0.85, (height - 1) / 29);
@@ -37,16 +61,25 @@ MouseArea {
     // A vertical panel's constraint is its thickness (width), not its length.
     readonly property real verticalScale: {
         if (width <= 0) return 1;
-        return Math.max(0.5, Math.min(1.6, (width - 2) / 36));
+        return Math.max(0.5, (width - 2) / 36);
     }
     readonly property real textScale: applet.isVerticalPanel ? verticalScale : twoRowScale
+    readonly property real panelHeight: {
+        // The applet parent is the panel content; the panel adds 4 px above and below.
+        if (parent) return parent.height + 8;
+        return height;
+    }
+    // Single-row text stays readable even in a short panel.
+    readonly property real oneRowScale: Math.max(1.0, (compactRoot.panelHeight - 1) / 29)
+    onTextScaleChanged: remeasureTimer.restart()
+    onOneRowChanged: remeasureTimer.restart()
     // Let the panel decide the cross-axis size: height in a horizontal panel, width
     // in a vertical one. Requesting a minimum there made the applet keep its old
     // horizontal width after an orientation change and overlap its neighbour.
     Layout.fillWidth: applet.isVerticalPanel
     Layout.fillHeight: !applet.isVerticalPanel
     Layout.minimumWidth: applet.isVerticalPanel ? 0 : implicitWidth
-    Layout.preferredWidth: implicitWidth
+    Layout.preferredWidth: applet.isVerticalPanel ? 0 : implicitWidth
     Layout.minimumHeight: implicitHeight
     Layout.preferredHeight: implicitHeight
 
@@ -127,10 +160,10 @@ MouseArea {
     // Invisible texts with exactly the fonts and rendering of the visible ones. Measuring with
     // these instead of with font metrics gives the real width, hinting included.
     property real widestBadge: 0
-    Text { id: probeTicker; visible: false; font.pixelSize: 10 * compactRoot.textScale; font.weight: applet.panelBoldSymbol ? Font.Bold : Font.Normal; renderType: Text.NativeRendering }
-    Text { id: probeTag; visible: false; font.pixelSize: 8 * compactRoot.textScale; font.weight: Font.Bold; renderType: Text.NativeRendering }
-    Text { id: probePrice; visible: false; font.pixelSize: 10 * compactRoot.textScale; renderType: Text.NativeRendering }
-    Text { id: probeBadge; visible: false; font.pixelSize: 9 * compactRoot.textScale; renderType: Text.NativeRendering }
+    Text { id: probeTicker; visible: false; font.pixelSize: compactRoot.oneRow ? 11 * compactRoot.oneRowScale : 10 * compactRoot.textScale; font.weight: applet.panelBoldSymbol ? Font.Bold : Font.Normal; renderType: Text.NativeRendering }
+    Text { id: probeTag; visible: false; font.pixelSize: compactRoot.oneRow ? 8 * compactRoot.oneRowScale : 8 * compactRoot.textScale; font.weight: Font.Bold; renderType: Text.NativeRendering }
+    Text { id: probePrice; visible: false; font.pixelSize: compactRoot.oneRow ? 13 * compactRoot.oneRowScale : 10 * compactRoot.textScale; renderType: Text.NativeRendering }
+    Text { id: probeBadge; visible: false; font.pixelSize: compactRoot.oneRow ? 11 : 9 * compactRoot.textScale; renderType: Text.NativeRendering }
 
     function measureWidest() {
         var tickers = [], prices = [], pcts = [];
@@ -166,7 +199,7 @@ MouseArea {
         var arrowW = Math.max(widthOf(probeTag, "▲"), widthOf(probeTag, "▼"));
         // Measured from the same (translated) tags the panel shows, so a longer
         // translation still fits in the reserved width.
-        var tagW = applet.showExtendedHours
+        var tagW = applet.panelShowMarketStatus
                    ? Math.max(widthOf(probeTag, applet.tagAfterHours),
                               widthOf(probeTag, applet.tagPreMarket),
                               widthOf(probeTag, applet.tagClosed))
@@ -178,14 +211,17 @@ MouseArea {
         var priceW = widest(prices, probePrice);
         var showBadge = !applet.hideChangePercentage;
         var badgeW = showBadge ? widest(pcts, probeBadge) + (Kirigami.Units.smallSpacing * 2) : 0;
-        var line2 = (applet.panelAlternate && showBadge) ? Math.max(priceW, badgeW)
-                                                      : priceW + (showBadge ? 6 + badgeW : 0);
+        var line2 = applet.isVerticalPanel
+                    ? Math.max(priceW, badgeW)
+                    : (compactRoot.alternatePrice && showBadge ? Math.max(priceW, badgeW)
+                                                          : priceW + (showBadge ? 6 + badgeW : 0));
 
         // Width of the values on screen right now, so an orientation change cannot
         // leave the indicator narrower than its own content.
         var currentTicker = applet.displayTicker(applet.isMultiMode ? applet.panelTicker : applet.singleTicker);
-        var showCurrentTag = applet.showExtendedHours
-                             && (compactRoot.marketClosed || compactRoot.ext !== undefined);
+        var showCurrentTag = applet.panelShowMarketStatus
+                             && (compactRoot.marketClosed || compactRoot.ext !== undefined
+                                 || applet.panelCurrentIsCached);
         var currentTagW = showCurrentTag ? tagW : 0;
         var currentLine1 = widthOf(probeTicker, currentTicker) + 4 + arrowW
                            + (currentTagW > 0 ? 4 + currentTagW : 0);
@@ -193,14 +229,35 @@ MouseArea {
         var currentBadgeW = showBadge
                             ? widthOf(probeBadge, compactRoot.shownPercent) + (Kirigami.Units.smallSpacing * 2)
                             : 0;
-        var currentLine2 = (applet.panelAlternate && showBadge)
+        var currentLine2 = applet.isVerticalPanel
                            ? Math.max(currentPriceW, currentBadgeW)
-                           : currentPriceW + (showBadge ? 6 + currentBadgeW : 0);
+                           : (compactRoot.alternatePrice && showBadge
+                              ? Math.max(currentPriceW, currentBadgeW)
+                              : currentPriceW + (showBadge ? 6 + currentBadgeW : 0));
 
-        return { "content": Math.ceil(Math.max(line1, line2)),
+        // The single-row layout uses larger fixed fonts, so measure its own line
+        // too; otherwise the fixed width would keep the two-row dimensions.
+        var oneRowValueW = (compactRoot.alternatePrice && showBadge)
+                           ? Math.max(priceW, badgeW)
+                           : priceW + (showBadge ? 4 + badgeW : 0);
+        var oneRowW = compactRoot.oneRow
+                      ? widest(tickers, probeTicker) + 4
+                        + (showCurrentTag ? tagW + 4 : 0)
+                        + oneRowValueW
+                      : 0;
+        var currentOneRowValueW = (compactRoot.alternatePrice && showBadge)
+                                  ? Math.max(currentPriceW, currentBadgeW)
+                                  : currentPriceW + (showBadge ? 4 + currentBadgeW : 0);
+        var currentOneRowW = compactRoot.oneRow
+                             ? widthOf(probeTicker, currentTicker) + 4
+                               + (showCurrentTag ? currentTagW + 4 : 0)
+                               + currentOneRowValueW
+                             : 0;
+
+        return { "content": Math.ceil(Math.max(line1, line2, oneRowW)),
                  "price": Math.ceil(priceW),
                  "badge": Math.ceil(badgeW),
-                 "current": Math.ceil(Math.max(currentLine1, currentLine2)) };
+                 "current": Math.ceil(Math.max(currentLine1, currentLine2, currentOneRowW)) };
     }
 
     function remeasure() {
@@ -244,25 +301,29 @@ MouseArea {
         anchors.fill: parent
         anchors.leftMargin: applet.isVerticalPanel ? 0 : Kirigami.Units.smallSpacing * 2
         anchors.rightMargin: applet.isVerticalPanel ? 0 : Kirigami.Units.smallSpacing * 2
-        anchors.bottomMargin: applet.isVerticalPanel ? 0 : 2
+        anchors.bottomMargin: 0
         spacing: 8
 
         ColumnLayout {
+            id: twoRow
             visible: !compactRoot.oneRow
             // The status tag and the percentage badge share the right edge of the
             // indicator. Negative spacing made the bottom of the tag/arrow overlap
             // the top of the badge, so keep a small positive gap between the rows.
-            spacing: 0
+            spacing: 4
             Layout.alignment: Qt.AlignVCenter
             Layout.fillWidth: applet.isVerticalPanel
 
             RowLayout {
                 spacing: 4
                 Layout.fillWidth: applet.isVerticalPanel
+                Layout.minimumHeight: Math.ceil(12 * compactRoot.textScale)
+                Layout.preferredHeight: Math.ceil(12 * compactRoot.textScale)
+                Layout.maximumHeight: Math.ceil(12 * compactRoot.textScale)
                 Text {
                     text: applet.displayTicker(applet.isMultiMode ? applet.panelTicker : applet.singleTicker)
                     color: applet.panelTextColor
-                    font.pixelSize: 10 * compactRoot.textScale
+                    font.pixelSize: (applet.isVerticalPanel ? 11 : 10) * compactRoot.textScale
                     font.weight: applet.panelBoldSymbol ? Font.Bold : Font.Normal
                     renderType: Text.NativeRendering
                     opacity: 0.8
@@ -308,6 +369,9 @@ MouseArea {
                 spacing: 6
                 Layout.alignment: applet.isVerticalPanel ? Qt.AlignHCenter : Qt.AlignLeft
                 Layout.fillWidth: applet.isVerticalPanel
+                Layout.minimumHeight: Math.ceil(13 * compactRoot.textScale)
+                Layout.preferredHeight: Math.ceil(13 * compactRoot.textScale)
+                Layout.maximumHeight: Math.ceil(13 * compactRoot.textScale)
 
                 Text {
                     id: panelPrice
@@ -323,20 +387,19 @@ MouseArea {
                     // When alternating, the price and the percentage badge share one spot:
                     // this item is hidden while the percentage is shown, and both keep the
                     // width of the wider one so the panel does not resize on every switch.
-                    visible: !applet.panelAlternate || !applet.panelShowPercent
+                    visible: !compactRoot.alternatePrice || !applet.panelShowPercent
                     horizontalAlignment: applet.isVerticalPanel
                                          ? Text.AlignHCenter
-                                         : (applet.panelAlternate ? Text.AlignHCenter : Text.AlignLeft)
+                                         : (compactRoot.alternatePrice ? Text.AlignHCenter : Text.AlignLeft)
                     // Fixed width: give the price the width of the widest price, so the badge
                     // next to it stays put while the price changes.
-                    Layout.minimumWidth: applet.panelAlternate
-                                         ? Math.max(panelPrice.implicitWidth, pctText2.implicitWidth + (Kirigami.Units.smallSpacing * 2))
-                                         : (compactRoot.useFixedWidth ? compactRoot.widestPrice : 0)
+                    Layout.minimumWidth: 0
                     Layout.fillWidth: applet.isVerticalPanel
                     elide: Text.ElideRight
                     color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
                     font.pixelSize: (applet.isVerticalPanel
-                                     ? (compactRoot.shownPrice.length > 7 ? 10 : 11)
+                                     ? (compactRoot.shownPrice.length > 10 ? 7
+                                        : compactRoot.shownPrice.length > 7 ? 7 : 11)
                                      : 10) * compactRoot.textScale
                     renderType: Text.NativeRendering
                     // Ensure the price text is fully opaque; color is controlled by the line above
@@ -347,9 +410,9 @@ MouseArea {
                 Rectangle {
                     radius: 4 * compactRoot.textScale
                     opacity: applet.panelCurrentIsCached ? 0.7 : 1.0
-                    // Vertical Panel Support: Hide badge in vertical panels to avoid overlap
-                    visible: Plasmoid.formFactor !== PlasmaCore.Types.Vertical && !applet.hideChangePercentage
-                             && (!applet.panelAlternate || applet.panelShowPercent)
+                    visible: !applet.isVerticalPanel
+                             && !applet.hideChangePercentage
+                             && (!compactRoot.alternatePrice || applet.panelShowPercent)
                     // Background: translucent tint of the positive/negative color for theme independence
                     color: compactRoot.shownPositive
                            ? Qt.rgba(applet.panelPositiveColor.r, applet.panelPositiveColor.g, applet.panelPositiveColor.b, 0.18)
@@ -359,9 +422,7 @@ MouseArea {
                     Layout.preferredWidth: pctText2.implicitWidth + (Kirigami.Units.smallSpacing * 2)
                     // Fixed width: every value gets the same badge width (the text stays centred),
                     // so the panel has no spare room on the right of a short value.
-                    Layout.minimumWidth: applet.panelAlternate
-                                         ? Math.max(panelPrice.implicitWidth, pctText2.implicitWidth + (Kirigami.Units.smallSpacing * 2))
-                                         : 0
+                    Layout.minimumWidth: 0
                     Layout.preferredHeight: pctText2.implicitHeight
                                             + (Kirigami.Units.smallSpacing / 2)
 
@@ -374,6 +435,89 @@ MouseArea {
                         renderType: Text.NativeRendering
                     }
                 }
+
+                Rectangle {
+                    visible: applet.isVerticalPanel
+                             && compactRoot.alternatePrice
+                             && !applet.hideChangePercentage
+                             && applet.panelShowPercent
+                    radius: 3
+                    opacity: applet.panelCurrentIsCached ? 0.7 : 1.0
+                    color: compactRoot.shownPositive
+                           ? Qt.rgba(applet.panelPositiveColor.r, applet.panelPositiveColor.g, applet.panelPositiveColor.b, 0.18)
+                           : Qt.rgba(applet.panelNegativeColor.r, applet.panelNegativeColor.g, applet.panelNegativeColor.b, 0.18)
+                    border.color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                    border.width: 1
+                    Layout.preferredWidth: altPct.implicitWidth + (Kirigami.Units.smallSpacing * 2)
+                    Layout.minimumWidth: 0
+                    Layout.preferredHeight: altPct.implicitHeight + (Kirigami.Units.smallSpacing / 2)
+
+                    Text {
+                        id: altPct
+                        anchors.centerIn: parent
+                        text: compactRoot.shownPercent
+                        color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                        font.pixelSize: 9 * compactRoot.textScale
+                        renderType: Text.NativeRendering
+                    }
+                }
+            }
+            RowLayout {
+                visible: applet.isVerticalPanel
+                         && !compactRoot.alternatePrice
+                         && !applet.hideChangePercentage
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter
+                Layout.minimumHeight: Math.ceil(12 * compactRoot.textScale)
+                Layout.preferredHeight: Math.ceil(12 * compactRoot.textScale)
+                Layout.maximumHeight: Math.ceil(12 * compactRoot.textScale)
+                spacing: 0
+
+                Rectangle {
+                    radius: 3
+                    opacity: applet.panelCurrentIsCached ? 0.7 : 1.0
+                    color: compactRoot.shownPositive
+                           ? Qt.rgba(applet.panelPositiveColor.r, applet.panelPositiveColor.g, applet.panelPositiveColor.b, 0.18)
+                           : Qt.rgba(applet.panelNegativeColor.r, applet.panelNegativeColor.g, applet.panelNegativeColor.b, 0.18)
+                    border.color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                    border.width: 1
+                    Layout.preferredWidth: vPct.implicitWidth + (Kirigami.Units.smallSpacing * 2)
+                    Layout.minimumWidth: 0
+                    Layout.preferredHeight: vPct.implicitHeight + (Kirigami.Units.smallSpacing / 2)
+
+                    Text {
+                        id: vPct
+                        anchors.centerIn: parent
+                        text: compactRoot.shownPercent
+                        color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                        font.pixelSize: 9 * compactRoot.textScale
+                        renderType: Text.NativeRendering
+                    }
+                }
+            }
+
+            RowLayout {
+                visible: applet.isVerticalPanel && applet.panelShowMarketStatus
+                         && (compactRoot.ext !== undefined || compactRoot.marketClosed
+                             || applet.panelCurrentIsCached)
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter
+                Layout.minimumHeight: Math.ceil(10 * compactRoot.textScale)
+                spacing: 0
+
+                Text {
+                    text: applet.panelCurrentIsCached
+                          ? i18nc("@item:panel stock data state", "OFF")
+                          : (compactRoot.marketClosed
+                             ? applet.tagClosed
+                             : (compactRoot.ext
+                                ? (compactRoot.ext.kind === "pre" ? applet.tagPreMarket : applet.tagAfterHours)
+                                : ""))
+                    color: applet.panelCurrentIsCached ? applet.warningTextColor : applet.panelTextColor
+                    opacity: applet.panelCurrentIsCached ? 1.0 : 0.45
+                    font.pixelSize: 8 * compactRoot.textScale
+                    renderType: Text.NativeRendering
+                }
             }
         }
 
@@ -382,29 +526,55 @@ MouseArea {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
             spacing: 4
+            Layout.minimumHeight: Math.ceil(14 * compactRoot.oneRowScale) + 2
+            Layout.preferredHeight: Math.ceil(14 * compactRoot.oneRowScale) + 2
+            Layout.maximumHeight: Math.ceil(14 * compactRoot.oneRowScale) + 2
 
             Text {
+                id: oneTicker
                 text: applet.displayTicker(applet.isMultiMode ? applet.panelTicker : applet.singleTicker)
                 color: applet.panelTextColor
-                font.pixelSize: 11
+                Layout.fillHeight: true
+                font.pixelSize: 11 * compactRoot.oneRowScale
                 font.weight: applet.panelBoldSymbol ? Font.Bold : Font.Normal
                 renderType: Text.NativeRendering
                 opacity: 0.6
                 elide: Text.ElideRight
+                verticalAlignment: Text.AlignVCenter
+                Layout.alignment: Qt.AlignVCenter            }
+
+            Text {
+                visible: applet.panelShowMarketStatus
+                         && (compactRoot.ext !== undefined || compactRoot.marketClosed
+                             || applet.panelCurrentIsCached)
+                text: applet.panelCurrentIsCached
+                      ? i18nc("@item:panel stock data state", "OFF")
+                      : (compactRoot.marketClosed
+                         ? applet.tagClosed
+                         : (compactRoot.ext
+                            ? (compactRoot.ext.kind === "pre" ? applet.tagPreMarket : applet.tagAfterHours)
+                            : ""))
+                color: applet.panelCurrentIsCached ? applet.warningTextColor : applet.panelTextColor
+                opacity: applet.panelCurrentIsCached ? 1.0 : 0.45
+                font.pixelSize: 8 * compactRoot.oneRowScale
+                renderType: Text.NativeRendering
+                Layout.alignment: Qt.AlignVCenter
             }
 
             Text {
+                id: onePrice
+                visible: true
                 text: compactRoot.shownPrice
                 color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
-                font.pixelSize: 13
+                font.pixelSize: 13 * compactRoot.oneRowScale
                 renderType: Text.NativeRendering
                 elide: Text.ElideRight
-                Layout.fillWidth: true
+                Layout.minimumWidth: 0
+                Layout.alignment: Qt.AlignVCenter
             }
 
             Rectangle {
-                visible: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
-                         && !applet.hideChangePercentage
+                visible: !applet.hideChangePercentage
                 radius: 3
                 color: compactRoot.shownPositive
                        ? Qt.rgba(applet.panelPositiveColor.r, applet.panelPositiveColor.g, applet.panelPositiveColor.b, 0.18)
@@ -412,14 +582,16 @@ MouseArea {
                 border.color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
                 border.width: 1
                 Layout.preferredWidth: onePct.implicitWidth + (Kirigami.Units.smallSpacing * 2)
+                Layout.minimumWidth: 0
                 Layout.preferredHeight: onePct.implicitHeight + (Kirigami.Units.smallSpacing / 2)
+                Layout.alignment: Qt.AlignVCenter
 
                 Text {
                     id: onePct
                     anchors.centerIn: parent
                     text: compactRoot.shownPercent
                     color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
-                    font.pixelSize: 11
+                    font.pixelSize: 9 * compactRoot.oneRowScale
                     renderType: Text.NativeRendering
                 }
             }

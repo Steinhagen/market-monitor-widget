@@ -94,7 +94,8 @@ PlasmoidItem {
                         : (root.isVerticalPanel ? 0 : root.panelItemWidth)
     Layout.minimumHeight: !root.inPanel ? root.fullViewMinimumHeight
                          : Math.max(29, root.panelItemHeight)
-    Layout.preferredWidth: !root.inPanel ? root.fullViewPreferredWidth : root.panelItemWidth
+    Layout.preferredWidth: !root.inPanel ? root.fullViewPreferredWidth
+                          : (root.isVerticalPanel ? 0 : root.panelItemWidth)
     Layout.preferredHeight: !root.inPanel ? root.fullViewPreferredHeight
                           : Math.max(29, root.panelItemHeight)
 
@@ -840,7 +841,6 @@ PlasmoidItem {
     // showing both side by side.
     readonly property bool panelAlternate: app.config.alternatePricePercent
                                            && !root.hideChangePercentage
-                                           && Plasmoid.formFactor === PlasmaCore.Types.Horizontal
     // The expanded panel view uses our transparent popup for Application, which paints
     // its own cards. Plasma keeps the standard Plasma popup and its system background.
     readonly property bool customPanelPopup: !root.usesPlasmaSurface

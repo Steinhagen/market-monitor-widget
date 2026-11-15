@@ -52,6 +52,14 @@ Item {
                 enabled: !hidePercentSwitch.checked
             }
 
+            Label {
+                Layout.fillWidth: true
+                wrapMode: Text.WordWrap
+                opacity: 0.7
+                font: Kirigami.Theme.smallFont
+                text: i18n("Does not work in horizontal single-line or vertical mode.")
+            }
+
             SpinBox {
                 id: alternateSpin
                 Kirigami.FormData.label: i18n("Switch every (seconds):")

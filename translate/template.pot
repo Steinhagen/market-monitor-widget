@@ -1466,3 +1466,7 @@ msgstr ""
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "Updated"
 msgstr ""
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Does not work in horizontal single-line or vertical mode."
+msgstr ""

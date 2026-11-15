@@ -1748,3 +1748,6 @@ msgstr "Actualizat"
 
 #~ msgid "No portfolio data to export."
 #~ msgstr "Nu există date de portofoliu de exportat."
+
+msgid "Does not work in horizontal single-line or vertical mode."
+msgstr "Nu funcționează în modul orizontal cu o singură linie sau în modul vertical."

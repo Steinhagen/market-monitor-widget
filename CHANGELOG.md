@@ -43,14 +43,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instead of assuming the local language is Romanian.
 - Language badges stay visible on every source filter when several languages
   are configured, and are omitted when only one language is active.
-- The panel indicator follows the clock's responsive behaviour: the two rows
-  scale with the available height, and it switches to a single readable row when
-  the panel is too short for two. In a vertical panel the contents scale to the
-  panel thickness instead of being elided. The ticker and price stay prominent
-  while the market-status tag is smaller and dimmer; a small bottom margin keeps
-  the price row clear of the panel edge. The horizontal type keeps scaling with
-  the panel height; the badge itself is no longer widened to the widest
-  percentage, so it cannot make the applet balloon.
+- The panel indicator has three independent responsive modes: horizontal
+  two-row scales from the applet height with exact row heights and a
+  text-sized percentage pill; horizontal single-row scales from the panel
+  height and fits its width to the content; vertical scales to the panel
+  thickness with stable rows and smaller fonts for long values.
+- The ticker and price stay prominent, the status tag is smaller, and the
+  percentage pill and rows no longer overlap.
+- Price/percentage alternation applies only to horizontal two-row; single-row
+  and vertical show both values.
 
 ## [1.0] - 2026-11-15
 
