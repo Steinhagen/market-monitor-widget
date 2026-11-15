@@ -1,0 +1,73 @@
+{
+  "news": [
+    {
+      "uuid": "c9cf7c77-22b5-3668-8f24-a0093af3f462",
+      "title": "ANALYSE-FLASH: JPMorgan hebt SAP auf 'Overweight' - Ziel auf 275 Euro",
+      "publisher": "dpa-AFX",
+      "link": "https://de.finance.yahoo.com/nachrichten/analyse-flash-jpmorgan-hebt-sap-062003650.html",
+      "providerPublishTime": 1794205203,
+      "relatedTickers": [
+        "SAP.DE"
+      ]
+    },
+    {
+      "uuid": "c8d151ed-9f8a-340e-8c8f-2b2476c5cb1c",
+      "title": "Rimini Street erhält Rahmenvertrag für Drittanbieter-Wartung von CANUT",
+      "publisher": "Business Wire",
+      "link": "https://de.finance.yahoo.com/nachrichten/rimini-street-erh%C3%A4lt-rahmenvertrag-f%C3%BCr-183100148.html",
+      "providerPublishTime": 1793903460,
+      "relatedTickers": [
+        "RMNI",
+        "ORCL",
+        "SAP.DE",
+        "IBM"
+      ]
+    },
+    {
+      "uuid": "59c05f33-8d0d-3c64-8345-f58570440efc",
+      "title": "Cellebrite ernennt Rogerio Rizzi zum Executive Vice President für Corporate Strategy and Development",
+      "publisher": "PR Newswire",
+      "link": "https://de.finance.yahoo.com/nachrichten/cellebrite-ernennt-rogerio-rizzi-executive-133000740.html",
+      "providerPublishTime": 1793885400,
+      "relatedTickers": [
+        "CLBT",
+        "SAP.DE",
+        "OKTA"
+      ]
+    },
+    {
+      "uuid": "6b121f4c-d425-3e44-bd3c-b4bf83434503",
+      "title": "Infineon-Aktie für 1.000 Euro: Kauft man hier die perfekte KI-Alternative zu SAP?",
+      "publisher": "Aktienwelt360",
+      "link": "https://de.finance.yahoo.com/nachrichten/infineon-aktie-f%C3%BCr-1-000-071558171.html",
+      "providerPublishTime": 1793776558,
+      "relatedTickers": [
+        "IFX.DE",
+        "SAP.DE"
+      ]
+    },
+    {
+      "uuid": "610ae14f-9a9d-37a3-a5cc-fc01e6c812ab",
+      "title": "Andersen Consulting nimmt das Partnerunternehmen JKIT in seinen Verbund auf",
+      "publisher": "Business Wire",
+      "link": "https://de.finance.yahoo.com/nachrichten/andersen-consulting-nimmt-partnerunternehmen-jkit-231000691.html",
+      "providerPublishTime": 1793142600,
+      "relatedTickers": [
+        "SAP.DE",
+        "MSFT",
+        "CRM",
+        "DATB.PVT"
+      ]
+    },
+    {
+      "uuid": "fd34ff79-4d74-314b-983c-7ada7a8a62a6",
+      "title": "Neues Angebot von Redwood Software wird als SAP-Lösungserweiterung vertrieben.",
+      "publisher": "PR Newswire",
+      "link": "https://de.finance.yahoo.com/nachrichten/neues-angebot-redwood-software-sap-070000894.html",
+      "providerPublishTime": 1792998000,
+      "relatedTickers": [
+        "SAP.DE"
+      ]
+    }
+  ]
+}

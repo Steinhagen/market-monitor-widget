@@ -334,6 +334,22 @@ msgid "Stock Price Text"
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
+msgid "Local language only"
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "English only"
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Several languages"
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local language, English fallback"
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
 msgid "Chart style:"
 msgstr ""
 
@@ -426,23 +442,7 @@ msgid "News language:"
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Local language only"
-msgstr ""
-
-#: contents/ui/settings/pages/chartNews.qml
-msgid "Local language, English fallback"
-msgstr ""
-
-#: contents/ui/settings/pages/chartNews.qml
-msgid "English only"
-msgstr ""
-
-#: contents/ui/settings/pages/chartNews.qml
-msgid "Several languages"
-msgstr ""
-
-#: contents/ui/settings/pages/chartNews.qml
-msgid "Yahoo Finance is English-only. Google follows the selected languages; in Several languages mode it is queried once per language. BVB uses its Romanian or English attachment."
+msgid "Yahoo Finance is available in English, German, French, Spanish and Italian; it is queried in each selected language from that list. Google follows the selected languages and is queried once per language in Several languages mode. BVB uses its Romanian or English attachment."
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
@@ -462,7 +462,7 @@ msgid "News sources:"
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Yahoo Finance (English)"
+msgid "Yahoo Finance (English and regional editions)"
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
@@ -482,11 +482,11 @@ msgid "Select at least one language."
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Local-only mode needs Google or BVB enabled."
+msgid "Local-only mode needs a source that covers this language."
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Headlines from the sources selected above. Yahoo Finance covers general news; Google adds a web search by company name; BVB provides the issuer's announcements for symbols ending in .RO. Switch with the icons next to the market status. Not available in the list-only view."
+msgid "Headlines from the sources selected above. Yahoo Finance covers general news in English, German, French, Spanish and Italian; Google adds a web search by company name; BVB provides the issuer's announcements for symbols ending in .RO. Switch with the icons next to the market status. Not available in the list-only view."
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
@@ -755,6 +755,10 @@ msgstr ""
 
 #: contents/ui/settings/pages/panelView.qml
 msgid "Alternate them in the same spot"
+msgstr ""
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Does not work in horizontal single-line or vertical mode."
 msgstr ""
 
 #: contents/ui/settings/pages/panelView.qml
@@ -1465,8 +1469,4 @@ msgstr ""
 
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "Updated"
-msgstr ""
-
-#: contents/ui/settings/pages/panelView.qml
-msgid "Does not work in horizontal single-line or vertical mode."
 msgstr ""

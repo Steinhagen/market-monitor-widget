@@ -392,8 +392,9 @@ PlasmoidItem {
     // Fetched only while the News pane is on screen, never by the quote timer. Kept in
     // memory per symbol, so switching rows in the two-column view reuses fresh results;
     // headlines go stale quickly, so they are not saved in the config like the quotes.
-    // Yahoo supplies the general headlines, Google News searches the web by company
-    // name, and Bucharest symbols (.RO) also get the issuer's announcements from BVB.
+    // Yahoo supplies the general headlines in the selected language, Google News
+    // searches the web by company name, and Bucharest symbols (.RO) also get the
+    // issuer's announcements from BVB.
     // All are merged into `items`, each item keeping its `source`, so the news view can
     // filter by provider.
     // Set by our own panel popup; Plasma's popup reports through `expanded`.
@@ -424,7 +425,9 @@ PlasmoidItem {
     function retryNewsWithName() { newsController.retryNewsWithName(); }
     function newsAge(timeSec) { return newsController.newsAge(timeSec); }
     function openNewsLink(url) { newsController.openNewsLink(url); }
-    function openYahooNews(symbol) { newsController.openYahooNews(symbol); }
+    function openYahooNews(symbol, language) { newsController.openYahooNews(symbol, language); }
+    function yahooItemLanguages(items) { return newsController.yahooItemLanguages(items); }
+    function newsMoreTargets(items) { return newsController.newsMoreTargets(items); }
     function openBvbNews(symbol) { newsController.openBvbNews(symbol); }
     function openGoogleNews(symbol) { newsController.openGoogleNews(symbol); }
 

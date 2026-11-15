@@ -55,18 +55,6 @@ Rectangle {
     property string newsSource: ""
     readonly property bool newsFilterRelevant: newsSources.length > 1
     readonly property string newsSourceFilter: newsSources.indexOf(newsSource) >= 0 ? newsSource : ""
-    // What the "More on ..." link opens: the filtered provider, or for the combined list
-    // the provider of the newest headline, so a BVB-only result does not send the user to
-    // Yahoo. Falls back to the first provider, then Yahoo.
-    readonly property string newsMoreSource: {
-        if (newsSourceFilter !== "") return newsSourceFilter;
-        var items = applet.newsItems;
-        if (items.length > 0) {
-            var source = String(items[0].source || "").trim();
-            if (source !== "") return source;
-        }
-        return newsSources.length > 0 ? newsSources[0] : "Yahoo";
-    }
     readonly property var newsFilteredItems: {
         var items = applet.newsItems;
         if (newsSourceFilter === "") return items;
@@ -289,7 +277,6 @@ Rectangle {
                     active: singleStockRoot.newsMode
                     items: singleStockRoot.newsFilteredItems
                     stateText: singleStockRoot.newsStateText
-                    moreSource: singleStockRoot.newsMoreSource
                     sources: singleStockRoot.newsSources
                 }
 

@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Window
 import org.kde.kirigami as Kirigami
 import "../components/SettingsWindow.js" as ConfigWindow
+import "../../providers/yahoo/news.js" as YahooNews
 
 Item {
     id: page
@@ -87,6 +88,24 @@ Item {
 
     function languageSelected(code) {
         return ("," + String(cfg_newsLanguages || "") + ",").indexOf("," + code + ",") >= 0;
+    }
+
+    // Yahoo serves English, German, French, Spanish and Italian news through the same
+    // locale-aware search endpoint. The source switch is disabled when the current
+    // language selection has none of them.
+    readonly property bool yahooUsable: {
+        var mode = String(cfg_newsLanguage || "systemFallback");
+        if (mode === "english") return true;
+        if (mode === "multi") {
+            for (var i = 0; i < languageOptions.length; i++) {
+                if (languageSelected(languageOptions[i].code)
+                        && YahooNews.supportsLanguage(languageOptions[i].code))
+                    return true;
+            }
+            return false;
+        }
+        if (YahooNews.supportsLanguage(localLanguageCode)) return true;
+        return mode === "systemFallback";
     }
 
     function setLanguage(code, on) {
@@ -240,7 +259,7 @@ Item {
             Label {
                 Layout.fillWidth: true
                 Layout.maximumWidth: Kirigami.Units.gridUnit * 22
-                text: i18n("Yahoo Finance is English-only. Google follows the selected languages; in Several languages mode it is queried once per language. BVB uses its Romanian or English attachment.")
+                text: i18n("Yahoo Finance is available in English, German, French, Spanish and Italian; it is queried in each selected language from that list. Google follows the selected languages and is queried once per language in Several languages mode. BVB uses its Romanian or English attachment.")
                 wrapMode: Text.WordWrap
                 font.pixelSize: 10
                 color: Kirigami.Theme.disabledTextColor
@@ -289,11 +308,8 @@ Item {
 
                 CheckBox {
                     id: newsYahooSwitch
-                    text: i18n("Yahoo Finance (English)")
-                    enabled: newsSwitch.checked
-                             && (page.cfg_newsLanguage !== "system"
-                                 || Qt.locale().name.substring(0, 2).toLowerCase() === "en")
-                             && (page.cfg_newsLanguage !== "multi" || page.languageSelected("en"))
+                    text: i18n("Yahoo Finance (English and regional editions)")
+                    enabled: newsSwitch.checked && page.yahooUsable
                 }
                 CheckBox {
                     id: newsBvbSwitch
@@ -333,7 +349,8 @@ Item {
                 Layout.maximumWidth: Kirigami.Units.gridUnit * 22
                 visible: newsSwitch.checked && page.cfg_newsLanguage === "system"
                          && !newsGoogleSwitch.checked && !newsBvbSwitch.checked
-                text: i18n("Local-only mode needs Google or BVB enabled.")
+                         && !(newsYahooSwitch.checked && page.yahooUsable)
+                text: i18n("Local-only mode needs a source that covers this language.")
                 wrapMode: Text.WordWrap
                 font.pixelSize: 10
                 color: Kirigami.Theme.negativeTextColor
@@ -344,7 +361,7 @@ Item {
                 // A wrapping Label still asks for its whole text width; without a cap the
                 // form makes the column that wide and the note runs past the page.
                 Layout.maximumWidth: Kirigami.Units.gridUnit * 22
-                text: i18n("Headlines from the sources selected above. Yahoo Finance covers general news; Google adds a web search by company name; BVB provides the issuer's announcements for symbols ending in .RO. Switch with the icons next to the market status. Not available in the list-only view.")
+                text: i18n("Headlines from the sources selected above. Yahoo Finance covers general news in English, German, French, Spanish and Italian; Google adds a web search by company name; BVB provides the issuer's announcements for symbols ending in .RO. Switch with the icons next to the market status. Not available in the list-only view.")
                 wrapMode: Text.WordWrap
                 font.pixelSize: 10
                 color: Kirigami.Theme.disabledTextColor

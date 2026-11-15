@@ -286,11 +286,11 @@ the rows above describe where the remaining files will go.
 ```
 
 Covered today: currencies (minor units/conversion), exchange labels, number/money and
-symbol formatting, market sessions, chart API parameters, Yahoo news and symbol search
-parsing, Google news parsing, BVB announcement parsing, backup format, chart-data and
-candle helpers, cache rules, the news registry, and the per-source merge in
-`NewsController`. Provider and controller tests take
-fixtures or injected data, so they stay deterministic.
+symbol formatting, market sessions, chart API parameters, Yahoo news (the locale-aware
+search API) and symbol search parsing, Google news parsing, BVB
+announcement parsing, backup format, chart-data and candle helpers, cache rules, the
+news registry, and the per-source merge in `NewsController`. Provider and controller
+tests take fixtures or injected data, so they stay deterministic.
 
 Fixtures are trimmed captures of real responses; when a provider changes its payload,
 update the fixture and the parser test together.

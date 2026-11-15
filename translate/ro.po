@@ -338,6 +338,22 @@ msgid "Stock Price Text"
 msgstr "Textul prețului acțiunii"
 
 #: contents/ui/settings/pages/chartNews.qml
+msgid "Local language only"
+msgstr "Doar limba locală"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "English only"
+msgstr "Doar engleză"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Several languages"
+msgstr "Mai multe limbi"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local language, English fallback"
+msgstr "Limba locală, cu engleza ca rezervă"
+
+#: contents/ui/settings/pages/chartNews.qml
 msgid "Chart style:"
 msgstr "Stil grafic:"
 
@@ -430,24 +446,8 @@ msgid "News language:"
 msgstr "Limba știrilor:"
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Local language only"
-msgstr "Doar limba locală"
-
-#: contents/ui/settings/pages/chartNews.qml
-msgid "Local language, English fallback"
-msgstr "Limba locală, cu engleza ca rezervă"
-
-#: contents/ui/settings/pages/chartNews.qml
-msgid "English only"
-msgstr "Doar engleză"
-
-#: contents/ui/settings/pages/chartNews.qml
-msgid "Several languages"
-msgstr "Mai multe limbi"
-
-#: contents/ui/settings/pages/chartNews.qml
-msgid "Yahoo Finance is English-only. Google follows the selected languages; in Several languages mode it is queried once per language. BVB uses its Romanian or English attachment."
-msgstr "Yahoo Finance are doar știri în engleză. Google urmează limbile selectate; în modul „Mai multe limbi” este interogat o dată pentru fiecare limbă. BVB folosește atașamentul în română sau în engleză."
+msgid "Yahoo Finance is available in English, German, French, Spanish and Italian; it is queried in each selected language from that list. Google follows the selected languages and is queried once per language in Several languages mode. BVB uses its Romanian or English attachment."
+msgstr "Yahoo Finance este disponibil în engleză, germană, franceză, spaniolă și italiană; este interogat în fiecare limbă selectată din această listă. Google urmează limbile selectate și este interogat o dată pentru fiecare limbă în modul Mai multe limbi. BVB folosește atașamentul său în română sau engleză."
 
 #: contents/ui/settings/pages/chartNews.qml
 msgid "Local headlines first; English headlines from Google and Yahoo are appended as backup."
@@ -466,8 +466,8 @@ msgid "News sources:"
 msgstr "Surse de știri:"
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Yahoo Finance (English)"
-msgstr "Yahoo Finance (engleză)"
+msgid "Yahoo Finance (English and regional editions)"
+msgstr "Yahoo Finance (engleză și ediții regionale)"
 
 #: contents/ui/settings/pages/chartNews.qml
 msgid "BVB (Romanian/English, .RO symbols)"
@@ -486,12 +486,12 @@ msgid "Select at least one language."
 msgstr "Selectați cel puțin o limbă."
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Local-only mode needs Google or BVB enabled."
-msgstr "Modul „Doar limba locală” necesită Google sau BVB activat."
+msgid "Local-only mode needs a source that covers this language."
+msgstr "Modul doar limba locală are nevoie de o sursă care acoperă această limbă."
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Headlines from the sources selected above. Yahoo Finance covers general news; Google adds a web search by company name; BVB provides the issuer's announcements for symbols ending in .RO. Switch with the icons next to the market status. Not available in the list-only view."
-msgstr "Titluri din sursele selectate mai sus. Yahoo Finance acoperă știrile generale; Google adaugă o căutare web după numele companiei; BVB oferă comunicatele emitentului pentru simbolurile care se termină în .RO. Comută cu pictogramele de lângă starea pieței. Indisponibil în vizualizarea doar cu listă."
+msgid "Headlines from the sources selected above. Yahoo Finance covers general news in English, German, French, Spanish and Italian; Google adds a web search by company name; BVB provides the issuer's announcements for symbols ending in .RO. Switch with the icons next to the market status. Not available in the list-only view."
+msgstr "Titluri din sursele selectate mai sus. Yahoo Finance acoperă știri generale în engleză, germană, franceză, spaniolă și italiană; Google adaugă o căutare web după numele companiei; BVB furnizează anunțurile emitentului pentru simbolurile care se termină în .RO. Comutați cu pictogramele de lângă starea pieței. Nu este disponibil în vizualizarea doar listă."
 
 #: contents/ui/settings/pages/chartNews.qml
 msgid "Headlines per source (5–50):"
@@ -760,6 +760,10 @@ msgstr "Preț și procent:"
 #: contents/ui/settings/pages/panelView.qml
 msgid "Alternate them in the same spot"
 msgstr "Alternează-le în același loc"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Does not work in horizontal single-line or vertical mode."
+msgstr "Nu funcționează în modul orizontal cu o singură linie sau în modul vertical."
 
 #: contents/ui/settings/pages/panelView.qml
 msgid "Switch every (seconds):"
@@ -1478,6 +1482,21 @@ msgstr "Sesiune"
 msgid "Updated"
 msgstr "Actualizat"
 
+#~ msgid "Yahoo Finance is available in English, German, French, Spanish and Italian; a regional edition supplies headlines when it covers the stock. Google follows the selected languages and is queried once per language in Several languages mode. BVB uses its Romanian or English attachment."
+#~ msgstr "Yahoo Finance este disponibil în engleză, germană, franceză, spaniolă și italiană; o ediție regională furnizează titluri atunci când acoperă acțiunea. Google urmează limbile selectate și este interogat o dată pentru fiecare limbă în modul Mai multe limbi. BVB folosește atașamentul său în română sau engleză."
+
+#~ msgid "Yahoo Finance is English-only. Google follows the selected languages; in Several languages mode it is queried once per language. BVB uses its Romanian or English attachment."
+#~ msgstr "Yahoo Finance are doar știri în engleză. Google urmează limbile selectate; în modul „Mai multe limbi” este interogat o dată pentru fiecare limbă. BVB folosește atașamentul în română sau în engleză."
+
+#~ msgid "Yahoo Finance (English)"
+#~ msgstr "Yahoo Finance (engleză)"
+
+#~ msgid "Local-only mode needs Google or BVB enabled."
+#~ msgstr "Modul „Doar limba locală” necesită Google sau BVB activat."
+
+#~ msgid "Headlines from the sources selected above. Yahoo Finance covers general news; Google adds a web search by company name; BVB provides the issuer's announcements for symbols ending in .RO. Switch with the icons next to the market status. Not available in the list-only view."
+#~ msgstr "Titluri din sursele selectate mai sus. Yahoo Finance acoperă știrile generale; Google adaugă o căutare web după numele companiei; BVB oferă comunicatele emitentului pentru simbolurile care se termină în .RO. Comută cu pictogramele de lângă starea pieței. Indisponibil în vizualizarea doar cu listă."
+
 #~ msgid "Local headlines first; Yahoo Finance English headlines are appended as backup."
 #~ msgstr "Întâi știrile locale; titlurile Yahoo Finance în engleză sunt adăugate ca rezervă."
 
@@ -1748,6 +1767,3 @@ msgstr "Actualizat"
 
 #~ msgid "No portfolio data to export."
 #~ msgstr "Nu există date de portofoliu de exportat."
-
-msgid "Does not work in horizontal single-line or vertical mode."
-msgstr "Nu funcționează în modul orizontal cu o singură linie sau în modul vertical."

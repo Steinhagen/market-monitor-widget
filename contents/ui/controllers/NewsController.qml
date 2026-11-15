@@ -26,8 +26,18 @@ Item {
         return Cache.key(symbol);
     }
 
-    // Which sources the language mode actually uses. Yahoo is English-only, so local
-    // mode skips it; BVB headlines are Romanian, so English mode skips BVB.
+    // Languages Yahoo can serve in the current mode: English, German, French, Spanish
+    // and Italian editions, all through the same locale-aware search endpoint.
+    function yahooLanguages() {
+        var languages = activeLanguages();
+        var codes = [];
+        for (var i = 0; i < languages.length; i++) {
+            if (YahooNews.supportsLanguage(languages[i].code))
+                codes.push(languages[i].code);
+        }
+        return codes;
+    }
+
     function localLanguageCode() {
         var name = String(localeName || "");
         return name.substring(0, 2).toLowerCase();
@@ -71,8 +81,8 @@ Item {
         return "";
     }
 
-    // Languages to query for the current mode. Other modes use the system/English
-    // edition; multilingual mode uses exactly the languages selected in the settings.
+    // Languages to query for the current mode. Other modes use the system and English
+    // languages; multilingual mode uses exactly the languages selected in the settings.
     function activeLanguages() {
         var mode = String(applet.newsLanguage || "systemFallback");
         var localCode = localLanguageCode();
@@ -99,9 +109,6 @@ Item {
         return languages;
     }
 
-    // Which sources the language mode actually uses. Yahoo is included when the local
-    // language is English or an English backup is active; BVB picks its language from
-    // bvbLanguage().
     // Languages BVB should return for the current mode. In multilingual mode with
     // both Romanian and English selected, return both variants of each announcement;
     // other modes keep the single local/backup language.
@@ -118,20 +125,18 @@ Item {
         return one === "" ? [] : [one];
     }
 
+    // Which sources the language mode actually uses. Yahoo is kept when at least one
+    // active language has a Yahoo edition (English always does); BVB is kept when its
+    // Romanian or English attachment matches the mode.
     function effectiveSources(settings, symbol) {
         var sources = NewsRegistry.enabledSources(settings, symbol);
-        var language = String(settings.newsLanguage || "systemFallback");
         var result = [];
-        var codes = language === "multi" ? selectedLanguageCodes() : [];
+        var yahoo = yahooLanguages();
         var bvb = bvbLanguages();
         for (var i = 0; i < sources.length; i++) {
             var id = sources[i].id;
-            if (language === "system" && id === "yahoo" && localLanguageCode() !== "en") continue;
+            if (id === "yahoo" && yahoo.length === 0) continue;
             if (id === "bvb" && bvb.length === 0) continue;
-            if (language === "multi") {
-                if (codes.length === 0) continue;
-                if (id === "yahoo" && codes.indexOf("en") < 0) continue;
-            }
             result.push(sources[i]);
         }
         return result;
@@ -313,7 +318,9 @@ Item {
     }
 
     // Runs the sources that were waiting for the company name once the quote has
-    // supplied it. Sources whose name query already ran are left alone.
+    // supplied it. A source is retried whenever it still carries the flag, even when it
+    // already returned items: the name query can add the headlines the first pass
+    // missed.
     function retryNewsWithName() {
         if (!applet.newsPaneShown) return;
         var sym = applet.singleTicker.trim();
@@ -328,8 +335,9 @@ Item {
         var sources = effectiveSources(applet, sym);
         for (var i = 0; i < sources.length; i++) {
             var source = sources[i];
-            var items = (entry.sourceItems || {})[source.id] || [];
-            if ((entry.sourceNeedsName || {})[source.id] === true && items.length === 0)
+            // A source that produced items but still wanted the name is retried too: its
+            // name query can add headlines the ticker-only pass missed.
+            if ((entry.sourceNeedsName || {})[source.id] === true)
                 retry.push(source);
         }
         if (retry.length === 0) return;
@@ -345,14 +353,76 @@ Item {
         for (var k = 0; k < retry.length; k++) fetchSource(key, sym, retry[k]);
     }
 
-    function openNewsLink(url) {
-        Qt.openUrlExternally(YahooNews.safeLink(url, applet.singleTicker));
+    // Languages of the Yahoo items currently on screen, ordered local first, then the
+    // other non-English editions, then English. The news footer renders one link per
+    // entry, so a list that mixes editions can open each portal.
+    function yahooItemLanguages(items) {
+        var codes = [];
+        var seen = {};
+        var list = items || [];
+        for (var i = 0; i < list.length; i++) {
+            var item = list[i];
+            if (!item || item.source !== "Yahoo") continue;
+            var code = String(item.lang || "").toLowerCase();
+            if (!YahooNews.supportsLanguage(code) || seen[code]) continue;
+            seen[code] = true;
+            codes.push(code);
+        }
+        var local = localLanguageCode();
+        var ordered = [];
+        if (codes.indexOf(local) >= 0) ordered.push(local);
+        for (var j = 0; j < codes.length; j++) {
+            if (codes[j] !== local && codes[j] !== "en") ordered.push(codes[j]);
+        }
+        if (codes.indexOf("en") >= 0 && ordered.indexOf("en") < 0) ordered.push("en");
+        return ordered;
     }
 
-    function openYahooNews(symbol) {
+    // Which portal links the news footer should show for the visible items. Yahoo can
+    // contribute one per language; BVB and Google contribute one each when present. The
+    // order follows the registry (Yahoo, BVB, Google), so the "All" tab lists every
+    // source instead of only the source of the newest headline.
+    function newsMoreTargets(items) {
+        var list = items || [];
+        var targets = [];
+        var yahoo = yahooItemLanguages(list);
+        for (var i = 0; i < yahoo.length; i++)
+            targets.push({ source: "Yahoo", lang: yahoo[i] });
+        var hasBvb = false;
+        var hasGoogle = false;
+        for (var j = 0; j < list.length; j++) {
+            var item = list[j];
+            if (!item) continue;
+            if (item.source === "BVB") hasBvb = true;
+            else if (item.source === "Google") hasGoogle = true;
+        }
+        if (hasBvb) targets.push({ source: "BVB", lang: "" });
+        if (hasGoogle) targets.push({ source: "Google", lang: "" });
+        return targets;
+    }
+
+    // Which Yahoo edition the footer and the context menu open by default. The local
+    // language wins when it has an edition, then the first non-English one, so having a
+    // second language selected never falls back to the English portal.
+    function yahooPageLanguage() {
+        var codes = yahooLanguages();
+        var local = localLanguageCode();
+        if (codes.indexOf(local) >= 0) return local;
+        for (var i = 0; i < codes.length; i++) {
+            if (codes[i] !== "en") return codes[i];
+        }
+        return "en";
+    }
+
+    function openNewsLink(url) {
+        Qt.openUrlExternally(YahooNews.safeLink(url, applet.singleTicker, yahooPageLanguage()));
+    }
+
+    function openYahooNews(symbol, language) {
         var clean = symbol ? String(symbol).trim() : "";
         if (clean === "") return;
-        Qt.openUrlExternally(YahooNews.newsPageUrl(clean));
+        var code = language ? String(language).toLowerCase() : yahooPageLanguage();
+        Qt.openUrlExternally(YahooNews.newsPageUrl(clean, code));
     }
 
     function openBvbNews(symbol) {

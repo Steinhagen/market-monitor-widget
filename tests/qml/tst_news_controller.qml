@@ -248,4 +248,144 @@ TestCase {
         controller.applet.newsLanguage = "english";
         compare(controller.available, true);
     }
+
+    function test_yahooLanguages() {
+        var controller = makeController();
+        controller.localeName = "de_DE";
+
+        controller.applet.newsLanguage = "system";
+        compare(controller.yahooLanguages().join(","), "de");
+        controller.applet.newsLanguage = "systemFallback";
+        compare(controller.yahooLanguages().join(","), "de,en");
+        controller.applet.newsLanguage = "english";
+        compare(controller.yahooLanguages().join(","), "en");
+
+        controller.applet.newsLanguage = "multi";
+        controller.applet.newsLanguages = "fr,it,ro";
+        compare(controller.yahooLanguages().join(","), "fr,it");
+        controller.applet.newsLanguages = "ro,pl";
+        compare(controller.yahooLanguages().length, 0);
+
+        controller.localeName = "ro_RO";
+        controller.applet.newsLanguage = "system";
+        compare(controller.yahooLanguages().length, 0);
+    }
+
+    function test_yahooPageLanguage() {
+        var controller = makeController();
+        controller.localeName = "ro_RO";
+
+        controller.applet.newsLanguage = "multi";
+        controller.applet.newsLanguages = "fr";
+        compare(controller.yahooPageLanguage(), "fr");
+        // With two editions, the non-English one wins over the default English entry.
+        controller.applet.newsLanguages = "en,fr";
+        compare(controller.yahooPageLanguage(), "fr");
+        controller.applet.newsLanguages = "en,de";
+        compare(controller.yahooPageLanguage(), "de");
+        controller.applet.newsLanguages = "fr,de";
+        compare(controller.yahooPageLanguage(), "fr");
+        controller.applet.newsLanguages = "ro,en";
+        compare(controller.yahooPageLanguage(), "en");
+
+        controller.localeName = "de_DE";
+        controller.applet.newsLanguage = "systemFallback";
+        compare(controller.yahooPageLanguage(), "de");
+        controller.applet.newsLanguage = "system";
+        compare(controller.yahooPageLanguage(), "de");
+
+        controller.localeName = "en_US";
+        controller.applet.newsLanguage = "system";
+        compare(controller.yahooPageLanguage(), "en");
+    }
+
+    function test_yahooItemLanguages() {
+        var controller = makeController();
+        var items = [
+            { source: "Yahoo", lang: "en" },
+            { source: "Yahoo", lang: "fr" },
+            { source: "Yahoo", lang: "en" },
+            { source: "Google", lang: "fr" },
+            { source: "Yahoo", lang: "ro" }
+        ];
+
+        controller.localeName = "ro_RO";
+        compare(controller.yahooItemLanguages(items).join(","), "fr,en");
+        controller.localeName = "fr_FR";
+        compare(controller.yahooItemLanguages(items).join(","), "fr,en");
+        controller.localeName = "en_US";
+        compare(controller.yahooItemLanguages(items).join(","), "en,fr");
+
+        compare(controller.yahooItemLanguages([{ source: "Google", lang: "fr" }]).length, 0);
+        compare(controller.yahooItemLanguages([]).length, 0);
+        compare(controller.yahooItemLanguages(undefined).length, 0);
+    }
+
+    function test_newsMoreTargets() {
+        var controller = makeController();
+        controller.localeName = "ro_RO";
+        var items = [
+            { source: "Google", lang: "en" },
+            { source: "Yahoo", lang: "fr" },
+            { source: "Yahoo", lang: "en" },
+            { source: "BVB", lang: "ro" },
+            { source: "Yahoo", lang: "ro" }
+        ];
+        var targets = controller.newsMoreTargets(items);
+        var labels = [];
+        for (var i = 0; i < targets.length; i++)
+            labels.push(targets[i].source + ":" + targets[i].lang);
+        // The All tab lists every source present, Yahoo once per language.
+        compare(labels.join(","), "Yahoo:fr,Yahoo:en,BVB:,Google:");
+        // A source filter shows only that source.
+        compare(controller.newsMoreTargets([{ source: "Google", lang: "en" }]).length, 1);
+        compare(controller.newsMoreTargets([]).length, 0);
+        compare(controller.newsMoreTargets(undefined).length, 0);
+    }
+
+    function test_availableUsesRegionalYahoo() {
+        var controller = makeController();
+        controller.applet.newsSourceYahoo = true;
+        controller.applet.newsSourceGoogle = false;
+        controller.applet.newsSourceBvb = false;
+        controller.applet.singleTicker = "SAP.DE";
+
+        // A German Reader gets German Yahoo headlines for SAP.DE.
+        controller.localeName = "de_DE";
+        controller.applet.newsLanguage = "system";
+        compare(controller.available, true);
+        // Romanian has no Yahoo edition, so local-only mode has no source left.
+        controller.localeName = "ro_RO";
+        compare(controller.available, false);
+        // In multilingual mode Yahoo only counts for a language it can serve.
+        controller.applet.newsLanguage = "multi";
+        controller.applet.newsLanguages = "fr";
+        compare(controller.available, true);
+        controller.applet.newsLanguages = "ro";
+        compare(controller.available, false);
+    }
+
+    function test_visibleItemsShowsRegionalYahoo() {
+        var controller = makeController();
+        controller.localeName = "de_DE";
+        var sourceItems = {
+            yahoo: [
+                { id: "y1", title: "SAP steigt", source: "Yahoo", time: 20, lang: "de" },
+                { id: "y2", title: "SAP rises", source: "Yahoo", time: 10, lang: "en" }
+            ],
+            bvb: [],
+            google: []
+        };
+
+        controller.applet.newsLanguage = "system";
+        var shown = controller.visibleItems(sourceItems, true);
+        compare(shown.length, 1);
+        compare(shown[0].title, "SAP steigt");
+
+        controller.applet.newsLanguage = "systemFallback";
+        shown = controller.visibleItems(sourceItems, true);
+        compare(shown.length, 2);
+        compare(shown[0].title, "SAP steigt");
+        compare(shown[1].title, "SAP rises");
+    }
 }

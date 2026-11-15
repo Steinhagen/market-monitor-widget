@@ -5,6 +5,32 @@ All notable changes to Market Monitor are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Yahoo Finance headlines in German, French, Spanish and Italian, alongside
+  English. The provider now sends the selected language's `lang`/`region` to
+  Yahoo's search endpoint, so every edition keeps the same ticker tags, real
+  publisher names and filtering as the English feed. Each item keeps its
+  language for the badges and per-language views.
+
+### Changed
+
+- Yahoo Finance is no longer English-only: the source switch is enabled whenever
+  the current language mode includes one of the five languages Yahoo localises.
+  The same locale-aware search endpoint is used for every language; no separate
+  per-language endpoint or title matching is needed.
+
+### Fixed
+
+- The news footer lists every source present in the visible list: one
+  **More on Yahoo Finance** link per Yahoo language, plus **More on BVB** and
+  **More on Google** when those sources contributed headlines. Each Yahoo link
+  opens its edition's portal with the translated news route. Previously a single
+  link followed the newest headline's source, so the **All** tab could show only
+  Google even though it contained Yahoo and BVB headlines too.
+
 ## [1.1] - 2026-11-15
 
 ### Added

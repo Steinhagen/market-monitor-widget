@@ -110,7 +110,7 @@ RowLayout {
                             hoverHighlight: true
                             onClicked: {
                                 chartHeaderRow.host.newsSource = modelData.source;
-                                chartHeaderRow.newsPane.positionViewAtBeginning();
+                                chartHeaderRow.newsPane.positionAtBeginning();
                             }
                         }
                     }

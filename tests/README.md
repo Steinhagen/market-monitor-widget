@@ -30,7 +30,7 @@ tests/
 |---|---|
 | `tst_currencies.qml` | minor units (GBp/ILA), conversion, symbols |
 | `tst_exchanges.qml` | suffix parsing, base symbol, exchange labels |
-| `tst_news.qml` | Yahoo search URL, safe links, entity decoding, parsing, dedupe |
+| `tst_news.qml` | Yahoo search URLs (including locale), edition news pages, safe links, entity decoding, parsing, dedupe |
 | `tst_googlenews.qml` | locale query, name cleaning, RSS parsing, quote-page filter |
 | `tst_bvbnews.qml` | BVB symbol handling, announcement table, ASP.NET postback |
 | `tst_backup.qml` | backup round-trip, validation, legacy portfolio data |
@@ -45,7 +45,7 @@ tests/
 | `tst_yahoo_search.qml` | symbol search URL and result parsing |
 | `tst_cache.qml` | cache key, freshness and back-off rules |
 | `tst_registry.qml` | enabled news sources, BVB coverage, optional source |
-| `tst_news_controller.qml` | the controller merges the per-source lists |
+| `tst_news_controller.qml` | the controller merges the per-source lists, selects languages, and orders the footer links per source/language |
 | `tst_appconfig.qml` | configuration defaults, fallbacks and clamps |
 | `tst_text.qml` | HTML escaping for rich-text labels |
 | `tst_fxcontroller.qml` | rate cache, conversion and persistence |
@@ -70,6 +70,8 @@ per-source lists. The network clients themselves run only in the widget.
 Fixtures are real responses trimmed to the fields the parsers read:
 
 - `yahoo-search-sap.json` — Yahoo search reply for "SAP SE".
+- `yahoo-search-sap-de.json` — the same search for "SAP" with `lang=de-DE&region=DE`,
+  first six German items.
 - `google-news-sap.xml` — Google News RSS for "SAP SE", first six items.
 - `google-news-blocked.html` — the HTML page Google returns instead of a feed.
 - `bvb-issuer-tlv.html` — the BVB instrument page for TLV, reduced to the news table

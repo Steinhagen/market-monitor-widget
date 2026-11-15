@@ -32,8 +32,35 @@ Item {
         return false;
     }
     property string stateText: ""
-    property string moreSource: "Yahoo"
     property var sources: []
+    // One "More on ..." target per source present in the visible list. Yahoo can
+    // contribute several when the list mixes languages; BVB and Google contribute one
+    // each. This is what makes the "All" tab list every source, not just the newest one.
+    readonly property var moreLinks: {
+        var targets = pane.applet && typeof pane.applet.newsMoreTargets === "function"
+                      ? pane.applet.newsMoreTargets(pane.items) : [];
+        var yahooCount = 0;
+        for (var i = 0; i < targets.length; i++) {
+            if (targets[i].source === "Yahoo") yahooCount++;
+        }
+        var links = [];
+        for (var j = 0; j < targets.length; j++) {
+            var target = targets[j];
+            if (target.source === "Yahoo") {
+                links.push({
+                    source: "Yahoo",
+                    label: i18n("More on Yahoo Finance")
+                           + (yahooCount > 1 ? " (" + String(target.lang).toUpperCase() + ")" : ""),
+                    lang: target.lang
+                });
+            } else if (target.source === "BVB") {
+                links.push({ source: "BVB", label: i18n("More on BVB"), lang: "" });
+            } else if (target.source === "Google") {
+                links.push({ source: "Google", label: i18n("More on Google"), lang: "" });
+            }
+        }
+        return links;
+    }
 
     function positionAtBeginning() {
         newsList.positionViewAtBeginning();
@@ -182,30 +209,38 @@ Item {
 
                     footer: Item {
                         width: newsList.rowWidth
-                        height: 24
+                        height: Math.max(24, moreFlow.implicitHeight + 6)
 
-                        Text {
-                            anchors.left: parent.left
-                            anchors.leftMargin: 6
-                            anchors.verticalCenter: parent.verticalCenter
-                            text: (pane.moreSource === "BVB" ? i18n("More on BVB")
-                                   : pane.moreSource === "Google" ? i18n("More on Google")
-                                   : i18n("More on Yahoo Finance")) + " ›"
-                            textFormat: Text.PlainText
-                            color: pane.applet.secondaryTextColor
-                            font.pixelSize: 9
-                            font.bold: true
+                        Flow {
+                            id: moreFlow
+                            x: 6
+                            y: 3
+                            width: parent.width - 12
+                            spacing: 10
 
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    if (pane.moreSource === "BVB")
-                                        pane.applet.openBvbNews(pane.applet.singleTicker);
-                                    else if (pane.moreSource === "Google")
-                                        pane.applet.openGoogleNews(pane.applet.singleTicker);
-                                    else
-                                        pane.applet.openYahooNews(pane.applet.singleTicker);
+                            Repeater {
+                                model: pane.moreLinks
+
+                                delegate: Text {
+                                    required property var modelData
+                                    text: modelData.label + " ›"
+                                    textFormat: Text.PlainText
+                                    color: pane.applet.secondaryTextColor
+                                    font.pixelSize: 9
+                                    font.bold: true
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            if (modelData.source === "BVB")
+                                                pane.applet.openBvbNews(pane.applet.singleTicker);
+                                            else if (modelData.source === "Google")
+                                                pane.applet.openGoogleNews(pane.applet.singleTicker);
+                                            else
+                                                pane.applet.openYahooNews(pane.applet.singleTicker, modelData.lang);
+                                        }
+                                    }
                                 }
                             }
                         }
