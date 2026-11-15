@@ -170,6 +170,37 @@ TestCase {
         compare(controller.bvbLanguage(), "ro");
     }
 
+    function test_bvbLanguages() {
+        var controller = makeController();
+        controller.localeName = "ro_RO";
+
+        controller.applet.newsLanguage = "multi";
+        controller.applet.newsLanguages = "ro,en";
+        compare(controller.bvbLanguages().join(","), "ro,en");
+        controller.applet.newsLanguages = "ro";
+        compare(controller.bvbLanguages().join(","), "ro");
+        controller.applet.newsLanguages = "en";
+        compare(controller.bvbLanguages().join(","), "en");
+        controller.applet.newsLanguages = "fr";
+        compare(controller.bvbLanguages().length, 0);
+        controller.applet.newsLanguages = "fr,en";
+        compare(controller.bvbLanguages().join(","), "en");
+
+        controller.applet.newsLanguage = "systemFallback";
+        compare(controller.bvbLanguages().join(","), "ro");
+        controller.applet.newsLanguage = "english";
+        compare(controller.bvbLanguages().join(","), "en");
+
+        controller.localeName = "en_US";
+        controller.applet.newsLanguage = "system";
+        compare(controller.bvbLanguages().join(","), "en");
+        controller.applet.newsLanguage = "systemFallback";
+        compare(controller.bvbLanguages().join(","), "en");
+        controller.applet.newsLanguage = "multi";
+        controller.applet.newsLanguages = "ro,en";
+        compare(controller.bvbLanguages().join(","), "ro,en");
+    }
+
     function test_englishFallbackAppendsGoogleAndYahoo() {
         var controller = makeController();
         controller.localeName = "ro_RO";

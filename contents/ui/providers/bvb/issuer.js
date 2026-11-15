@@ -387,6 +387,16 @@ function fetch(ctx, done) {
         done([], "", {});
         return;
     }
+    var wanted = (Array.isArray(ctx.bvbLanguages) && ctx.bvbLanguages.length > 0)
+                 ? ctx.bvbLanguages
+                 : [String(ctx.language) === "english" ? "en" : "ro"];
+    var wantsRo = wanted.indexOf("ro") >= 0;
+    var wantsEn = wanted.indexOf("en") >= 0;
+    var sortItems = function (items) {
+        items.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });
+        return items;
+    };
+
     var finished = false;
     var finish = function(items, error) {
         if (finished) return;
@@ -399,8 +409,12 @@ function fetch(ctx, done) {
             finish([], error.message);
             return;
         }
-        var topItems = parseTop(html, symbol, limit, ctx.language);
-        if (topItems.length >= limit) {
+        var topRo = wantsRo ? parseTop(html, symbol, limit, "romanian") : [];
+        var topEn = wantsEn ? parseTop(html, symbol, limit, "english") : [];
+        var topItems = sortItems(topRo.concat(topEn));
+        var enough = (!wantsRo || topRo.length >= limit)
+                     && (!wantsEn || topEn.length >= limit);
+        if (enough) {
             finish(topItems, "");
             return;
         }
@@ -414,7 +428,11 @@ function fetch(ctx, done) {
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
         }, function(reply, postError) {
             var items = [];
-            if (!postError) items = parseFull(reply, symbol, limit, ctx.language);
+            if (!postError) {
+                var fullRo = wantsRo ? parseFull(reply, symbol, limit, "romanian") : [];
+                var fullEn = wantsEn ? parseFull(reply, symbol, limit, "english") : [];
+                items = sortItems(fullRo.concat(fullEn));
+            }
             if (items.length === 0) items = topItems;
             finish(items, "");
         });

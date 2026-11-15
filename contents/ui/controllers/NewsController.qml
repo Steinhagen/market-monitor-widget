@@ -102,16 +102,32 @@ Item {
     // Which sources the language mode actually uses. Yahoo is included when the local
     // language is English or an English backup is active; BVB picks its language from
     // bvbLanguage().
+    // Languages BVB should return for the current mode. In multilingual mode with
+    // both Romanian and English selected, return both variants of each announcement;
+    // other modes keep the single local/backup language.
+    function bvbLanguages() {
+        var mode = String(applet.newsLanguage || "systemFallback");
+        if (mode === "multi") {
+            var codes = selectedLanguageCodes();
+            var list = [];
+            if (codes.indexOf("ro") >= 0) list.push("ro");
+            if (codes.indexOf("en") >= 0) list.push("en");
+            return list;
+        }
+        var one = bvbLanguage();
+        return one === "" ? [] : [one];
+    }
+
     function effectiveSources(settings, symbol) {
         var sources = NewsRegistry.enabledSources(settings, symbol);
         var language = String(settings.newsLanguage || "systemFallback");
         var result = [];
         var codes = language === "multi" ? selectedLanguageCodes() : [];
-        var bvb = bvbLanguage();
+        var bvb = bvbLanguages();
         for (var i = 0; i < sources.length; i++) {
             var id = sources[i].id;
             if (language === "system" && id === "yahoo" && localLanguageCode() !== "en") continue;
-            if (id === "bvb" && bvb === "") continue;
+            if (id === "bvb" && bvb.length === 0) continue;
             if (language === "multi") {
                 if (codes.length === 0) continue;
                 if (id === "yahoo" && codes.indexOf("en") < 0) continue;
@@ -262,6 +278,7 @@ Item {
                       ? (bvbLanguage() === "en" ? "english" : "romanian")
                       : applet.newsLanguage,
             languages: activeLanguages(),
+            bvbLanguages: source.id === "bvb" ? bvbLanguages() : [],
             limit: applet.newsCount
         }, function(items, error, flags) {
             if (generation !== newsGeneration) return;

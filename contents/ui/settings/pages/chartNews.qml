@@ -39,7 +39,25 @@ Item {
         if (idx >= 0) rangeCombo.currentIndex = idx
     }
 
+    readonly property string localLanguageCode: Qt.locale().name.substring(0, 2).toLowerCase()
+
+    // On an English system "local" is already English; the fallback would not add a
+    // second language, so do not offer it there.
+    readonly property var languageModes: {
+        var modes = [
+            { value: "system", text: i18n("Local language only") },
+            { value: "english", text: i18n("English only") },
+            { value: "multi", text: i18n("Several languages") }
+        ];
+        if (localLanguageCode !== "en")
+            modes.splice(1, 0, { value: "systemFallback",
+                                 text: i18n("Local language, English fallback") });
+        return modes;
+    }
+
     onCfg_newsLanguageChanged: {
+        if (cfg_newsLanguage === "systemFallback" && localLanguageCode === "en")
+            cfg_newsLanguage = "system";
         var idx = newsLanguageCombo.indexOfValue(cfg_newsLanguage)
         if (idx >= 0) newsLanguageCombo.currentIndex = idx
     }
@@ -203,17 +221,17 @@ Item {
                 id: newsLanguageCombo
                 Kirigami.FormData.label: i18n("News language:")
                 enabled: newsSwitch.checked
-                model: [
-                    { value: "system", text: i18n("Local language only") },
-                    { value: "systemFallback", text: i18n("Local language, English fallback") },
-                    { value: "english", text: i18n("English only") },
-                    { value: "multi", text: i18n("Several languages") }
-                ]
+                model: page.languageModes
                 textRole: "text"
                 valueRole: "value"
                 onActivated: page.cfg_newsLanguage = currentValue
                 Component.onCompleted: {
-                    if (page.cfg_newsLanguage === "") page.cfg_newsLanguage = "systemFallback";
+                    if (page.cfg_newsLanguage === "")
+                        page.cfg_newsLanguage = page.localLanguageCode === "en"
+                                                ? "system" : "systemFallback";
+                    else if (page.cfg_newsLanguage === "systemFallback"
+                             && page.localLanguageCode === "en")
+                        page.cfg_newsLanguage = "system";
                     var idx = indexOfValue(page.cfg_newsLanguage);
                     if (idx >= 0) currentIndex = idx;
                 }
