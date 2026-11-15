@@ -63,4 +63,13 @@ TestCase {
         compare(controller.newsKey(""), "");
         compare(controller.newsKey(undefined), "");
     }
+
+    function test_newsDateIncludesYearForOlderArticles() {
+        var controller = makeController();
+        var now = new Date(2026, 10, 15).getTime();
+        var lastYear = new Date(2025, 10, 4).getTime() / 1000;
+        var thisYear = new Date(2026, 10, 4).getTime() / 1000;
+        verify(controller.newsDate(lastYear, now).indexOf("2025") >= 0);
+        compare(controller.newsDate(thisYear, now).indexOf("2026"), -1);
+    }
 }

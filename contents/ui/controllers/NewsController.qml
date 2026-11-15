@@ -210,6 +210,15 @@ Item {
         onTriggered: newsClock++
     }
 
+    // Formats an older headline. The year is only shown when the article is not from
+    // the current year, so "4 Nov" cannot be mistaken for a recent article.
+    function newsDate(timeSec, nowMs) {
+        var date = new Date(timeSec * 1000);
+        var now = new Date(nowMs);
+        return date.toLocaleDateString(Qt.locale(),
+            date.getFullYear() === now.getFullYear() ? "d MMM" : "d MMM yyyy");
+    }
+
     // "just now", "5 min ago", "2 h ago", "3 d ago", or the date after a week.
     function newsAge(timeSec) {
         // Read the clock so QML re-evaluates callers every minute.
@@ -221,7 +230,7 @@ Item {
             case "min": return i18ncp("@item:news age", "%1 min ago", "%1 min ago", age.n);
             case "h": return i18ncp("@item:news age", "%1 h ago", "%1 h ago", age.n);
             case "d": return i18ncp("@item:news age", "%1 d ago", "%1 d ago", age.n);
-            default: return new Date(timeSec * 1000).toLocaleDateString(Qt.locale(), "d MMM");
+            default: return newsDate(timeSec, Date.now());
         }
     }
 
