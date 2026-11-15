@@ -5,7 +5,7 @@ All notable changes to Market Monitor are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1] - 2026-11-15
 
 ### Added
 
@@ -104,5 +104,5 @@ pre-rename history is in [docs/CHANGELOG-legacy.md](docs/CHANGELOG-legacy.md).
   to the imported ones.
 - Analyst target markers now use a drawn, consistently centred up/down triangle.
 
-[Unreleased]: https://github.com/Steinhagen/market-monitor-widget/compare/v1.0...HEAD
+[1.1]: https://github.com/Steinhagen/market-monitor-widget/releases/tag/v1.1
 [1.0]: https://github.com/Steinhagen/market-monitor-widget/releases/tag/v1.0
