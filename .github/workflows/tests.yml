@@ -36,5 +36,8 @@ jobs:
         run: |
           PATH="/usr/lib/qt6/bin:$PATH" ./tests/lint.sh
 
+      - name: Test the backup helper
+        run: ./tests/backup-io.sh
+
       - name: Run the harness
         run: ./tests/run.sh

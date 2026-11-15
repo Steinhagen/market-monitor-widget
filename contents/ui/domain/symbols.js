@@ -25,6 +25,16 @@ function displayTicker(ticker, mode) {
     return Number(mode) === 0 ? clean : Exchanges.baseSymbol(clean);
 }
 
+// The symbols the widget accepts from a backup, a search result or a typed field.
+// Yahoo uses letters, digits and these separators (^GSPC, EURUSD=X, BRK-B, BRD.RO,
+// M&M.NS); anything else could break a request URL or is not a symbol at all.
+var SYMBOL_PATTERN = /^[A-Z0-9.^=_&+-]{1,32}$/;
+
+function isValidSymbol(ticker) {
+    var clean = String(ticker === undefined || ticker === null ? "" : ticker).trim().toUpperCase();
+    return SYMBOL_PATTERN.test(clean);
+}
+
 // Short exchange label for the badge, or "" when badges are off, the symbol has no
 // exchange suffix, or no exchange is known. A plain US ticker has no suffix to
 // replace, so it does not need a badge.

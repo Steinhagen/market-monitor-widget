@@ -10,5 +10,7 @@ Text {
 
     color: applet ? applet.priceColor : "#ffffff"
     opacity: dimmed ? 0.3 : (applet ? applet.priceOpacity / 100.0 : 1.0)
+    // Prices carry the currency symbol from the quote feed; never parse them as markup.
+    textFormat: Text.PlainText
     Behavior on opacity { NumberAnimation { duration: 150 } }
 }

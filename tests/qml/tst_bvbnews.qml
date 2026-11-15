@@ -16,6 +16,18 @@ TestCase {
         compare(BvbNews.detailUrl("SAP.DE"), "");
     }
 
+    function test_absoluteLink() {
+        compare(BvbNews.absoluteLink("https://www.bvb.ro/a.pdf"), "https://www.bvb.ro/a.pdf");
+        // Plain HTTP is upgraded, not opened over cleartext.
+        compare(BvbNews.absoluteLink("http://www.bvb.ro/a.pdf"), "https://www.bvb.ro/a.pdf");
+        compare(BvbNews.absoluteLink("//cdn.example.com/a.pdf"), "https://cdn.example.com/a.pdf");
+        compare(BvbNews.absoluteLink("/a.pdf"), "https://www.bvb.ro/a.pdf");
+        compare(BvbNews.absoluteLink("a.pdf"), "https://www.bvb.ro/a.pdf");
+        // A non-web scheme is not a document link.
+        compare(BvbNews.absoluteLink("javascript:alert(1)"), "");
+        compare(BvbNews.absoluteLink(""), "");
+    }
+
     function test_parseTop() {
         var html = Fixture.read(Qt.resolvedUrl("../fixtures/bvb-issuer-tlv.html"));
         var items = BvbNews.parseTop(html, "TLV.RO", 10);

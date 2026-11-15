@@ -165,6 +165,7 @@ Item {
                                         id: languageText
                                         anchors.centerIn: parent
                                         text: newsRow.langLabel
+                                        textFormat: Text.PlainText
                                         color: pane.applet.secondaryTextColor
                                         font.pixelSize: 8
                                         font.bold: true

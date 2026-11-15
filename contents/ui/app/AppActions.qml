@@ -14,7 +14,7 @@ Item {
     function openYahooQuote(symbol) {
         var clean = symbol ? String(symbol).trim() : "";
         if (clean === "") return;
-        Qt.openUrlExternally("https://finance.yahoo.com/quote/" + clean);
+        Qt.openUrlExternally("https://finance.yahoo.com/quote/" + encodeURIComponent(clean));
     }
 
     // Left click on a watchlist row: select it (recommended) or open its quote page.

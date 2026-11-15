@@ -39,6 +39,7 @@ Rectangle {
                 text: moneyText(totals.cost)
                 font.pixelSize: 15
                 font.bold: true
+                textFormat: Text.PlainText
             }
         }
 
@@ -54,6 +55,7 @@ Rectangle {
                 text: moneyText(totals.value)
                 font.pixelSize: 15
                 font.bold: true
+                textFormat: Text.PlainText
             }
         }
 
@@ -73,6 +75,7 @@ Rectangle {
                                                 : Kirigami.Theme.negativeTextColor)
                 font.pixelSize: 15
                 font.bold: true
+                textFormat: Text.PlainText
             }
             Label {
                 text: percentText(totals.gainPercent)
@@ -100,6 +103,7 @@ Rectangle {
                                                : Kirigami.Theme.negativeTextColor)
                 font.pixelSize: 15
                 font.bold: true
+                textFormat: Text.PlainText
             }
             Label {
                 text: percentText(totals.dayPercent)

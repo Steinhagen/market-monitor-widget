@@ -67,7 +67,12 @@ function parseTime(text) {
 function absoluteLink(href) {
     var link = String(href === undefined || href === null ? "" : href).trim();
     if (link === "") return "";
-    if (/^https?:\/\//i.test(link)) return link;
+    if (/^https:\/\//i.test(link)) return link;
+    // The page itself is served over HTTPS. Upgrade a plain-HTTP link rather than
+    // opening it over cleartext, and keep protocol-relative links on HTTPS too.
+    if (/^http:\/\//i.test(link)) return "https://" + link.substring(7);
+    // A non-web scheme (javascript:, file:, mailto:) is not a document link.
+    if (/^[a-z][a-z0-9+.-]*:/i.test(link)) return "";
     if (link.indexOf("//") === 0) return "https:" + link;
     if (link.charAt(0) === "/") return "https://www.bvb.ro" + link;
     return "https://www.bvb.ro/" + link;

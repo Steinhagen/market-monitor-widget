@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Window
 import org.kde.kirigami as Kirigami
+import "../../core/Text.js" as TextUtil
 import "../components/SettingsWindow.js" as ConfigWindow
 import "../../providers/yahoo/search.js" as YahooSearch
 
@@ -183,6 +184,7 @@ Item {
                 text: i18n("Type to find symbols and click Search.")
                 font.pixelSize: 11
                 color: Kirigami.Theme.neutralTextColor
+                textFormat: Text.PlainText
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
             }
@@ -197,7 +199,10 @@ Item {
                         Layout.fillWidth: true
                         
                         Label {
-                            text: "<b>" + model.symbol + "</b> - " + model.name
+                            // StyledText: the bold symbol is ours, the two feed values are escaped.
+                            text: "<b>" + TextUtil.escapeHtml(model.symbol) + "</b> - "
+                                  + TextUtil.escapeHtml(model.name)
+                            textFormat: Text.StyledText
                             Layout.fillWidth: true
                             elide: Text.ElideRight
                         }

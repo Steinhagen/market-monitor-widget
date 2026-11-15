@@ -3,6 +3,7 @@
 // { symbol, name } records the settings list shows.
 
 .import "../../core/Http.js" as Http
+.import "../../domain/symbols.js" as Symbols
 
 function searchUrl(query) {
     return "https://query2.finance.yahoo.com/v1/finance/search?q=" + encodeURIComponent(query);
@@ -14,9 +15,13 @@ function parse(reply) {
     for (var i = 0; i < quotes.length; i++) {
         var item = quotes[i];
         if (!item || !item.symbol) continue;
+        // A feed value must not become an arbitrary config string: keep only
+        // symbols that the quote request and the widget's URL encoding can use.
+        var symbol = String(item.symbol).trim().toUpperCase();
+        if (!Symbols.isValidSymbol(symbol)) continue;
         results.push({
-            symbol: item.symbol,
-            name: item.shortname || item.longname || item.symbol
+            symbol: symbol,
+            name: item.shortname || item.longname || symbol
         });
     }
     return results;

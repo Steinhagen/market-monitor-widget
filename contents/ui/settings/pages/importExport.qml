@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Window
 import Qt.labs.platform as QLP
 import org.kde.kirigami as Kirigami
+import "../../core/Text.js" as TextUtil
 import "../importExport/backupFormat.js" as Backup
 import "../components/SettingsWindow.js" as ConfigWindow
 import "../importExport"
@@ -137,7 +138,9 @@ Item {
         } catch (e) {
             // Keep the undecoded name; it is only displayed in the status line.
         }
-        return name;
+        // InlineMessage renders AutoText, and a downloaded backup name can contain
+        // markup. The name is only ever shown here, never used as a path.
+        return TextUtil.plainText(name);
     }
 
     function setScope(value) {
@@ -247,7 +250,7 @@ Item {
         if (detail === "timeout") {
             message = i18n("The file operation timed out.");
         } else if (detail) {
-            message += " " + i18n("Details: %1", detail);
+            message += " " + i18n("Details: %1", TextUtil.plainText(detail));
         }
         page.setStatus(message, true);
     }

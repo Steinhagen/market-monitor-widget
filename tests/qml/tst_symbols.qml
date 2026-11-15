@@ -40,4 +40,21 @@ TestCase {
         compare(Symbols.nameAndTicker("Loading...", "AAPL", false, "Loading..."), "AAPL");
         compare(Symbols.nameAndTicker("", "AAPL", false, "Loading..."), "AAPL");
     }
+
+    function test_isValidSymbol() {
+        verify(Symbols.isValidSymbol("AAPL"));
+        verify(Symbols.isValidSymbol("brd.ro"));
+        verify(Symbols.isValidSymbol("  tlv.ro  "));
+        verify(Symbols.isValidSymbol("^GSPC"));
+        verify(Symbols.isValidSymbol("EURUSD=X"));
+        verify(Symbols.isValidSymbol("BRK-B"));
+        verify(Symbols.isValidSymbol("M&M.NS"));
+        // Anything that could break a request URL, or is not a symbol at all.
+        verify(!Symbols.isValidSymbol(""));
+        verify(!Symbols.isValidSymbol("A B"));
+        verify(!Symbols.isValidSymbol("A/B"));
+        verify(!Symbols.isValidSymbol("AAPL;rm -rf /"));
+        verify(!Symbols.isValidSymbol('<img src="https://x">'));
+        verify(!Symbols.isValidSymbol(new Array(34).join("A")));
+    }
 }

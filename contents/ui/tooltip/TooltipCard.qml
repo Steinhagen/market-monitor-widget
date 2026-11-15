@@ -147,6 +147,7 @@ Item {
                 color: card.textColor
                 font.pixelSize: Math.round(Kirigami.Theme.defaultFont.pixelSize * 1.1)
                 font.weight: Font.DemiBold
+                textFormat: Text.PlainText
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
             }
@@ -157,6 +158,7 @@ Item {
                 text: card.sessionText
                 color: card.mutedColor
                 font.pixelSize: Math.max(9, Kirigami.Theme.defaultFont.pixelSize - 1)
+                textFormat: Text.PlainText
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
             }
@@ -170,6 +172,7 @@ Item {
             color: card.cached ? (card.applet ? card.applet.warningTextColor : card.mutedColor)
                                : card.mutedColor
             font.pixelSize: Math.max(9, Kirigami.Theme.defaultFont.pixelSize - 1)
+            textFormat: Text.PlainText
             horizontalAlignment: Text.AlignRight
             elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
@@ -270,6 +273,7 @@ Item {
                             color: card.textColor
                             font.pixelSize: Kirigami.Theme.defaultFont.pixelSize
                             font.bold: true
+                            textFormat: Text.PlainText
                             elide: Text.ElideRight
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -281,6 +285,7 @@ Item {
                             color: card.mutedColor
                             font.family: Kirigami.Theme.defaultFont.family
                             font.pixelSize: Math.max(9, Kirigami.Theme.defaultFont.pixelSize - 2)
+                            textFormat: Text.PlainText
                             verticalAlignment: Text.AlignVCenter
                         }
                     }
@@ -289,6 +294,7 @@ Item {
                         text: modelData.status
                         color: card.mutedColor
                         font.pixelSize: Kirigami.Theme.defaultFont.pixelSize
+                        textFormat: Text.PlainText
                         elide: Text.ElideRight
                         verticalAlignment: Text.AlignVCenter
                     }
@@ -297,6 +303,7 @@ Item {
                         text: modelData.price
                         color: card.textColor
                         font.pixelSize: Kirigami.Theme.defaultFont.pixelSize
+                        textFormat: Text.PlainText
                         horizontalAlignment: Text.AlignRight
                         elide: Text.ElideRight
                         verticalAlignment: Text.AlignVCenter
@@ -306,6 +313,7 @@ Item {
                         text: modelData.change
                         color: modelData.isPos ? card.applet.positiveColor : card.applet.negativeColor
                         font.pixelSize: Kirigami.Theme.defaultFont.pixelSize
+                        textFormat: Text.PlainText
                         horizontalAlignment: Text.AlignRight
                         elide: Text.ElideRight
                         verticalAlignment: Text.AlignVCenter

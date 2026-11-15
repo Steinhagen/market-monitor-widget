@@ -189,6 +189,8 @@ Item {
                             color: rowRoot.applet.tickerColor
                             opacity: rowRoot.applet.tickerOpacity / 100.0
                             font.pixelSize: 14
+                            // The name comes from the quote feed; never parse it as markup.
+                            textFormat: Text.PlainText
                             elide: Text.ElideRight
                         }
                         // Short exchange label, e.g. BVB for BRD.RO. Only shown in
@@ -215,11 +217,13 @@ Item {
                                 color: rowRoot.applet.secondaryTextColor
                                 font.pixelSize: 9
                                 font.bold: true
+                                textFormat: Text.PlainText
                                 opacity: 0.85
                             }
                             HoverHandler { id: listExchangeHover }
                             ToolTip.visible: listExchangeHover.hovered
-                            ToolTip.text: rowRoot.row.exchangeFull || rowRoot.row.exchange
+                            // ToolTip.text is parsed as rich text by Qt Quick Controls.
+                            ToolTip.text: TextUtil.plainText(rowRoot.row.exchangeFull || rowRoot.row.exchange)
                         }
                     }
                     Item { Layout.fillWidth: true }
@@ -229,6 +233,8 @@ Item {
                         color: rowRoot.applet.priceColor
                         opacity: rowRoot.applet.priceOpacity / 100.0
                         font.pixelSize: 14
+                        // The price carries the currency symbol from the quote feed.
+                        textFormat: Text.PlainText
                         Layout.alignment: Qt.AlignRight
                         Layout.minimumWidth: implicitWidth
                     }
@@ -282,8 +288,10 @@ Item {
                             var out = "";
                             if (pick[0] !== null) out += '<font color="' + rowRoot.applet.secondaryTextColor + '">' + pick[0] + '</font>' + gap;
                             // With no change shown, colour the price itself so the direction is still visible.
-                            out += '<font color="' + (pick[2] === null ? accent : rowRoot.applet.priceColor) + '">' + pick[1] + '</font>';
-                            if (pick[2] !== null) out += gap + '<font color="' + accent + '">' + pick[2] + '</font>';
+                            out += '<font color="' + (pick[2] === null ? accent : rowRoot.applet.priceColor) + '">'
+                                 + TextUtil.escapeHtml(pick[1]) + '</font>';
+                            if (pick[2] !== null) out += gap + '<font color="' + accent + '">'
+                                                         + TextUtil.escapeHtml(pick[2]) + '</font>';
                             return out;
                         }
 
@@ -329,6 +337,7 @@ Item {
                             text: rowRoot.row.change + " (" + rowRoot.row.pct + ")"
                             color: rowRoot.row.isPos ? rowRoot.applet.positiveColor : rowRoot.applet.negativeColor
                             font.pixelSize: 11
+                            textFormat: Text.PlainText
                         }
                     }
                 }

@@ -60,11 +60,11 @@ function newsPageUrl(symbol, language) {
         + encodeURIComponent(String(symbol).trim()) + "/" + edition.news + "/";
 }
 
-// Only web links are opened. Anything else (javascript:, file:, empty) opens the symbol's
-// news page instead.
+// Only secure web links are opened. Anything else (http:, javascript:, file:, empty)
+// opens the symbol's news page instead.
 function safeLink(url, symbol, language) {
     var link = String(url === undefined || url === null ? "" : url).trim();
-    return /^https?:\/\//i.test(link) ? link : newsPageUrl(symbol, language);
+    return /^https:\/\//i.test(link) ? link : newsPageUrl(symbol, language);
 }
 
 // One pass, so "&amp;lt;" becomes "&lt;" and is not decoded twice. The result is shown

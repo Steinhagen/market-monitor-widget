@@ -6,6 +6,7 @@ QML unit and controller tests for the widget, run with `qmltestrunner`.
 ./tests/run.sh      # component tests
 ./tests/lint.sh     # QML syntax gate (also run in CI)
 ./tests/smoke.sh    # compile-load every QML file (local, needs Plasma)
+./tests/backup-io.sh # backup helper: read cap and chunked write (also run in CI)
 ```
 
 The script exports `QML_XHR_ALLOW_FILE_READ=1` (the fixture loader reads local files
@@ -18,6 +19,7 @@ tests/
 ├── run.sh                  # component tests
 ├── lint.sh                 # QML syntax check
 ├── smoke.sh                # compile-load all views (local only)
+├── backup-io.sh            # backup helper: read cap and chunked write
 ├── qml/
 │   ├── Fixture.js          # read(url) helper for fixtures
 │   └── tst_*.qml           # one TestCase per module
@@ -30,10 +32,10 @@ tests/
 |---|---|
 | `tst_currencies.qml` | minor units (GBp/ILA), conversion, symbols |
 | `tst_exchanges.qml` | suffix parsing, base symbol, exchange labels |
-| `tst_news.qml` | Yahoo search URLs (including locale), edition news pages, safe links, entity decoding, parsing, dedupe |
+| `tst_news.qml` | Yahoo search URLs (including locale), edition news pages, safe links (HTTPS only), entity decoding, parsing, dedupe |
 | `tst_googlenews.qml` | locale query, name cleaning, RSS parsing, quote-page filter |
-| `tst_bvbnews.qml` | BVB symbol handling, announcement table, ASP.NET postback |
-| `tst_backup.qml` | backup round-trip, validation, legacy portfolio data |
+| `tst_bvbnews.qml` | BVB symbol handling, HTTPS link policy, announcement table, ASP.NET postback |
+| `tst_backup.qml` | backup round-trip, validation, symbol validation, legacy portfolio data |
 | `tst_chart.qml` | sessions, trading days, previous close |
 | `tst_candles.qml` | candle targets and aggregation |
 | `tst_newsmodel.qml` | news merge, dedupe and age buckets |
@@ -42,12 +44,12 @@ tests/
 | `tst_sessions.qml` | market status, closed state, first-quote wait |
 | `tst_quotes.qml` | chart range to API parameters |
 | `tst_yahoo_chart.qml` | Yahoo chart and extended-hours URLs |
-| `tst_yahoo_search.qml` | symbol search URL and result parsing |
+| `tst_yahoo_search.qml` | symbol search URL, result parsing, invalid-symbol filtering |
 | `tst_cache.qml` | cache key, freshness and back-off rules |
 | `tst_registry.qml` | enabled news sources, BVB coverage, optional source |
 | `tst_news_controller.qml` | the controller merges the per-source lists, selects languages, and orders the footer links per source/language |
 | `tst_appconfig.qml` | configuration defaults, fallbacks and clamps |
-| `tst_text.qml` | HTML escaping for rich-text labels |
+| `tst_text.qml` | HTML escaping and ToolTip plain-text sanitising |
 | `tst_fxcontroller.qml` | rate cache, conversion and persistence |
 | `tst_marketcontroller.qml` | session status and extended-quote selection |
 | `tst_singlequote.qml` | chart reply to QuoteStore values (fixture) |

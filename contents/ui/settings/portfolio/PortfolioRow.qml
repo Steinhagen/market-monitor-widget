@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
+import "../../core/Text.js" as TextUtil
 
 // One lot row in the portfolio table. The page owns the data and formatting; this
 // component lays out the values and its edit\/remove menu.
@@ -32,6 +33,7 @@ ColumnLayout {
                 Layout.fillWidth: true
                 text: lot.ticker || ""
                 font.bold: true
+                textFormat: Text.PlainText
                 elide: Text.ElideRight
                 clip: true
             }
@@ -41,6 +43,7 @@ ColumnLayout {
                 text: lot.details || ""
                 color: Kirigami.Theme.disabledTextColor
                 font.pixelSize: 9
+                textFormat: Text.PlainText
                 elide: Text.ElideRight
                 clip: true
             }
@@ -66,6 +69,7 @@ ColumnLayout {
             Layout.preferredWidth: 45
             Layout.minimumWidth: 45
             Layout.maximumWidth: 45
+            textFormat: Text.PlainText
             elide: Text.ElideRight
         }
         Label {
@@ -81,6 +85,7 @@ ColumnLayout {
             Layout.minimumWidth: page.tableValueWidth
             Layout.maximumWidth: page.tableValueWidth
             horizontalAlignment: Text.AlignRight
+            textFormat: Text.PlainText
             elide: Text.ElideLeft
             color: market ? Kirigami.Theme.textColor : Kirigami.Theme.disabledTextColor
         }
@@ -92,10 +97,10 @@ ColumnLayout {
 
             HoverHandler { id: gainHover }
             ToolTip.visible: gainHover.hovered
-            ToolTip.text: market
+            ToolTip.text: TextUtil.plainText(market
                           ? i18n("Gain per share: %1",
                                  page.moneyText(market.currency, market.perShare))
-                          : i18n("Quote unavailable.")
+                          : i18n("Quote unavailable."))
 
             Label {
                 Layout.fillWidth: true
@@ -105,6 +110,7 @@ ColumnLayout {
                                            : Kirigami.Theme.negativeTextColor)
                        : Kirigami.Theme.disabledTextColor
                 horizontalAlignment: Text.AlignRight
+                textFormat: Text.PlainText
                 font.bold: true
                 elide: Text.ElideLeft
             }
@@ -118,6 +124,7 @@ ColumnLayout {
                                            : Kirigami.Theme.negativeTextColor)
                        : Kirigami.Theme.disabledTextColor
                 horizontalAlignment: Text.AlignRight
+                textFormat: Text.PlainText
                 font.pixelSize: 9
                 opacity: 0.8
                 elide: Text.ElideLeft

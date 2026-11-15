@@ -97,6 +97,7 @@ Item {
             text: line.heldString
             color: applet.secondaryTextColor
             font.pixelSize: line.fontSize
+            textFormat: Text.PlainText
         }
 
         // Current value.
@@ -114,6 +115,7 @@ Item {
                 text: line.summary ? applet.formatMoney(line.moneySymbol, line.summary.value, false) : ""
                 color: applet.priceColor
                 font.pixelSize: line.fontSize
+                textFormat: Text.PlainText
             }
         }
 
@@ -142,6 +144,7 @@ Item {
                     text: line.summary ? applet.formatMoney(line.moneySymbol, line.summary.plValue, true) + " (" + line.plPercentString + ")" : ""
                     color: line.plColor
                     font.pixelSize: line.fontSize
+                    textFormat: Text.PlainText
                 }
                 Text {
                     id: plPercentText
@@ -150,6 +153,7 @@ Item {
                     text: line.plPercentString
                     color: line.plColor
                     font.pixelSize: line.fontSize
+                    textFormat: Text.PlainText
                 }
             }
         }
@@ -169,6 +173,7 @@ Item {
                 text: line.dayAvailable ? applet.formatMoney(line.moneySymbol, line.summary.dayValue, true) : ""
                 color: line.dayColor
                 font.pixelSize: line.fontSize
+                textFormat: Text.PlainText
             }
         }
     }

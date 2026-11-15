@@ -8,12 +8,12 @@
 var BASE = "https://query1.finance.yahoo.com/v8/finance/chart/";
 
 function chartUrl(symbol, range, showExtendedHours) {
-    return BASE + symbol + "?" + Quotes.apiParams(range, showExtendedHours);
+    return BASE + encodeURIComponent(symbol) + "?" + Quotes.apiParams(range, showExtendedHours);
 }
 
 // The 1D intraday series used for the pre/post quote, independent of the chart range.
 function extendedUrl(symbol) {
-    return BASE + symbol + "?range=1d&interval=5m&includePrePost=true";
+    return BASE + encodeURIComponent(symbol) + "?range=1d&interval=5m&includePrePost=true";
 }
 
 // done(response, error) with the parsed chart reply.

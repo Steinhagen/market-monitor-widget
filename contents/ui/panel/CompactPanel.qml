@@ -325,6 +325,7 @@ MouseArea {
                     color: applet.panelTextColor
                     font.pixelSize: (applet.isVerticalPanel ? 11 : 10) * compactRoot.textScale
                     font.weight: applet.panelBoldSymbol ? Font.Bold : Font.Normal
+                    textFormat: Text.PlainText
                     renderType: Text.NativeRendering
                     opacity: 0.8
                     Layout.alignment: Qt.AlignBottom
@@ -401,6 +402,7 @@ MouseArea {
                                      ? (compactRoot.shownPrice.length > 10 ? 7
                                         : compactRoot.shownPrice.length > 7 ? 7 : 11)
                                      : 10) * compactRoot.textScale
+                    textFormat: Text.PlainText
                     renderType: Text.NativeRendering
                     // Ensure the price text is fully opaque; color is controlled by the line above
                     // Cached startup values are dimmed, so they never read as live.
@@ -432,6 +434,7 @@ MouseArea {
                         text: compactRoot.shownPercent
                         color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
                         font.pixelSize: 9 * compactRoot.textScale
+                        textFormat: Text.PlainText
                         renderType: Text.NativeRendering
                     }
                 }
@@ -458,6 +461,7 @@ MouseArea {
                         text: compactRoot.shownPercent
                         color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
                         font.pixelSize: 9 * compactRoot.textScale
+                        textFormat: Text.PlainText
                         renderType: Text.NativeRendering
                     }
                 }
@@ -491,6 +495,7 @@ MouseArea {
                         text: compactRoot.shownPercent
                         color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
                         font.pixelSize: 9 * compactRoot.textScale
+                        textFormat: Text.PlainText
                         renderType: Text.NativeRendering
                     }
                 }
@@ -537,6 +542,7 @@ MouseArea {
                 Layout.fillHeight: true
                 font.pixelSize: 11 * compactRoot.oneRowScale
                 font.weight: applet.panelBoldSymbol ? Font.Bold : Font.Normal
+                textFormat: Text.PlainText
                 renderType: Text.NativeRendering
                 opacity: 0.6
                 elide: Text.ElideRight
@@ -567,6 +573,7 @@ MouseArea {
                 text: compactRoot.shownPrice
                 color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
                 font.pixelSize: 13 * compactRoot.oneRowScale
+                textFormat: Text.PlainText
                 renderType: Text.NativeRendering
                 elide: Text.ElideRight
                 Layout.minimumWidth: 0
@@ -592,6 +599,7 @@ MouseArea {
                     text: compactRoot.shownPercent
                     color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
                     font.pixelSize: 9 * compactRoot.oneRowScale
+                    textFormat: Text.PlainText
                     renderType: Text.NativeRendering
                 }
             }

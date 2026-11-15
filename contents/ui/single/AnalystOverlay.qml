@@ -654,6 +654,7 @@ Item {
                                     color: analystRoot.popupText
                                     font.pixelSize: 11
                                     font.bold: true
+                                    textFormat: Text.PlainText
                                     elide: Text.ElideRight
                                 }
                                 Text {
@@ -661,6 +662,7 @@ Item {
                                     text: analystRoot.entryDate(hoverEntry.modelData)
                                     color: applet ? applet.secondaryTextColor : analystRoot.popupText
                                     font.pixelSize: 9
+                                    textFormat: Text.PlainText
                                     horizontalAlignment: Text.AlignRight
                                 }
                             }
@@ -671,6 +673,7 @@ Item {
                                 color: hoverEntry.accent
                                 font.pixelSize: 10
                                 font.weight: Font.DemiBold
+                                textFormat: Text.PlainText
                                 elide: Text.ElideRight
                             }
 
@@ -681,6 +684,7 @@ Item {
                                     text: analystRoot.money(hoverEntry.modelData.prior)
                                     color: applet ? applet.secondaryTextColor : analystRoot.popupText
                                     font.pixelSize: 10
+                                    textFormat: Text.PlainText
                                 }
                                 Text {
                                     visible: hoverEntry.modelData.prior > 0
@@ -693,6 +697,7 @@ Item {
                                     color: hoverEntry.accent
                                     font.pixelSize: 12
                                     font.weight: Font.DemiBold
+                                    textFormat: Text.PlainText
                                 }
                             }
                         }
@@ -911,12 +916,14 @@ Item {
                                     color: analystRoot.popupText
                                     font.pixelSize: 11
                                     font.bold: true
+                                    textFormat: Text.PlainText
                                     elide: Text.ElideRight
                                 }
                                 Text {
                                     text: analystRoot.entryDate(popupEntry.modelData)
                                     color: analystRoot.applet.secondaryTextColor
                                     font.pixelSize: 9
+                                    textFormat: Text.PlainText
                                 }
                             }
 
@@ -926,6 +933,7 @@ Item {
                                 color: popupEntry.accent
                                 font.pixelSize: 10
                                 font.weight: Font.DemiBold
+                                textFormat: Text.PlainText
                                 elide: Text.ElideRight
                             }
 
@@ -937,6 +945,7 @@ Item {
                                     text: analystRoot.money(popupEntry.modelData.prior)
                                     color: analystRoot.applet.secondaryTextColor
                                     font.pixelSize: 10
+                                    textFormat: Text.PlainText
                                 }
                                 Text {
                                     visible: popupEntry.modelData.prior > 0
@@ -949,6 +958,7 @@ Item {
                                     color: popupEntry.accent
                                     font.pixelSize: 12
                                     font.weight: Font.DemiBold
+                                    textFormat: Text.PlainText
                                 }
                             }
 
@@ -958,6 +968,7 @@ Item {
                                 text: analystRoot.ratingText(popupEntry.modelData)
                                 color: analystRoot.applet.secondaryTextColor
                                 font.pixelSize: 9
+                                textFormat: Text.PlainText
                                 opacity: 0.8
                                 wrapMode: Text.WordWrap
                             }

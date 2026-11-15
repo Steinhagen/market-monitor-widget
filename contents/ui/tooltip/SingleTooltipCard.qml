@@ -130,6 +130,8 @@ Item {
             color: card.textColor
             font.pixelSize: 13
             font.weight: Font.DemiBold
+            // The title carries the company name and ticker from the feed/config.
+            textFormat: Text.PlainText
             elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
         }
@@ -142,6 +144,7 @@ Item {
             color: card.cached ? (card.applet ? card.applet.warningTextColor : card.mutedColor)
                                : card.mutedColor
             font.pixelSize: 11
+            textFormat: Text.PlainText
             horizontalAlignment: Text.AlignRight
             elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
@@ -166,6 +169,7 @@ Item {
                 color: card.textColor
                 font.pixelSize: card.loading ? 12 : 18
                 font.weight: Font.DemiBold
+                textFormat: Text.PlainText
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
             }
@@ -176,6 +180,7 @@ Item {
                 color: card.isPos ? card.applet.positiveColor : card.applet.negativeColor
                 font.pixelSize: 12
                 font.weight: Font.DemiBold
+                textFormat: Text.PlainText
                 horizontalAlignment: Text.AlignRight
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
@@ -192,6 +197,7 @@ Item {
                 text: card.ext ? card.ext.label : ""
                 color: card.mutedColor
                 font.pixelSize: 11
+                textFormat: Text.PlainText
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
             }
@@ -200,6 +206,7 @@ Item {
                 text: card.ext ? card.ext.price : ""
                 color: card.textColor
                 font.pixelSize: 12
+                textFormat: Text.PlainText
                 horizontalAlignment: Text.AlignRight
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
@@ -211,6 +218,7 @@ Item {
                 color: card.ext && card.ext.isPos ? card.applet.positiveColor
                                                   : card.applet.negativeColor
                 font.pixelSize: 12
+                textFormat: Text.PlainText
                 horizontalAlignment: Text.AlignRight
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
@@ -223,6 +231,7 @@ Item {
             text: card.positionText
             color: card.mutedColor
             font.pixelSize: 10
+            textFormat: Text.PlainText
             wrapMode: Text.WordWrap
         }
 
@@ -233,6 +242,7 @@ Item {
             color: card.plIsPos ? card.applet.positiveColor : card.applet.negativeColor
             font.pixelSize: 11
             font.weight: Font.DemiBold
+            textFormat: Text.PlainText
             wrapMode: Text.WordWrap
         }
 
@@ -242,6 +252,7 @@ Item {
             text: card.metaText
             color: card.mutedColor
             font.pixelSize: 10
+            textFormat: Text.PlainText
             wrapMode: Text.WordWrap
         }
     }

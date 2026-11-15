@@ -22,6 +22,10 @@ TestCase {
         compare(News.safeLink("https://example.com/a", "SAP.DE"), "https://example.com/a");
         compare(News.safeLink("javascript:alert(1)", "SAP.DE"),
                 "https://finance.yahoo.com/quote/SAP.DE/news/");
+        compare(News.safeLink("http://example.com/a", "SAP.DE"),
+                "https://finance.yahoo.com/quote/SAP.DE/news/");
+        compare(News.safeLink("file:///etc/passwd", "SAP.DE"),
+                "https://finance.yahoo.com/quote/SAP.DE/news/");
         compare(News.safeLink("", "SAP.DE"), "https://finance.yahoo.com/quote/SAP.DE/news/");
         compare(News.safeLink("", "SAP.DE", "fr"),
                 "https://fr.finance.yahoo.com/quote/SAP.DE/actualites/");

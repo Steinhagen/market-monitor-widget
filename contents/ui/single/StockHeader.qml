@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import "../components"
+import "../core/Text.js" as TextUtil
 import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
@@ -93,6 +94,8 @@ RowLayout {
                     font.bold: true
                     font.pixelSize: 15
                     font.family: "Arial"
+                    // Company names come from the quote feed; never parse them as markup.
+                    textFormat: Text.PlainText
                     elide: Text.ElideRight
                 }
                 // Short exchange label, e.g. BVB for BRD.RO, in the same mode as
@@ -118,11 +121,13 @@ RowLayout {
                         color: applet.secondaryTextColor
                         font.pixelSize: 9
                         font.bold: true
+                        textFormat: Text.PlainText
                         opacity: 0.85
                     }
                     HoverHandler { id: singleExchangeHover }
                     ToolTip.visible: singleExchangeHover.hovered
-                    ToolTip.text: applet.singleExchangeFull || applet.singleExchange
+                    // ToolTip.text is parsed as rich text by Qt Quick Controls.
+                    ToolTip.text: TextUtil.plainText(applet.singleExchangeFull || applet.singleExchange)
                 }
             }
             Item { Layout.fillWidth: true }
@@ -135,6 +140,7 @@ RowLayout {
                   ? applet.displayTicker(applet.singleTicker) : applet.singleCompanyName
             color: applet.secondaryTextColor
             font.pixelSize: 10
+            textFormat: Text.PlainText
             elide: Text.ElideRight
             Layout.fillWidth: true
         }
@@ -144,6 +150,7 @@ RowLayout {
             color: applet.currentShowingCached ? applet.warningTextColor
                                                   : applet.secondaryTextColor
             font.pixelSize: 9
+            textFormat: Text.PlainText
             // Cached values keep their age visible even when the user hid
             // the normal refresh timestamps. The date makes the line longer
             // than the usual time, so it must elide inside the card.

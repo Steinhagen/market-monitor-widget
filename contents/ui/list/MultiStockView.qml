@@ -191,6 +191,7 @@ Rectangle {
         text: applet.updateStatusText
         color: applet.showingCachedData ? applet.warningTextColor : applet.secondaryTextColor
         font.pixelSize: 10
+        textFormat: Text.PlainText
         visible: multiStockRoot.showUpdateTimestamps
     }
 }

@@ -139,4 +139,23 @@ TestCase {
         var parsed = Backup.parseBackup('{"data":{"portfolio":[{"ticker":"TLV.RO","shares":0,"averageCost":1}]}}');
         compare(parsed.code, "invalidLot");
     }
+
+    function test_rejectsInvalidSymbols() {
+        // A feed/backup value must not become markup or URL syntax in the widget.
+        compare(Backup.parseBackup('{"data":{"ticker":"<img src=x>"}}').code, "invalidValue");
+        compare(Backup.parseBackup('{"data":{"ticker":"AAPL;rm -rf /"}}').code, "invalidValue");
+        compare(Backup.parseBackup('{"data":{"multiTickers":"AAPL, <img src=x>"}}').code, "invalidValue");
+        compare(Backup.parseBackup('{"data":{"portfolio":[{"ticker":"AAPL;rm","shares":1,"averageCost":1}]}}').code,
+                "invalidLot");
+
+        // Empty tickers are allowed (the widget shows its placeholder).
+        var empty = Backup.parseBackup('{"data":{"ticker":"   "}}');
+        verify(empty.ok);
+        compare(empty.data.ticker, "");
+
+        // The separators real Yahoo symbols use survive validation.
+        var valid = Backup.parseBackup('{"data":{"multiTickers":"^GSPC, EURUSD=X, M&M.NS, brk-b"}}');
+        verify(valid.ok);
+        compare(valid.data.multiTickers, "^GSPC, EURUSD=X, M&M.NS, BRK-B");
+    }
 }

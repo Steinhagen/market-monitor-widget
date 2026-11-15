@@ -1,5 +1,7 @@
 .pragma library
 
+.import "../../domain/symbols.js" as Symbols
+
 // Reading, validating and writing the JSON backup files used by the Import / Export
 // configuration page. Keeping this in a small library (instead of in the page) makes
 // the format easy to test and keeps the QML side focused on the UI.
@@ -213,7 +215,7 @@ function parsePortfolio(raw) {
         if (!isObject(lot)) {
             return failure("invalidLot", "", String(i + 1));
         }
-        if (typeof lot.ticker !== "string" || lot.ticker.trim() === "") {
+        if (typeof lot.ticker !== "string" || !Symbols.isValidSymbol(lot.ticker)) {
             return failure("invalidLot", "", String(i + 1));
         }
         var shares = Number(lot.shares);
@@ -284,7 +286,11 @@ function validateValue(key, value) {
 
     if (key === "ticker" || key === "selectedTicker") {
         if (typeof value !== "string") return failure("invalidValue", key);
-        return { ok: true, value: value.trim().toUpperCase() };
+        var symbol = value.trim().toUpperCase();
+        // Empty means "not set" (the applet shows its placeholder); anything else
+        // has to be a symbol the quote request can use.
+        if (symbol !== "" && !Symbols.isValidSymbol(symbol)) return failure("invalidValue", key);
+        return { ok: true, value: symbol };
     }
 
     if (key === "newsLanguages") {
@@ -308,7 +314,15 @@ function validateValue(key, value) {
 
     if (key === "multiTickers") {
         if (typeof value !== "string") return failure("invalidValue", key);
-        return { ok: true, value: value.trim() };
+        var parts = value.split(",");
+        var tickers = [];
+        for (var i = 0; i < parts.length; i++) {
+            var part = parts[i].trim().toUpperCase();
+            if (part === "") continue;
+            if (!Symbols.isValidSymbol(part)) return failure("invalidValue", key);
+            if (tickers.indexOf(part) < 0) tickers.push(part);
+        }
+        return { ok: true, value: tickers.join(", ") };
     }
 
     if (key === "portfolioCurrency") {

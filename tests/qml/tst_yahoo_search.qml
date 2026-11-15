@@ -27,6 +27,18 @@ TestCase {
         compare(YahooSearch.parse(null).length, 0);
     }
 
+    function test_parseSkipsInvalidSymbols() {
+        var results = YahooSearch.parse({ quotes: [
+            { symbol: "AAPL", shortname: "Apple" },
+            { symbol: "<img src=x>", shortname: "not a symbol" },
+            { symbol: "A B", shortname: "not a symbol" },
+            { symbol: "brd.ro", shortname: "BRD" }
+        ] });
+        compare(results.length, 2);
+        compare(results[0].symbol, "AAPL");
+        compare(results[1].symbol, "BRD.RO");
+    }
+
     function test_emptyQuery() {
         var called = false;
         var out = null;

@@ -18,4 +18,14 @@ TestCase {
         compare(YahooChart.extendedUrl("TLV.RO"),
                 "https://query1.finance.yahoo.com/v8/finance/chart/TLV.RO?range=1d&interval=5m&includePrePost=true");
     }
+
+    function test_urlEncodesTheSymbol() {
+        // Separators such as ^, & and = have to survive as data, not as URL syntax.
+        compare(YahooChart.chartUrl("^GSPC", "1D", false),
+                "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=2d&interval=2m");
+        compare(YahooChart.chartUrl("M&M.NS", "5D", false),
+                "https://query1.finance.yahoo.com/v8/finance/chart/M%26M.NS?range=5d&interval=15m");
+        compare(YahooChart.extendedUrl("EURUSD=X"),
+                "https://query1.finance.yahoo.com/v8/finance/chart/EURUSD%3DX?range=1d&interval=5m&includePrePost=true");
+    }
 }
