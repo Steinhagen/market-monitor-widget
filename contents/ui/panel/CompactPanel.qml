@@ -29,11 +29,17 @@ MouseArea {
     implicitHeight: Math.max(28, panelRow.implicitHeight)
     // Follow the clock's responsive behaviour: two rows with type scaled to the
     // available height, and a single readable row when two rows cannot fit.
-    readonly property bool oneRow: height > 0 && height < 28
+    readonly property bool oneRow: !applet.isVerticalPanel && height > 0 && height < 28
     readonly property real twoRowScale: {
         if (height <= 0) return 1;
-        return Math.max(0.85, Math.min(1.4, (height - 1) / 29));
+        return Math.max(0.85, (height - 1) / 29);
     }
+    // A vertical panel's constraint is its thickness (width), not its length.
+    readonly property real verticalScale: {
+        if (width <= 0) return 1;
+        return Math.max(0.5, Math.min(1.6, (width - 2) / 36));
+    }
+    readonly property real textScale: applet.isVerticalPanel ? verticalScale : twoRowScale
     // Let the panel decide the cross-axis size: height in a horizontal panel, width
     // in a vertical one. Requesting a minimum there made the applet keep its old
     // horizontal width after an orientation change and overlap its neighbour.
@@ -121,10 +127,10 @@ MouseArea {
     // Invisible texts with exactly the fonts and rendering of the visible ones. Measuring with
     // these instead of with font metrics gives the real width, hinting included.
     property real widestBadge: 0
-    Text { id: probeTicker; visible: false; font.pixelSize: 10 * compactRoot.twoRowScale; font.weight: applet.panelBoldSymbol ? Font.Bold : Font.Normal; renderType: Text.NativeRendering }
-    Text { id: probeTag; visible: false; font.pixelSize: 8 * compactRoot.twoRowScale; font.weight: Font.Bold; renderType: Text.NativeRendering }
-    Text { id: probePrice; visible: false; font.pixelSize: 10 * compactRoot.twoRowScale; renderType: Text.NativeRendering }
-    Text { id: probeBadge; visible: false; font.pixelSize: 9 * compactRoot.twoRowScale; renderType: Text.NativeRendering }
+    Text { id: probeTicker; visible: false; font.pixelSize: 10 * compactRoot.textScale; font.weight: applet.panelBoldSymbol ? Font.Bold : Font.Normal; renderType: Text.NativeRendering }
+    Text { id: probeTag; visible: false; font.pixelSize: 8 * compactRoot.textScale; font.weight: Font.Bold; renderType: Text.NativeRendering }
+    Text { id: probePrice; visible: false; font.pixelSize: 10 * compactRoot.textScale; renderType: Text.NativeRendering }
+    Text { id: probeBadge; visible: false; font.pixelSize: 9 * compactRoot.textScale; renderType: Text.NativeRendering }
 
     function measureWidest() {
         var tickers = [], prices = [], pcts = [];
@@ -256,7 +262,7 @@ MouseArea {
                 Text {
                     text: applet.displayTicker(applet.isMultiMode ? applet.panelTicker : applet.singleTicker)
                     color: applet.panelTextColor
-                    font.pixelSize: 10 * compactRoot.twoRowScale
+                    font.pixelSize: 10 * compactRoot.textScale
                     font.weight: applet.panelBoldSymbol ? Font.Bold : Font.Normal
                     renderType: Text.NativeRendering
                     opacity: 0.8
@@ -272,7 +278,7 @@ MouseArea {
                     visible: !applet.isVerticalPanel
                     text: compactRoot.shownPositive ? "▲" : "▼"
                     color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
-                    font.pixelSize: 8 * compactRoot.twoRowScale
+                    font.pixelSize: 8 * compactRoot.textScale
                     renderType: Text.NativeRendering
                 }
                 // Session tag: AH = after-hours, PRE = pre-market, CLOSED = the
@@ -293,7 +299,7 @@ MouseArea {
                                 : ""))
                     color: applet.panelCurrentIsCached ? applet.warningTextColor : applet.panelTextColor
                     opacity: applet.panelCurrentIsCached ? 1.0 : 0.45
-                    font.pixelSize: 8 * compactRoot.twoRowScale
+                    font.pixelSize: 8 * compactRoot.textScale
                     renderType: Text.NativeRendering
                 }
             }
@@ -331,7 +337,7 @@ MouseArea {
                     color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
                     font.pixelSize: (applet.isVerticalPanel
                                      ? (compactRoot.shownPrice.length > 7 ? 10 : 11)
-                                     : 10) * compactRoot.twoRowScale
+                                     : 10) * compactRoot.textScale
                     renderType: Text.NativeRendering
                     // Ensure the price text is fully opaque; color is controlled by the line above
                     // Cached startup values are dimmed, so they never read as live.
@@ -339,7 +345,7 @@ MouseArea {
                 }
 
                 Rectangle {
-                    radius: 4 * compactRoot.twoRowScale
+                    radius: 4 * compactRoot.textScale
                     opacity: applet.panelCurrentIsCached ? 0.7 : 1.0
                     // Vertical Panel Support: Hide badge in vertical panels to avoid overlap
                     visible: Plasmoid.formFactor !== PlasmaCore.Types.Vertical && !applet.hideChangePercentage
@@ -355,7 +361,7 @@ MouseArea {
                     // so the panel has no spare room on the right of a short value.
                     Layout.minimumWidth: applet.panelAlternate
                                          ? Math.max(panelPrice.implicitWidth, pctText2.implicitWidth + (Kirigami.Units.smallSpacing * 2))
-                                         : (compactRoot.useFixedWidth ? compactRoot.widestBadge : 0)
+                                         : 0
                     Layout.preferredHeight: pctText2.implicitHeight
                                             + (Kirigami.Units.smallSpacing / 2)
 
@@ -364,7 +370,7 @@ MouseArea {
                         anchors.centerIn: parent
                         text: compactRoot.shownPercent
                         color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
-                        font.pixelSize: 9 * compactRoot.twoRowScale
+                        font.pixelSize: 9 * compactRoot.textScale
                         renderType: Text.NativeRendering
                     }
                 }

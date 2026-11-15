@@ -45,9 +45,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   are configured, and are omitted when only one language is active.
 - The panel indicator follows the clock's responsive behaviour: the two rows
   scale with the available height, and it switches to a single readable row when
-  the panel is too short for two. The ticker and price stay prominent while the
-  market-status tag is smaller and dimmer; a small bottom margin keeps the price
-  row clear of the panel edge.
+  the panel is too short for two. In a vertical panel the contents scale to the
+  panel thickness instead of being elided. The ticker and price stay prominent
+  while the market-status tag is smaller and dimmer; a small bottom margin keeps
+  the price row clear of the panel edge. The horizontal type keeps scaling with
+  the panel height; the badge itself is no longer widened to the widest
+  percentage, so it cannot make the applet balloon.
 
 ## [1.0] - 2026-11-15
 
