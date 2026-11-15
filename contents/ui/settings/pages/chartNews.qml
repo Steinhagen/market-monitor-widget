@@ -232,7 +232,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.maximumWidth: Kirigami.Units.gridUnit * 22
                 visible: newsSwitch.checked && page.cfg_newsLanguage === "systemFallback"
-                text: i18n("Local headlines first; Yahoo Finance English headlines are appended as backup.")
+                text: i18n("Local headlines first; English headlines from Google and Yahoo are appended as backup.")
                 wrapMode: Text.WordWrap
                 font.pixelSize: 10
                 color: Kirigami.Theme.disabledTextColor
@@ -259,7 +259,7 @@ Item {
             Label {
                 Layout.fillWidth: true
                 Layout.maximumWidth: Kirigami.Units.gridUnit * 22
-                text: i18n("Select the languages you want to see. Each headline gets a small language badge.")
+                text: i18n("Select the languages you want to see. When more than one language is shown, each headline gets a small language badge.")
                 wrapMode: Text.WordWrap
                 font.pixelSize: 10
                 color: Kirigami.Theme.disabledTextColor
@@ -272,14 +272,15 @@ Item {
                 CheckBox {
                     id: newsYahooSwitch
                     text: i18n("Yahoo Finance (English)")
-                    enabled: newsSwitch.checked && page.cfg_newsLanguage !== "system"
+                    enabled: newsSwitch.checked
+                             && (page.cfg_newsLanguage !== "system"
+                                 || Qt.locale().name.substring(0, 2).toLowerCase() === "en")
                              && (page.cfg_newsLanguage !== "multi" || page.languageSelected("en"))
                 }
                 CheckBox {
                     id: newsBvbSwitch
                     text: i18n("BVB (Romanian/English, .RO symbols)")
-                    enabled: newsSwitch.checked && page.cfg_newsLanguage !== "english"
-                             && (page.cfg_newsLanguage !== "multi" || page.languageSelected("ro"))
+                    enabled: newsSwitch.checked
                 }
                 CheckBox {
                     id: newsGoogleSwitch

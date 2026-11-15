@@ -446,7 +446,7 @@ msgid "Yahoo Finance is English-only. Google follows the selected languages; in 
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Local headlines first; Yahoo Finance English headlines are appended as backup."
+msgid "Local headlines first; English headlines from Google and Yahoo are appended as backup."
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
@@ -454,7 +454,7 @@ msgid "Languages:"
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Select the languages you want to see. Each headline gets a small language badge."
+msgid "Select the languages you want to see. When more than one language is shown, each headline gets a small language badge."
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml

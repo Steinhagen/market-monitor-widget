@@ -11,6 +11,26 @@ Item {
     property var applet
     property bool active: false
     property var items: []
+    readonly property bool showLanguageBadges: {
+        var mode = String(applet ? applet.newsLanguage : "");
+        if (mode === "systemFallback") {
+            var local = String(Qt.locale().name || "").substring(0, 2).toLowerCase();
+            return local !== "en";
+        }
+        if (mode === "multi") {
+            var parts = String(applet ? applet.newsLanguages : "").split(",");
+            var seen = ({});
+            var count = 0;
+            for (var i = 0; i < parts.length; i++) {
+                var code = parts[i].trim().toLowerCase();
+                if (code === "" || seen[code]) continue;
+                seen[code] = true;
+                count++;
+            }
+            return count > 1;
+        }
+        return false;
+    }
     property string stateText: ""
     property string moreSource: "Yahoo"
     property var sources: []
@@ -106,7 +126,7 @@ Item {
                                 spacing: 4
 
                                 Rectangle {
-                                    visible: newsRow.langLabel !== ""
+                                    visible: newsRow.langLabel !== "" && pane.showLanguageBadges
                                     Layout.alignment: Qt.AlignVCenter
                                     width: languageText.implicitWidth + 8
                                     height: 13

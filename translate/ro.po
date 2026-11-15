@@ -450,16 +450,16 @@ msgid "Yahoo Finance is English-only. Google follows the selected languages; in 
 msgstr "Yahoo Finance are doar știri în engleză. Google urmează limbile selectate; în modul „Mai multe limbi” este interogat o dată pentru fiecare limbă. BVB folosește atașamentul în română sau în engleză."
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Local headlines first; Yahoo Finance English headlines are appended as backup."
-msgstr "Întâi știrile locale; titlurile Yahoo Finance în engleză sunt adăugate ca rezervă."
+msgid "Local headlines first; English headlines from Google and Yahoo are appended as backup."
+msgstr "Întâi știrile locale; titlurile în engleză de la Google și Yahoo sunt adăugate ca rezervă."
 
 #: contents/ui/settings/pages/chartNews.qml
 msgid "Languages:"
 msgstr "Limbi:"
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Select the languages you want to see. Each headline gets a small language badge."
-msgstr "Selectați limbile pe care doriți să le vedeți. Fiecare știre primește un mic badge de limbă."
+msgid "Select the languages you want to see. When more than one language is shown, each headline gets a small language badge."
+msgstr "Selectați limbile pe care doriți să le vedeți. Când sunt afișate mai multe limbi, fiecare știre primește un mic badge de limbă."
 
 #: contents/ui/settings/pages/chartNews.qml
 msgid "News sources:"
@@ -1477,6 +1477,12 @@ msgstr "Sesiune"
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "Updated"
 msgstr "Actualizat"
+
+#~ msgid "Local headlines first; Yahoo Finance English headlines are appended as backup."
+#~ msgstr "Întâi știrile locale; titlurile Yahoo Finance în engleză sunt adăugate ca rezervă."
+
+#~ msgid "Select the languages you want to see. Each headline gets a small language badge."
+#~ msgstr "Selectați limbile pe care doriți să le vedeți. Fiecare știre primește un mic badge de limbă."
 
 #~ msgid "local"
 #~ msgstr "local"

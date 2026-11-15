@@ -13,6 +13,7 @@ Item {
     // Bumped when the cache is dropped, so a reply that was already on its way is ignored.
     property int newsGeneration: 0
     property int newsClock: 0
+    property string localeName: Qt.locale().name
 
     readonly property var entry: newsCache[newsKey(applet.singleTicker)] || null
     readonly property var items: entry ? entry.items : []
@@ -28,7 +29,7 @@ Item {
     // Which sources the language mode actually uses. Yahoo is English-only, so local
     // mode skips it; BVB headlines are Romanian, so English mode skips BVB.
     function localLanguageCode() {
-        var name = String(Qt.locale().name || "");
+        var name = String(localeName || "");
         return name.substring(0, 2).toLowerCase();
     }
 
@@ -51,14 +52,39 @@ Item {
         return codes;
     }
 
+    // BVB can serve Romanian and English documents, but not arbitrary languages. Pick
+    // the language that belongs to the active set: the local one when possible, then
+    // English, or nothing when neither is active.
+    function bvbLanguage() {
+        var mode = String(applet.newsLanguage || "systemFallback");
+        var localCode = localLanguageCode();
+        if (mode === "english") return "en";
+        if (mode === "multi") {
+            var codes = selectedLanguageCodes();
+            if (codes.indexOf("ro") >= 0) return "ro";
+            if (codes.indexOf("en") >= 0) return "en";
+            return "";
+        }
+        if (localCode === "ro") return "ro";
+        if (localCode === "en") return "en";
+        if (mode === "systemFallback") return "en";
+        return "";
+    }
+
     // Languages to query for the current mode. Other modes use the system/English
     // edition; multilingual mode uses exactly the languages selected in the settings.
     function activeLanguages() {
         var mode = String(applet.newsLanguage || "systemFallback");
         var localCode = localLanguageCode();
-        var local = { code: localCode, locale: Qt.locale().name, local: true };
+        var local = { code: localCode, locale: localeName, local: true };
         if (mode === "english")
             return [{ code: "en", locale: "en_US", local: localCode === "en" }];
+        if (mode === "systemFallback") {
+            var fallback = [local];
+            if (localCode !== "en")
+                fallback.push({ code: "en", locale: "en_US", local: false });
+            return fallback;
+        }
         if (mode !== "multi") return [local];
         var codes = selectedLanguageCodes();
         var languages = [];
@@ -66,25 +92,29 @@ Item {
             var code = codes[i];
             languages.push({
                 code: code,
-                locale: code === localCode ? Qt.locale().name : newsLocales[code],
+                locale: code === localCode ? localeName : newsLocales[code],
                 local: code === localCode
             });
         }
         return languages;
     }
 
+    // Which sources the language mode actually uses. Yahoo is included when the local
+    // language is English or an English backup is active; BVB picks its language from
+    // bvbLanguage().
     function effectiveSources(settings, symbol) {
         var sources = NewsRegistry.enabledSources(settings, symbol);
         var language = String(settings.newsLanguage || "systemFallback");
         var result = [];
         var codes = language === "multi" ? selectedLanguageCodes() : [];
+        var bvb = bvbLanguage();
         for (var i = 0; i < sources.length; i++) {
             var id = sources[i].id;
-            if (language === "system" && id === "yahoo") continue;
+            if (language === "system" && id === "yahoo" && localLanguageCode() !== "en") continue;
+            if (id === "bvb" && bvb === "") continue;
             if (language === "multi") {
                 if (codes.length === 0) continue;
                 if (id === "yahoo" && codes.indexOf("en") < 0) continue;
-                if (id === "bvb" && codes.indexOf("ro") < 0) continue;
             }
             result.push(sources[i]);
         }
@@ -98,19 +128,32 @@ Item {
         return NewsModel.merge(lists);
     }
 
-    // What the pane shows for the current language mode. In fallback mode the English
-    // list is used only after every source replied and there is no local headline.
+    function filterLanguages(sourceItems, ids, codes) {
+        var lists = [];
+        for (var i = 0; i < ids.length; i++) {
+            var filtered = [];
+            var source = (sourceItems || {})[ids[i]] || [];
+            for (var j = 0; j < source.length; j++) {
+                var lang = String(source[j].lang || "").toLowerCase();
+                if (codes.indexOf(lang) >= 0) filtered.push(source[j]);
+            }
+            lists.push(filtered);
+        }
+        return NewsModel.merge(lists);
+    }
+
+    // What the pane shows for the current language mode. In fallback mode the local
+    // headlines come first and the English Google/Yahoo ones follow as backup.
     function visibleItems(sourceItems, completed) {
         var language = String(applet.newsLanguage || "systemFallback");
         if (language === "multi")
             return selectedLanguageCodes().length > 0 ? mergeSourceItems(sourceItems) : [];
         if (language === "english") return sourceLists(sourceItems, ["yahoo", "google", "bvb"]);
-        var local = sourceLists(sourceItems, ["google", "bvb"]);
-        if (language === "system") return local;
-        // "Local with English backup": keep the local headlines first and append the
-        // Yahoo English ones after them. Showing English only when the local list was
-        // completely empty made this mode indistinguishable from local-only, because
-        // Google's local edition almost always returns at least one headline.
+        var localCode = localLanguageCode();
+        var local = filterLanguages(sourceItems, ["google", "bvb", "yahoo"], [localCode]);
+        if (language === "system" || localCode === "en") return local;
+        // "Local with English backup": query Google for English as well and keep the
+        // local headlines first, followed by the English ones from Google and Yahoo.
         var result = [];
         var seen = {};
         var add = function (items) {
@@ -130,7 +173,7 @@ Item {
             }
         };
         add(local);
-        add(sourceLists(sourceItems, ["yahoo"]));
+        add(filterLanguages(sourceItems, ["google", "bvb", "yahoo"], ["en"]));
         return result;
     }
 
@@ -214,8 +257,10 @@ Item {
         source.fetch({
             symbol: symbol,
             name: newsCompanyName(symbol),
-            locale: applet.newsLanguage === "english" ? "en_US" : Qt.locale().name,
-            language: applet.newsLanguage,
+            locale: applet.newsLanguage === "english" ? "en_US" : localeName,
+            language: source.id === "bvb"
+                      ? (bvbLanguage() === "en" ? "english" : "romanian")
+                      : applet.newsLanguage,
             languages: activeLanguages(),
             limit: applet.newsCount
         }, function(items, error, flags) {

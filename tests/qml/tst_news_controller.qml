@@ -77,10 +77,11 @@ TestCase {
 
     function test_visibleItemsRespectsLanguage() {
         var controller = makeController();
+        controller.localeName = "ro_RO";
         var items = {
-            yahoo: [{ id: "y", title: "Yahoo EN", source: "Yahoo", time: 30 }],
-            bvb: [{ id: "b", title: "BVB RO", source: "BVB", time: 20 }],
-            google: [{ id: "g", title: "Google local", source: "Google", time: 10 }]
+            yahoo: [{ id: "y", title: "Yahoo EN", source: "Yahoo", time: 30, lang: "en" }],
+            bvb: [{ id: "b", title: "BVB RO", source: "BVB", time: 20, lang: "ro" }],
+            google: [{ id: "g", title: "Google local", source: "Google", time: 10, lang: "ro" }]
         };
 
         controller.applet.newsLanguage = "system";
@@ -110,12 +111,17 @@ TestCase {
 
     function test_activeLanguages() {
         var controller = makeController();
-        var localCode = Qt.locale().name.substring(0, 2).toLowerCase();
+        controller.localeName = "ro_RO";
+        var localCode = "ro";
 
         controller.applet.newsLanguage = "systemFallback";
         var languages = controller.activeLanguages();
-        compare(languages.length, 1);
+        compare(languages.length, localCode === "en" ? 1 : 2);
         compare(languages[0].code, localCode);
+        if (localCode !== "en") {
+            compare(languages[1].code, "en");
+            compare(languages[1].locale, "en_US");
+        }
 
         controller.applet.newsLanguage = "english";
         languages = controller.activeLanguages();
@@ -133,24 +139,62 @@ TestCase {
         if (localCode !== "fr") verify(codes.indexOf("fr") >= 0);
     }
 
-    function test_englishFallbackAppendsYahoo() {
+    function test_bvbLanguage() {
         var controller = makeController();
+        controller.localeName = "ro_RO";
+
+        controller.applet.newsLanguage = "system";
+        compare(controller.bvbLanguage(), "ro");
+        controller.applet.newsLanguage = "systemFallback";
+        compare(controller.bvbLanguage(), "ro");
+        controller.applet.newsLanguage = "english";
+        compare(controller.bvbLanguage(), "en");
+
+        controller.applet.newsLanguage = "multi";
+        controller.applet.newsLanguages = "ro,en";
+        compare(controller.bvbLanguage(), "ro");
+        controller.applet.newsLanguages = "en";
+        compare(controller.bvbLanguage(), "en");
+        controller.applet.newsLanguages = "fr";
+        compare(controller.bvbLanguage(), "");
+        controller.applet.newsLanguages = "fr,en";
+        compare(controller.bvbLanguage(), "en");
+
+        controller.localeName = "en_US";
+        controller.applet.newsLanguage = "system";
+        compare(controller.bvbLanguage(), "en");
+        controller.applet.newsLanguage = "systemFallback";
+        compare(controller.bvbLanguage(), "en");
+        controller.applet.newsLanguage = "multi";
+        controller.applet.newsLanguages = "ro";
+        compare(controller.bvbLanguage(), "ro");
+    }
+
+    function test_englishFallbackAppendsGoogleAndYahoo() {
+        var controller = makeController();
+        controller.localeName = "ro_RO";
         var sourceItems = {
             yahoo: [{ id: "y", title: "Yahoo EN", source: "Yahoo", time: 30, lang: "en" }],
             bvb: [{ id: "b", title: "BVB RO", source: "BVB", time: 20, lang: "ro" }],
-            google: [{ id: "g", title: "Google local", source: "Google", time: 10, lang: "ro" }]
+            google: [
+                { id: "g", title: "Google local", source: "Google", time: 10, lang: "ro" },
+                { id: "g2", title: "Google EN", source: "Google", time: 40, lang: "en" }
+            ]
         };
 
         controller.applet.newsLanguage = "systemFallback";
         var shown = controller.visibleItems(sourceItems, true);
-        compare(shown.length, 3);
+        compare(shown.length, 4);
         compare(shown[0].title, "BVB RO");
         compare(shown[1].title, "Google local");
-        compare(shown[2].title, "Yahoo EN");
+        compare(shown[2].title, "Google EN");
+        compare(shown[3].title, "Yahoo EN");
 
         controller.applet.newsLanguage = "system";
         shown = controller.visibleItems(sourceItems, true);
         compare(shown.length, 2);
+        compare(shown[0].title, "BVB RO");
+        compare(shown[1].title, "Google local");
 
         controller.applet.newsLanguage = "systemFallback";
         shown = controller.visibleItems({ yahoo: sourceItems.yahoo, bvb: [], google: [] }, true);
@@ -160,6 +204,7 @@ TestCase {
 
     function test_availableRespectsLanguage() {
         var controller = makeController();
+        controller.localeName = "ro_RO";
         controller.applet.newsSourceYahoo = true;
         controller.applet.newsSourceGoogle = false;
         controller.applet.newsSourceBvb = false;
