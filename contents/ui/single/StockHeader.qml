@@ -63,8 +63,10 @@ RowLayout {
                 - spacing * 2)
 
             Text {
-                text: applet.isPositive ? "▲" : "▼"
-                color: applet.isPositive ? applet.positiveColor : applet.negativeColor
+                text: applet.isNeutral ? "—" : (applet.isPositive ? "▲" : "▼")
+                color: applet.isNeutral ? applet.neutralColor
+                                        : (applet.isPositive ? applet.positiveColor
+                                                             : applet.negativeColor)
                 font.pixelSize: 12
                 Layout.alignment: Qt.AlignVCenter
             }

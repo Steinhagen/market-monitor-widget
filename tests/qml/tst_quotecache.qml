@@ -17,6 +17,7 @@ TestCase {
             property string priceChange: ""
             property string percentChange: ""
             property bool isPositive: true
+            property bool isNeutral: false
             property double previousClose: 0
             property string currencySym: ""
             property string quoteCurrency: ""
@@ -24,6 +25,7 @@ TestCase {
             property string panelCurrentPrice: "---"
             property string panelCurrentPercent: "+0.00%"
             property bool panelCurrentIsPositive: true
+            property bool panelCurrentIsNeutral: false
             property bool panelCurrentIsCached: false
             property string lastUpdated: ""
             property string nextUpdate: ""
@@ -61,12 +63,14 @@ TestCase {
             "time": now, "range": "1D", "rowsRange": "1D", "rowsTime": now,
             "rows": [{ "ticker": "SAP.DE", "name": "SAP SE", "price": "€213.45",
                        "change": "+1.20", "pct": "+0.57%", "isPos": true,
+                       "isNeutral": true,
                        "currentRaw": 213.45, "prevClose": 212.25,
                        "currencySym": "€ ", "currency": "EUR",
                        "exchange": "XETRA", "exchangeFull": "XETRA",
                        "quoteTime": now }],
             "single": { "ticker": "SAP.DE", "name": "SAP SE", "price": "€213.45",
                         "change": "+1.20", "pct": "+0.57%", "isPos": true,
+                        "isNeutral": true,
                         "currentRaw": 213.45, "prevClose": 212.25,
                         "currencySym": "€ ", "currency": "EUR",
                         "exchange": "XETRA", "exchangeFull": "XETRA",
@@ -103,9 +107,11 @@ TestCase {
         cache.read();
         compare(applet.currentPrice, "€213.45");
         compare(applet.priceChange, "+1.20");
+        compare(applet.isNeutral, true);
         compare(applet.quoteCurrency, "EUR");
         compare(applet.singleDataTicker, "SAP.DE");
         compare(applet.panelCurrentPrice, "€213.45");
+        compare(applet.panelCurrentIsNeutral, true);
         compare(applet.panelCurrentIsCached, true);
         compare(cache.showingCachedData, true);
         compare(cache.cachedQuotesTime, now);
@@ -125,6 +131,7 @@ TestCase {
         cache.applyToRows();
         compare(rows.get(0).cached, true);
         compare(rows.get(0).price, "€213.45");
+        compare(rows.get(0).isNeutral, true);
         verify(applet.lastUpdated !== "");
         compare(applet.panelUpdates, 1);
         compare(applet.currentPrice, "€213.45");
@@ -143,10 +150,12 @@ TestCase {
         applet.previousClose = 212.25;
         applet.quoteCurrency = "EUR";
         applet.singleCompanyName = "SAP SE";
+        applet.isNeutral = true;
         cache.write();
         var saved = JSON.parse(fakeConfiguration.cachedQuotes);
         compare(saved.single.ticker, "SAP.DE");
         compare(saved.single.price, "€213.45");
+        compare(saved.single.isNeutral, true);
         verify(Number(fakeConfiguration.cachedQuotesTime) > 0);
         compare(cache.cachedQuotesTime, Number(fakeConfiguration.cachedQuotesTime));
     }

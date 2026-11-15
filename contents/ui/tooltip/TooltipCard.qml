@@ -87,6 +87,7 @@ Item {
                         ? "" : (ext ? ext.change : row.change)
                                 + " (" + (ext ? ext.pct : row.pct) + ")",
                 isPos: ext ? ext.isPos : row.isPos,
+                isNeutral: ext ? ext.isNeutral === true : row.isNeutral === true,
                 active: row.ticker === applet.panelTicker
             });
         }
@@ -311,7 +312,9 @@ Item {
                     Text {
                         width: card.changeWidth; height: parent.height
                         text: modelData.change
-                        color: modelData.isPos ? card.applet.positiveColor : card.applet.negativeColor
+                        color: modelData.isNeutral ? card.applet.neutralColor
+                                                   : (modelData.isPos ? card.applet.positiveColor
+                                                                      : card.applet.negativeColor)
                         font.pixelSize: Kirigami.Theme.defaultFont.pixelSize
                         textFormat: Text.PlainText
                         horizontalAlignment: Text.AlignRight

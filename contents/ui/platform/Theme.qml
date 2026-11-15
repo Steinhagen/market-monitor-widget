@@ -61,6 +61,9 @@ QtObject {
         : (appLightPalette ? "#ffffff" : "#1a1a1a")
     readonly property color positiveColor: withContrast(config ? config.positiveColor : "#4cd964", contrastBackground, 5.0)
     readonly property color negativeColor: withContrast(config ? config.negativeColor : "#FF3B30", contrastBackground, 5.0)
+    // A flat change uses the same muted colour as the neutral analyst markers.
+    readonly property color neutralColor: secondaryTextColor
+    readonly property color panelNeutralColor: withContrast(secondaryTextColor, panelBackground)
 
     readonly property color tickerColor: getThemeColor("ticker")
     readonly property color priceColor: getThemeColor("price")

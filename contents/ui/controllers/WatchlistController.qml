@@ -68,6 +68,7 @@ Item {
                 "change": "",
                 "pct": "",
                 "isPos": true,
+                "isNeutral": false,
                 "chartPoints": "[]",
                 "chartTimes": "[]",
                 // ListModel does not create a role from a null value; use an empty
@@ -177,6 +178,7 @@ Item {
                 "change": Format.number(change, true, applet.hideDecimals, applet.formatPrices),
                 "pct": Format.number(pct, true, applet.hideDecimals, applet.formatPrices) + "%",
                 "isPos": change >= 0,
+                "isNeutral": Format.isFlatChange(change),
                 "chartPoints": JSON.stringify(cleanData),
                 "chartTimes": JSON.stringify(cleanChart.times),
                 "chartSessions": chartSessions,
@@ -199,6 +201,7 @@ Item {
                 store.panelCurrentPrice = itemData.price;
                 store.panelCurrentPercent = itemData.pct;
                 store.panelCurrentIsPositive = itemData.isPos;
+                store.panelCurrentIsNeutral = itemData.isNeutral;
                 store.panelCurrentIsCached = false;
                 store.singleExchange = itemData.exchange;
                 store.singleExchangeFull = itemData.exchangeFull;

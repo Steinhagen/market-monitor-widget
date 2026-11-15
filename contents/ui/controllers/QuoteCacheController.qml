@@ -90,6 +90,7 @@ Item {
             if (row.cached !== true) continue;
             model.set(i, {
                 "price": "---", "change": "", "pct": "", "isPos": true,
+                "isNeutral": false,
                 "currentRaw": 0.0, "prevClose": 0.0, "quoteTime": 0.0,
                 "cached": false
             });
@@ -98,6 +99,7 @@ Item {
                 applet.panelCurrentPrice = "---";
                 applet.panelCurrentPercent = "+0.00%";
                 applet.panelCurrentIsPositive = true;
+                applet.panelCurrentIsNeutral = false;
                 applet.panelCurrentIsCached = false;
                 applet.currentPrice = "---";
                 applet.priceChange = "";
@@ -158,6 +160,7 @@ Item {
         applet.priceChange = s.change || "";
         applet.percentChange = s.pct || "";
         applet.isPositive = s.isPos !== false;
+        applet.isNeutral = s.isNeutral === true;
         applet.currentRawPrice = Number(s.currentRaw) || 0;
         applet.previousClose = Number(s.prevClose) || 0;
         applet.currencySym = s.currencySym || "";
@@ -169,6 +172,7 @@ Item {
             applet.panelCurrentPrice = applet.currentPrice;
             applet.panelCurrentPercent = applet.percentChange;
             applet.panelCurrentIsPositive = applet.isPositive;
+            applet.panelCurrentIsNeutral = applet.isNeutral;
             applet.panelCurrentIsCached = true;
         }
         applet.lastUpdated = new Date(singleTime * 1000).toLocaleTimeString(Qt.locale(), "HH:mm");
@@ -202,6 +206,7 @@ Item {
                     "change": c.change || "",
                     "pct": c.pct || "",
                     "isPos": c.isPos !== false,
+                    "isNeutral": c.isNeutral === true,
                     "currentRaw": Number(c.currentRaw) || 0,
                     "prevClose": Number(c.prevClose) || 0,
                     "currencySym": c.currencySym || "",
@@ -241,6 +246,7 @@ Item {
             applet.previousClose = Number(row.prevClose) || 0;
             if (applet.effectiveChartRange === applet.chartRange) {
                 applet.isPositive = row.isPos !== false;
+                applet.isNeutral = row.isNeutral === true;
                 applet.priceChange = row.change || "";
                 applet.percentChange = row.pct || "";
                 applet.quoteTimestamp = Number(row.quoteTime) || 0;
@@ -286,6 +292,7 @@ Item {
                 "ticker": row.ticker, "name": row.name,
                 "price": row.price, "change": row.change, "pct": row.pct,
                 "isPos": row.isPos,
+                "isNeutral": row.isNeutral === true,
                 "currentRaw": row.currentRaw, "prevClose": row.prevClose,
                 "currencySym": row.currencySym, "currency": row.currency,
                 "exchange": row.exchange, "exchangeFull": row.exchangeFull,
@@ -312,6 +319,7 @@ Item {
                 "change": applet.priceChange,
                 "pct": applet.percentChange,
                 "isPos": applet.isPositive,
+                "isNeutral": applet.isNeutral,
                 "currentRaw": applet.currentRawPrice,
                 "prevClose": applet.previousClose,
                 "currencySym": applet.currencySym,

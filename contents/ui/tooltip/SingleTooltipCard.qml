@@ -81,6 +81,7 @@ Item {
     readonly property string changeText: loading || !applet || applet.priceChange === ""
                                          ? "" : applet.priceChange + " (" + applet.percentChange + ")"
     readonly property bool isPos: applet ? applet.isPositive : true
+    readonly property bool isNeutral: applet ? applet.isNeutral : false
 
     readonly property var ext: applet ? applet.extendedQuote(applet.singleTicker) : null
     readonly property bool hasExt: !!ext
@@ -117,6 +118,8 @@ Item {
 
     readonly property bool plIsPos: applet && applet.hasPortfolioEntry
                                     ? applet.portfolioSummary.plIsPos : true
+    readonly property bool plIsNeutral: applet && applet.hasPortfolioEntry
+                                        ? applet.portfolioSummary.plIsNeutral === true : false
 
     Item {
         width: card.width
@@ -177,7 +180,9 @@ Item {
                 width: parent.width / 2
                 height: parent.height
                 text: card.changeText
-                color: card.isPos ? card.applet.positiveColor : card.applet.negativeColor
+                color: card.isNeutral ? card.applet.neutralColor
+                                      : (card.isPos ? card.applet.positiveColor
+                                                    : card.applet.negativeColor)
                 font.pixelSize: 12
                 font.weight: Font.DemiBold
                 textFormat: Text.PlainText
@@ -215,8 +220,11 @@ Item {
                 width: 96; height: parent.height
                 text: card.ext && card.ext.change !== ""
                       ? card.ext.change + " (" + card.ext.pct + ")" : ""
-                color: card.ext && card.ext.isPos ? card.applet.positiveColor
-                                                  : card.applet.negativeColor
+                color: card.ext
+                       ? (card.ext.isNeutral ? card.applet.neutralColor
+                          : (card.ext.isPos ? card.applet.positiveColor
+                                            : card.applet.negativeColor))
+                       : card.applet.negativeColor
                 font.pixelSize: 12
                 textFormat: Text.PlainText
                 horizontalAlignment: Text.AlignRight
@@ -239,7 +247,9 @@ Item {
             width: parent.width
             visible: text !== ""
             text: card.plText
-            color: card.plIsPos ? card.applet.positiveColor : card.applet.negativeColor
+            color: card.plIsNeutral ? card.applet.neutralColor
+                                    : (card.plIsPos ? card.applet.positiveColor
+                                                    : card.applet.negativeColor)
             font.pixelSize: 11
             font.weight: Font.DemiBold
             textFormat: Text.PlainText

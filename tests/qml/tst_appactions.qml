@@ -18,6 +18,7 @@ TestCase {
             property string priceChange: ""
             property string percentChange: ""
             property bool isPositive: true
+            property bool isNeutral: false
             property double previousClose: 0
             property string currencySym: ""
             property string quoteCurrency: ""
@@ -33,6 +34,7 @@ TestCase {
             property string panelCurrentPrice: "---"
             property string panelCurrentPercent: "+0.00%"
             property bool panelCurrentIsPositive: true
+            property bool panelCurrentIsNeutral: false
             property bool panelCurrentIsCached: false
             property string chartRange: "1D"
             property string effectiveChartRange: "1D"

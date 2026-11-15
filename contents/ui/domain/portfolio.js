@@ -3,6 +3,8 @@
 // Portfolio lot aggregation. The caller supplies the portfolio currency and the
 // currency converter so this module stays independent of the applet state.
 
+.import "format.js" as Format
+
 
 function getPortfolioSummary(ticker, dataStr, rawPrice, prevClose, quoteCurrency, portfolioCurrency, convert, currency) {
     if (!ticker || !dataStr || !rawPrice) return null;
@@ -60,7 +62,9 @@ function getPortfolioSummary(ticker, dataStr, rawPrice, prevClose, quoteCurrency
         return {
             lots: lots.length, shares: shares, avgCost: cost / shares, cost: cost, value: value,
             plValue: plValue, plPercent: cost > 0 ? (plValue / cost) * 100 : 0, plIsPos: plValue >= 0,
-            dayValue: dayKnown ? day : null, dayIsPos: !dayKnown || day >= 0, currency: target
+            plIsNeutral: Format.isFlatChange(plValue),
+            dayValue: dayKnown ? day : null, dayIsPos: !dayKnown || day >= 0,
+            dayIsNeutral: dayKnown && Format.isFlatChange(day), currency: target
         };
     } catch (e) {
         console.log("Error parsing portfolio data: " + e);

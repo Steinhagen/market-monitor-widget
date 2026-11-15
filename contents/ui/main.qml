@@ -231,6 +231,7 @@ PlasmoidItem {
     readonly property string chartReferenceLabel: i18nc("@item:chart previous close", "Previous close")
     property alias previousClose: quoteStore.previousClose
     property alias isPositive: quoteStore.isPositive
+    property alias isNeutral: quoteStore.isNeutral
     property alias currencySym: quoteStore.currencySym
     // The currency Yahoo quotes the shown instrument in (e.g. "USD", "GBp"). Used to
     // convert the live price to the currency a portfolio lot was bought in.
@@ -240,6 +241,7 @@ PlasmoidItem {
     property alias panelCurrentPrice: quoteStore.panelCurrentPrice
     property alias panelCurrentPercent: quoteStore.panelCurrentPercent
     property alias panelCurrentIsPositive: quoteStore.panelCurrentIsPositive
+    property alias panelCurrentIsNeutral: quoteStore.panelCurrentIsNeutral
     readonly property string panelSymbol: root.isMultiMode ? root.panelTicker : root.singleTicker
     // --- THEME ---
     // The colour system lives in platform/Theme.qml; the applet passes the system palette
@@ -256,11 +258,13 @@ PlasmoidItem {
     readonly property color panelTextColor: app.theme.panelTextColor
     readonly property color panelPositiveColor: app.theme.panelPositiveColor
     readonly property color panelNegativeColor: app.theme.panelNegativeColor
+    readonly property color panelNeutralColor: app.theme.panelNeutralColor
     // A vertical panel constrains the applet to the panel thickness.
     readonly property bool isVerticalPanel: Plasmoid.formFactor === PlasmaCore.Types.Vertical
     readonly property color contrastBackground: app.theme.contrastBackground
     readonly property color positiveColor: app.theme.positiveColor
     readonly property color negativeColor: app.theme.negativeColor
+    readonly property color neutralColor: app.theme.neutralColor
     readonly property color tickerColor: app.theme.tickerColor
     readonly property int tickerOpacity: app.theme.tickerOpacity
     readonly property color priceColor: app.theme.priceColor

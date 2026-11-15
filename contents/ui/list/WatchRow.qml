@@ -30,6 +30,11 @@ Item {
     // session is the latest one, i.e. when the regular market is closed
     // (undefined otherwise).
     property var rowExt: rowRoot.applet.extendedQuote(rowRoot.row.ticker)
+    // Direction colour for the row: muted grey for an unchanged day, green/red otherwise.
+    readonly property color rowAccent: rowRoot.row
+        ? (rowRoot.row.isNeutral ? rowRoot.applet.neutralColor
+           : (rowRoot.row.isPos ? rowRoot.applet.positiveColor : rowRoot.applet.negativeColor))
+        : (rowRoot.applet ? rowRoot.applet.secondaryTextColor : "#8e8e93")
     // True while the market is closed, with or without a kept extended quote.
     property bool rowClosed: rowRoot.applet.showExtendedHours
                              && rowRoot.applet.isMarketClosedFor(rowRoot.row.ticker)
@@ -167,8 +172,8 @@ Item {
 
                     Text {
                         id: listArrowText
-                        text: rowRoot.row.isPos ? "▲" : "▼"
-                        color: rowRoot.row.isPos ? rowRoot.applet.positiveColor : rowRoot.applet.negativeColor
+                        text: rowRoot.row.isNeutral ? "—" : (rowRoot.row.isPos ? "▲" : "▼")
+                        color: rowRoot.rowAccent
                         font.pixelSize: 10
                     }
                     Row {
@@ -284,7 +289,9 @@ Item {
                                                        .map(plain).join(plainGap);
                                 if (secondLineMetrics.advanceWidth(plainText) <= avail) { pick = tiers[i]; break; }
                             }
-                            var accent = e.isPos ? rowRoot.applet.positiveColor : rowRoot.applet.negativeColor;
+                            var accent = e.isNeutral ? rowRoot.applet.neutralColor
+                                                     : (e.isPos ? rowRoot.applet.positiveColor
+                                                                : rowRoot.applet.negativeColor);
                             var out = "";
                             if (pick[0] !== null) out += '<font color="' + rowRoot.applet.secondaryTextColor + '">' + pick[0] + '</font>' + gap;
                             // With no change shown, colour the price itself so the direction is still visible.
@@ -321,10 +328,9 @@ Item {
                     Rectangle {
                         radius: 4
                         // Background: translucent tint of the color for theme independence
-                        color: rowRoot.row.isPos
-                            ? Qt.rgba(rowRoot.applet.positiveColor.r, rowRoot.applet.positiveColor.g, rowRoot.applet.positiveColor.b, 0.15)
-                            : Qt.rgba(rowRoot.applet.negativeColor.r, rowRoot.applet.negativeColor.g, rowRoot.applet.negativeColor.b, 0.15)
-                        border.color: rowRoot.row.isPos ? rowRoot.applet.positiveColor : rowRoot.applet.negativeColor
+                        color: Qt.rgba(rowRoot.rowAccent.r, rowRoot.rowAccent.g,
+                                       rowRoot.rowAccent.b, 0.15)
+                        border.color: rowRoot.rowAccent
                         border.width: 1
                         Layout.preferredWidth: pctTextL.implicitWidth + (Kirigami.Units.smallSpacing * 2)
                         Layout.minimumWidth: Layout.preferredWidth
@@ -335,7 +341,7 @@ Item {
                             id: pctTextL
                             anchors.centerIn: parent
                             text: rowRoot.row.change + " (" + rowRoot.row.pct + ")"
-                            color: rowRoot.row.isPos ? rowRoot.applet.positiveColor : rowRoot.applet.negativeColor
+                            color: rowRoot.rowAccent
                             font.pixelSize: 11
                             textFormat: Text.PlainText
                         }

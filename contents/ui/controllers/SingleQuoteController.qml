@@ -67,6 +67,7 @@ Item {
             store.panelCurrentPercent = Format.number(prev > 0 ? (change / prev) * 100 : 0, true,
                                                      applet.hideDecimals, applet.formatPrices) + "%";
             store.panelCurrentIsPositive = change >= 0;
+            store.panelCurrentIsNeutral = Format.isFlatChange(change);
             store.panelCurrentIsCached = false;
             applet.noteQuoteReceived();
         } catch (e) { console.log("Error parsing panel quote: " + e); }
@@ -159,6 +160,7 @@ Item {
 
             var change = meta.regularMarketPrice - store.previousClose;
             store.isPositive = change >= 0;
+            store.isNeutral = Format.isFlatChange(change);
             store.priceChange = Format.number(change, true, applet.hideDecimals, applet.formatPrices);
             store.percentChange = Format.number((change / store.previousClose) * 100, true,
                                                 applet.hideDecimals, applet.formatPrices) + "%";
@@ -170,6 +172,7 @@ Item {
                 store.panelCurrentPrice = store.currentPrice;
                 store.panelCurrentPercent = store.percentChange;
                 store.panelCurrentIsPositive = store.isPositive;
+                store.panelCurrentIsNeutral = store.isNeutral;
                 store.panelCurrentIsCached = false;
             }
 

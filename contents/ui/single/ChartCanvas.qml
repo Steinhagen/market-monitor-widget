@@ -520,8 +520,8 @@ import "../domain/curve.js" as ChartCurve
         // createLinearGradient() aborts the whole paint if given a non-finite value.
         if (!isFinite(refY)) refY = plotH / 2;
         refY = Math.max(0, Math.min(plotH, refY));
-        var pos = applet.positiveColor;
-        var neg = applet.negativeColor;
+        var pos = applet.isNeutral ? applet.neutralColor : applet.positiveColor;
+        var neg = applet.isNeutral ? applet.neutralColor : applet.negativeColor;
         // Pixel x of every point. Without extended hours the points are evenly spaced.
         var t0 = s ? allTimes[0] : 0;
         var tSpan = s ? allTimes[allTimes.length - 1] - allTimes[0] : 1;

@@ -97,6 +97,23 @@ TestCase {
         compare(o.single.calls, 1);
     }
 
+    function test_processRow_flatIsNeutral() {
+        var o = make();
+        o.controller.ensureRows(["SAP.DE"]);
+        var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-sap-1d.json")));
+        var meta = json.chart.result[0].meta;
+        // The regular quote is unchanged from the previous close: 0.00 (0.00%).
+        meta.regularMarketPrice = meta.previousClose;
+        meta.regularMarketPreviousClose = meta.previousClose;
+        o.controller.processRow("SAP.DE", json, "1D");
+
+        var row = o.controller.model.get(0);
+        compare(row.isNeutral, true);
+        compare(o.store.panelCurrentIsNeutral, true);
+        // The boolean is still the "not negative" fallback; views check neutral first.
+        compare(row.isPos, true);
+    }
+
     function test_ensureRows_rebuildsWhenTickersChange() {
         var o = make();
         o.controller.ensureRows(["SAP.DE", "TLV.RO"]);

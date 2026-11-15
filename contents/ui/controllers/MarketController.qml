@@ -211,7 +211,8 @@ Item {
                          + Format.number(price, false, hideDecimals, formatPrices),
                 "change": Format.number(change, true, hideDecimals, formatPrices),
                 "pct": Format.number((change / base) * 100, true, hideDecimals, formatPrices) + "%",
-                "isPos": change >= 0
+                "isPos": change >= 0,
+                "isNeutral": Format.isFlatChange(change)
             };
             setExtendedData(symbol, entry);
             setLastExtendedData(symbol, entry);

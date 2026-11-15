@@ -19,8 +19,11 @@ ColumnLayout {
             // the single row below takes over instead of leaving an empty column.
             RowLayout {
                 id: extendedQuoteRow
-                readonly property color accent: host.hasExtendedQuote && host.extendedQuote.isPos
-                                                ? applet.positiveColor : applet.negativeColor
+                readonly property color accent: host.hasExtendedQuote
+                                                ? (host.extendedQuote.isNeutral ? applet.neutralColor
+                                                   : (host.extendedQuote.isPos ? applet.positiveColor
+                                                                               : applet.negativeColor))
+                                                : applet.negativeColor
                 // Width shared by the two columns: the row minus the divider and its margins.
                 readonly property real avail: width - extendedDivider.Layout.preferredWidth
                                               - extendedDivider.Layout.leftMargin - extendedDivider.Layout.rightMargin
@@ -63,6 +66,7 @@ ColumnLayout {
                     ChangeText {
                         applet: quote.applet
                         positive: applet.isPositive
+                        neutral: applet.isNeutral
                         amount: host.waitingForFirstQuote ? "" : applet.priceChange
                         percent: applet.percentChange
                         font.pixelSize: 10

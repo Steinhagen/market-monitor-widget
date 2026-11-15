@@ -139,6 +139,10 @@ MouseArea {
     readonly property string shownPrice: ext ? ext.price : applet.panelCurrentPrice
     readonly property string shownPercent: ext ? ext.pct : applet.panelCurrentPercent
     readonly property bool shownPositive: ext ? ext.isPos : applet.panelCurrentIsPositive
+    readonly property bool shownNeutral: ext ? ext.isNeutral === true : applet.panelCurrentIsNeutral
+    readonly property color shownColor: shownNeutral ? applet.panelNeutralColor
+        : (shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor)
+    readonly property color shownTint: Qt.rgba(shownColor.r, shownColor.g, shownColor.b, 0.18)
 
     // --- Fixed width ---
     // Cycling through the stocks, or swapping price and percentage, changes the length of the
@@ -338,8 +342,8 @@ MouseArea {
                 // carries the session tag.
                 Text {
                     visible: !applet.isVerticalPanel
-                    text: compactRoot.shownPositive ? "▲" : "▼"
-                    color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                    text: compactRoot.shownNeutral ? "—" : (compactRoot.shownPositive ? "▲" : "▼")
+                    color: compactRoot.shownColor
                     font.pixelSize: 8 * compactRoot.textScale
                     renderType: Text.NativeRendering
                 }
@@ -397,7 +401,7 @@ MouseArea {
                     Layout.minimumWidth: 0
                     Layout.fillWidth: applet.isVerticalPanel
                     elide: Text.ElideRight
-                    color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                    color: compactRoot.shownColor
                     font.pixelSize: (applet.isVerticalPanel
                                      ? (compactRoot.shownPrice.length > 10 ? 7
                                         : compactRoot.shownPrice.length > 7 ? 7 : 11)
@@ -416,10 +420,8 @@ MouseArea {
                              && !applet.hideChangePercentage
                              && (!compactRoot.alternatePrice || applet.panelShowPercent)
                     // Background: translucent tint of the positive/negative color for theme independence
-                    color: compactRoot.shownPositive
-                           ? Qt.rgba(applet.panelPositiveColor.r, applet.panelPositiveColor.g, applet.panelPositiveColor.b, 0.18)
-                           : Qt.rgba(applet.panelNegativeColor.r, applet.panelNegativeColor.g, applet.panelNegativeColor.b, 0.18)
-                    border.color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                    color: compactRoot.shownTint
+                    border.color: compactRoot.shownColor
                     border.width: 1
                     Layout.preferredWidth: pctText2.implicitWidth + (Kirigami.Units.smallSpacing * 2)
                     // Fixed width: every value gets the same badge width (the text stays centred),
@@ -432,7 +434,7 @@ MouseArea {
                         id: pctText2
                         anchors.centerIn: parent
                         text: compactRoot.shownPercent
-                        color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                        color: compactRoot.shownColor
                         font.pixelSize: 9 * compactRoot.textScale
                         textFormat: Text.PlainText
                         renderType: Text.NativeRendering
@@ -446,10 +448,8 @@ MouseArea {
                              && applet.panelShowPercent
                     radius: 3
                     opacity: applet.panelCurrentIsCached ? 0.7 : 1.0
-                    color: compactRoot.shownPositive
-                           ? Qt.rgba(applet.panelPositiveColor.r, applet.panelPositiveColor.g, applet.panelPositiveColor.b, 0.18)
-                           : Qt.rgba(applet.panelNegativeColor.r, applet.panelNegativeColor.g, applet.panelNegativeColor.b, 0.18)
-                    border.color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                    color: compactRoot.shownTint
+                    border.color: compactRoot.shownColor
                     border.width: 1
                     Layout.preferredWidth: altPct.implicitWidth + (Kirigami.Units.smallSpacing * 2)
                     Layout.minimumWidth: 0
@@ -459,7 +459,7 @@ MouseArea {
                         id: altPct
                         anchors.centerIn: parent
                         text: compactRoot.shownPercent
-                        color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                        color: compactRoot.shownColor
                         font.pixelSize: 9 * compactRoot.textScale
                         textFormat: Text.PlainText
                         renderType: Text.NativeRendering
@@ -480,10 +480,8 @@ MouseArea {
                 Rectangle {
                     radius: 3
                     opacity: applet.panelCurrentIsCached ? 0.7 : 1.0
-                    color: compactRoot.shownPositive
-                           ? Qt.rgba(applet.panelPositiveColor.r, applet.panelPositiveColor.g, applet.panelPositiveColor.b, 0.18)
-                           : Qt.rgba(applet.panelNegativeColor.r, applet.panelNegativeColor.g, applet.panelNegativeColor.b, 0.18)
-                    border.color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                    color: compactRoot.shownTint
+                    border.color: compactRoot.shownColor
                     border.width: 1
                     Layout.preferredWidth: vPct.implicitWidth + (Kirigami.Units.smallSpacing * 2)
                     Layout.minimumWidth: 0
@@ -493,7 +491,7 @@ MouseArea {
                         id: vPct
                         anchors.centerIn: parent
                         text: compactRoot.shownPercent
-                        color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                        color: compactRoot.shownColor
                         font.pixelSize: 9 * compactRoot.textScale
                         textFormat: Text.PlainText
                         renderType: Text.NativeRendering
@@ -571,7 +569,7 @@ MouseArea {
                 id: onePrice
                 visible: true
                 text: compactRoot.shownPrice
-                color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                color: compactRoot.shownColor
                 font.pixelSize: 13 * compactRoot.oneRowScale
                 textFormat: Text.PlainText
                 renderType: Text.NativeRendering
@@ -583,10 +581,8 @@ MouseArea {
             Rectangle {
                 visible: !applet.hideChangePercentage
                 radius: 3
-                color: compactRoot.shownPositive
-                       ? Qt.rgba(applet.panelPositiveColor.r, applet.panelPositiveColor.g, applet.panelPositiveColor.b, 0.18)
-                       : Qt.rgba(applet.panelNegativeColor.r, applet.panelNegativeColor.g, applet.panelNegativeColor.b, 0.18)
-                border.color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                color: compactRoot.shownTint
+                border.color: compactRoot.shownColor
                 border.width: 1
                 Layout.preferredWidth: onePct.implicitWidth + (Kirigami.Units.smallSpacing * 2)
                 Layout.minimumWidth: 0
@@ -597,7 +593,7 @@ MouseArea {
                     id: onePct
                     anchors.centerIn: parent
                     text: compactRoot.shownPercent
-                    color: compactRoot.shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor
+                    color: compactRoot.shownColor
                     font.pixelSize: 9 * compactRoot.oneRowScale
                     textFormat: Text.PlainText
                     renderType: Text.NativeRendering

@@ -16,6 +16,8 @@ QtObject {
     property string quoteCurrency: ""
     property double previousClose: 0
     property bool isPositive: true
+    // The visible change is flat (0.00): use the neutral colour, not green/red.
+    property bool isNeutral: false
 
     // Chart data for the shown range
     property var chartDataPoints: []
@@ -35,5 +37,6 @@ QtObject {
     property string panelCurrentPrice: "---"
     property string panelCurrentPercent: "+0.00%"
     property bool panelCurrentIsPositive: true
+    property bool panelCurrentIsNeutral: false
     property bool panelCurrentIsCached: false
 }

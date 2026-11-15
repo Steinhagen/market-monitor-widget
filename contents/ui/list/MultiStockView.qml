@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 import "../components"
+import "../domain/format.js" as Format
 
 Rectangle {
     id: multiStockRoot
@@ -93,7 +94,9 @@ Rectangle {
                                      : positions;
         multiStockRoot.totals = {
             value: value, cost: cost, plValue: pl, plPercent: cost > 0 ? (pl / cost) * 100 : 0, plIsPos: pl >= 0,
-            dayValue: dayKnown ? day : null, dayIsPos: !dayKnown || day >= 0, currency: base
+            plIsNeutral: Format.isFlatChange(pl),
+            dayValue: dayKnown ? day : null, dayIsPos: !dayKnown || day >= 0,
+            dayIsNeutral: dayKnown && Format.isFlatChange(day), currency: base
         };
     }
 

@@ -44,8 +44,12 @@ Item {
 
     readonly property bool dayAvailable: summary !== null && summary !== undefined
                                          && summary.dayValue !== null && summary.dayValue !== undefined
-    readonly property color plColor: summary && summary.plIsPos ? applet.positiveColor : applet.negativeColor
-    readonly property color dayColor: summary && summary.dayIsPos ? applet.positiveColor : applet.negativeColor
+    readonly property color plColor: summary && summary.plIsNeutral ? applet.neutralColor
+                                     : (summary && summary.plIsPos ? applet.positiveColor
+                                                                   : applet.negativeColor)
+    readonly property color dayColor: summary && summary.dayIsNeutral ? applet.neutralColor
+                                      : (summary && summary.dayIsPos ? applet.positiveColor
+                                                                     : applet.negativeColor)
 
     readonly property string heldString: {
         if (heldOverride !== "") return heldOverride;

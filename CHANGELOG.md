@@ -24,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- An unchanged trading day (0.00 / 0.00%) now uses the same muted grey as the
+  analyst “maintain” markers instead of green: the arrow becomes a dash, and
+  the change text, list percentage, panel indicator and tooltips all follow
+  the neutral colour. A move that rounds to zero is also shown as `0.00`
+  rather than `-0.00`.
 - The news footer lists every source present in the visible list: one
   **More on Yahoo Finance** link per Yahoo language, plus **More on BVB** and
   **More on Google** when those sources contributed headlines. Each Yahoo link

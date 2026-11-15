@@ -89,6 +89,7 @@ Item {
             applet.panelCurrentPrice = row.price;
             applet.panelCurrentPercent = row.pct;
             applet.panelCurrentIsPositive = row.isPos;
+            applet.panelCurrentIsNeutral = row.isNeutral === true;
             applet.panelCurrentIsCached = row.cached === true;
             return;
         }
@@ -152,6 +153,7 @@ Item {
             // be reused when the list and the chart share the range.
             if (applet.effectiveChartRange === applet.chartRange) {
                 applet.isPositive = row.isPos;
+                applet.isNeutral = row.isNeutral === true;
                 applet.priceChange = row.change;
                 applet.percentChange = row.pct;
                 applet.chartDataPoints = chartArray(row.chartPoints);

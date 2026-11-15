@@ -24,10 +24,28 @@ function number(amount, isChange, hideDecimals, formatPrices) {
     }
 
     var sign = "";
-    if (isChange && isPositive && num > 0) sign = "+";
-    else if (!isPositive) sign = "-";
+    var roundedZero = hideDecs ? Math.round(absNum) === 0
+                               : Number(absNum.toFixed(2)) === 0;
+    if (roundedZero) {
+        // A tiny negative move must not read "-0.00"; the neutral state shows 0.00.
+        formatted = hideDecs ? "0" : "0.00";
+    } else if (isChange && isPositive && num > 0) {
+        sign = "+";
+    } else if (!isPositive) {
+        sign = "-";
+    }
 
     return sign + formatted;
+}
+
+// True when a change rounds to 0.00 with the two decimals the views use for changes.
+// Such a day is flat, not a tiny gain/loss: the arrow and the change text use the
+// neutral colour instead of green/red. The percent follows the same change, so it is
+// not checked separately (a 0.01 move on a very expensive stock displays 0.00% but is
+// still a one-cent move).
+function isFlatChange(change) {
+    var num = Number(change);
+    return isFinite(num) && Math.abs(num) < 0.005;
 }
 
 // The symbol in front of a value. Yahoo occasionally reports the literal text "null"

@@ -42,13 +42,14 @@ Item {
     // "+1.23 (+0.98%)" in the configured gain/loss colour. No triangle: it looked
     // like the "^" that index tickers start with, and the sign already says which
     // way the value moved.
-    function htmlColored(isPos, text) {
-        return "<span style=\"color:" + htmlColor(isPos ? applet.positiveColor : applet.negativeColor) + ";\">"
-             + htmlEscape(text) + "</span>";
+    function htmlColored(neutral, isPos, text) {
+        var color = neutral ? applet.neutralColor
+                            : (isPos ? applet.positiveColor : applet.negativeColor);
+        return "<span style=\"color:" + htmlColor(color) + ";\">" + htmlEscape(text) + "</span>";
     }
 
-    function tooltipChange(isPos, change, pct) {
-        return htmlColored(isPos, change + " (" + pct + ")");
+    function tooltipChange(neutral, isPos, change, pct) {
+        return htmlColored(neutral, isPos, change + " (" + pct + ")");
     }
 
     // The market status as a short, translatable label for its own column.
@@ -137,7 +138,8 @@ Item {
                           + "<td align=\"right\" style=\"" + tickerStyle + "\">"
                           + htmlEscape(ext ? ext.price : row.price) + "</td>"
                           + "<td align=\"right\" style=\"padding-top:1px; padding-bottom:1px;\">"
-                          + tooltipChange(ext ? ext.isPos : row.isPos,
+                          + tooltipChange(ext ? ext.isNeutral === true : row.isNeutral === true,
+                                               ext ? ext.isPos : row.isPos,
                                                ext ? ext.change : row.change,
                                                ext ? ext.pct : row.pct) + "</td></tr>");
             }
@@ -161,7 +163,7 @@ Item {
                         + "<td align=\"right\" style=\"" + cell + "\"><b>"
                         + htmlEscape(applet.currentPrice) + "</b></td>"
                         + "<td align=\"right\" style=\"" + cell + "\">"
-                        + tooltipChange(applet.isPositive, applet.priceChange, applet.percentChange) + "</td></tr>");
+                        + tooltipChange(applet.isNeutral, applet.isPositive, applet.priceChange, applet.percentChange) + "</td></tr>");
 
         var ext = applet.extendedQuote(applet.singleTicker);
         if (ext) {
@@ -169,7 +171,7 @@ Item {
                             + "<td align=\"right\" style=\"" + cell + "\"><b>"
                             + htmlEscape(ext.price) + "</b></td>"
                             + "<td align=\"right\" style=\"" + cell + "\">"
-                            + tooltipChange(ext.isPos, ext.change, ext.pct) + "</td></tr>");
+                            + tooltipChange(ext.isNeutral === true, ext.isPos, ext.change, ext.pct) + "</td></tr>");
         }
         if (applet.showExtendedHours && applet.isMarketClosedFor(applet.singleTicker)) {
             singleRows.push("<tr><td style=\"" + labelCell + "\">" + muted(i18n("Session")) + "</td>"
@@ -189,9 +191,9 @@ Item {
                                                     applet.formatMoney(pSym, p.avgCost, false))) + "</td></tr>");
             singleRows.push("<tr><td style=\"" + labelCell + "\">" + muted(i18n("P/L")) + "</td>"
                             + "<td align=\"right\" style=\"" + cell + "\">"
-                            + htmlColored(p.plIsPos, applet.formatMoney(pSym, p.plValue, true)) + "</td>"
+                            + htmlColored(p.plIsNeutral === true, p.plIsPos, applet.formatMoney(pSym, p.plValue, true)) + "</td>"
                             + "<td align=\"right\" style=\"" + cell + "\">"
-                            + htmlColored(p.plIsPos, applet.formatNumber(p.plPercent, true) + "%") + "</td></tr>");
+                            + htmlColored(p.plIsNeutral === true, p.plIsPos, applet.formatNumber(p.plPercent, true) + "%") + "</td></tr>");
         }
 
         if (applet.showingCachedData) {
