@@ -43,6 +43,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instead of assuming the local language is Romanian.
 - Language badges stay visible on every source filter when several languages
   are configured, and are omitted when only one language is active.
+- The panel indicator follows the clock's responsive behaviour: the two rows
+  scale with the available height, and it switches to a single readable row when
+  the panel is too short for two. The ticker and price stay prominent while the
+  market-status tag is smaller and dimmer; a small bottom margin keeps the price
+  row clear of the panel edge.
 
 ## [1.0] - 2026-11-15
 

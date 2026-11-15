@@ -93,9 +93,10 @@ PlasmoidItem {
     Layout.minimumWidth: !root.inPanel ? root.fullViewMinimumWidth
                         : (root.isVerticalPanel ? 0 : root.panelItemWidth)
     Layout.minimumHeight: !root.inPanel ? root.fullViewMinimumHeight
-                         : (root.isVerticalPanel ? root.panelItemHeight : 0)
+                         : Math.max(29, root.panelItemHeight)
     Layout.preferredWidth: !root.inPanel ? root.fullViewPreferredWidth : root.panelItemWidth
-    Layout.preferredHeight: !root.inPanel ? root.fullViewPreferredHeight : root.panelItemHeight
+    Layout.preferredHeight: !root.inPanel ? root.fullViewPreferredHeight
+                          : Math.max(29, root.panelItemHeight)
 
     property string singleTicker: app.config.ticker
     property bool isMultiMode: app.config.isMultiMode
