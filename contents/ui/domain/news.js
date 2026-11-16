@@ -3,6 +3,17 @@
 // one newest-first list, and turning a timestamp into an age bucket. The caller keeps
 // the per-symbol cache and decides when to re-fetch.
 
+// The news-language modes that are distinct for a system locale. On an English
+// system "local language" and "English only" both mean English, so offering both
+// would be redundant; only the explicit English and multi-language modes remain.
+// On other systems the local, local-with-English-fallback, English and multi modes
+// are all distinct.
+function languageModeValues(localCode) {
+    var local = String(localCode || "").substring(0, 2).toLowerCase();
+    if (local === "en") return ["english", "multi"];
+    return ["system", "systemFallback", "english", "multi"];
+}
+
 // Merge the lists of the providers, newest first. A link or title can appear in more
 // than one feed (Yahoo and Google often carry the same report), so either key removes
 // it; the first list in the order keeps its copy.

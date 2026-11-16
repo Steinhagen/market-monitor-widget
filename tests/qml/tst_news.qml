@@ -2,9 +2,21 @@ import QtQuick
 import QtTest
 import "Fixture.js" as Fixture
 import "../../contents/ui/providers/yahoo/news.js" as News
+import "../../contents/ui/domain/news.js" as NewsDomain
 
 TestCase {
     name: "YahooNews"
+
+    function test_languageModeValues() {
+        // On an English system the local-only mode would duplicate English only.
+        compare(NewsDomain.languageModeValues("en").join(","), "english,multi");
+        compare(NewsDomain.languageModeValues("EN").join(","), "english,multi");
+        // Other locales keep all four distinct choices.
+        compare(NewsDomain.languageModeValues("ro").join(","),
+                "system,systemFallback,english,multi");
+        compare(NewsDomain.languageModeValues("").join(","),
+                "system,systemFallback,english,multi");
+    }
 
     function test_searchUrl() {
         var url = News.searchUrl("SAP SE", 24, "en");

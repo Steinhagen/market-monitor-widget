@@ -5,6 +5,7 @@ import QtQuick.Window
 import org.kde.kirigami as Kirigami
 import "../components/SettingsWindow.js" as ConfigWindow
 import "../../providers/yahoo/news.js" as YahooNews
+import "../../domain/news.js" as News
 
 Item {
     id: page
@@ -42,23 +43,25 @@ Item {
 
     readonly property string localLanguageCode: Qt.locale().name.substring(0, 2).toLowerCase()
 
-    // On an English system "local" is already English; the fallback would not add a
-    // second language, so do not offer it there.
+    // On an English system "local" is already English, so the local-only mode would
+    // duplicate "English only" (and the fallback would add nothing). Only the distinct
+    // English and multi-language choices are offered there; other locales keep all four.
     readonly property var languageModes: {
-        var modes = [
-            { value: "system", text: i18n("Local language only") },
-            { value: "english", text: i18n("English only") },
-            { value: "multi", text: i18n("Several languages") }
-        ];
-        if (localLanguageCode !== "en")
-            modes.splice(1, 0, { value: "systemFallback",
-                                 text: i18n("Local language, English fallback") });
-        return modes;
+        var labels = {
+            "system": i18n("Local language only"),
+            "systemFallback": i18n("Local language, English fallback"),
+            "english": i18n("English only"),
+            "multi": i18n("Several languages")
+        };
+        return News.languageModeValues(localLanguageCode).map(function(value) {
+            return { value: value, text: labels[value] };
+        });
     }
 
     onCfg_newsLanguageChanged: {
-        if (cfg_newsLanguage === "systemFallback" && localLanguageCode === "en")
-            cfg_newsLanguage = "system";
+        if (localLanguageCode === "en"
+                && (cfg_newsLanguage === "system" || cfg_newsLanguage === "systemFallback"))
+            cfg_newsLanguage = "english";
         var idx = newsLanguageCombo.indexOfValue(cfg_newsLanguage)
         if (idx >= 0) newsLanguageCombo.currentIndex = idx
     }
@@ -247,10 +250,11 @@ Item {
                 Component.onCompleted: {
                     if (page.cfg_newsLanguage === "")
                         page.cfg_newsLanguage = page.localLanguageCode === "en"
-                                                ? "system" : "systemFallback";
-                    else if (page.cfg_newsLanguage === "systemFallback"
-                             && page.localLanguageCode === "en")
-                        page.cfg_newsLanguage = "system";
+                                                ? "english" : "systemFallback";
+                    else if (page.localLanguageCode === "en"
+                             && (page.cfg_newsLanguage === "system"
+                                 || page.cfg_newsLanguage === "systemFallback"))
+                        page.cfg_newsLanguage = "english";
                     var idx = indexOfValue(page.cfg_newsLanguage);
                     if (idx >= 0) currentIndex = idx;
                 }

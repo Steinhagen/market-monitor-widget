@@ -24,6 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   precision (with a minimum of two) so a four-decimal exchange-rate move is no
   longer rounded to `0.00`. The chart axis, hover card, panel, tooltips and
   cached quotes all use the same precision.
+- The news language picker no longer offers both "Local language only" and
+  "English only" when the system locale is English; both resolve to English, so
+  only the explicit English and several-languages choices remain. An existing
+  local/system choice is migrated to English when the settings are opened.
 
 ### Fixed
 
