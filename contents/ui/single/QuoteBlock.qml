@@ -161,6 +161,7 @@ ColumnLayout {
                 ChangeText {
                     applet: quote.applet
                     positive: applet.isPositive
+                    neutral: applet.isNeutral
                     amount: host.waitingForFirstQuote ? "" : applet.priceChange
                     percent: applet.percentChange
                     font.pixelSize: 10
