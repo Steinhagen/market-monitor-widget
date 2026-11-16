@@ -74,6 +74,8 @@ Fixtures are real responses trimmed to the fields the parsers read:
 - `yahoo-search-sap.json` — Yahoo search reply for "SAP SE".
 - `yahoo-search-sap-de.json` — the same search for "SAP" with `lang=de-DE&region=DE`,
   first six German items.
+- `yahoo-rss-wine.xml` — Yahoo's per-symbol RSS feed for WINE.RO, all five English
+  items; the fallback for BVB symbols the search endpoint does not cover.
 - `google-news-sap.xml` — Google News RSS for "SAP SE", first six items.
 - `google-news-blocked.html` — the HTML page Google returns instead of a feed.
 - `bvb-issuer-tlv.html` — the BVB instrument page for TLV, reduced to the news table

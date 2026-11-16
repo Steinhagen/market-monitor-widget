@@ -126,4 +126,37 @@ TestCase {
         verify(!News.supportsLanguage(""));
     }
 
+    function test_rssUrlAndEligibility() {
+        compare(News.rssUrl("WINE.RO"),
+                "https://finance.yahoo.com/rss/headline?s=WINE.RO");
+        // The RSS fallback is only for BVB symbols on the English leg: the feed
+        // follows the listing's market language and is noisy for other markets.
+        verify(News.canUseRss("WINE.RO", "en"));
+        verify(News.canUseRss("TLV.RO", "EN"));
+        verify(!News.canUseRss("WINE.RO", "de"));
+        verify(!News.canUseRss("SAP.DE", "en"));
+        verify(!News.canUseRss("WINE.RO", "ro"));
+    }
+
+    function test_parseRss() {
+        var body = Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-rss-wine.xml"));
+        var items = News.parseRss(body, "WINE.RO",
+                                  "Purcari Wineries Public Company Limited", 10, "en");
+        compare(items.length, 5);
+        compare(items[0].source, "Yahoo");
+        compare(items[0].lang, "en");
+        verify(items[0].title.indexOf("Purcari") >= 0);
+        verify(items[0].time > 0);
+        verify(items[0].link.indexOf("https://") === 0);
+        compare(items[0].publisher, "Yahoo Finance");
+        // A just-drinks.com story is attributed to its publisher's domain.
+        compare(items[3].publisher, "Just Drinks");
+
+        // The feed occasionally mixes unrelated market articles; the relevance
+        // filter must drop them.
+        compare(News.parseRss(body, "TLV.RO", "Banca Transilvania", 10, "en").length, 0);
+        // Without a company name only the base-symbol titles can be kept.
+        compare(News.parseRss(body, "WINE.RO", "", 10, "en").length, 3);
+    }
+
 }

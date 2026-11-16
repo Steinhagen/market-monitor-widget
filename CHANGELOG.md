@@ -31,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Yahoo Finance English headlines for BVB symbols such as WINE.RO now appear
+  even though Yahoo's news search endpoint returns nothing for them. For `.RO`
+  symbols on the English leg the provider falls back to Yahoo's per-symbol RSS
+  feed and keeps only headlines that mention the company or base symbol.
 - Exchange rates use the last completed daily close as the previous close.
   Yahoo's FX `previousClose` can be stale (EURRON=X reported 5.3013 while the
   real previous close was 5.3418), which made the daily change read +0.83%

@@ -81,6 +81,149 @@ function decodeEntities(s) {
         });
 }
 
+// The RSS feed is the only Yahoo endpoint that carries news for some BVB symbols:
+// the search endpoint above returns no news for WINE.RO, while
+// https://finance.yahoo.com/rss/headline?s=WINE.RO has the English articles shown on
+// the quote page. It is a fallback, only for .RO symbols on the English leg, because
+// the feed follows the listing's market language (SAP.DE returns German, AI.PA French)
+// and its per-symbol relevance is weaker than the search endpoint's ticker tags.
+var RSS_BASE = "https://finance.yahoo.com/rss/headline?s=";
+
+function rssUrl(symbol) {
+    return RSS_BASE + encodeURIComponent(String(symbol || "").trim());
+}
+
+function canUseRss(symbol, language) {
+    return String(language || "").toLowerCase() === "en"
+        && /\.RO$/i.test(String(symbol || "").trim());
+}
+
+var RSS_MONTHS = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+                   Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+
+function rssTagText(block, name) {
+    var m = new RegExp("<" + name + "(?:\\s[^>]*)?>([\\s\\S]*?)</" + name + ">", "i").exec(String(block));
+    if (!m) return "";
+    return m[1].replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1");
+}
+
+// The feed prints RFC 822 dates ("Wed, 09 Sep 2026 01:00:23 +0000").
+function parseRssDate(text) {
+    var m = /(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})/.exec(String(text || ""));
+    if (!m) return 0;
+    var key = m[2].charAt(0).toUpperCase() + m[2].substring(1).toLowerCase();
+    var month = RSS_MONTHS[key];
+    if (month === undefined) return 0;
+    var t = Date.UTC(Number(m[3]), month, Number(m[1]), Number(m[4]), Number(m[5]), Number(m[6]));
+    return isFinite(t) ? Math.floor(t / 1000) : 0;
+}
+
+function publisherFromLink(link) {
+    var m = /^https?:\/\/([^\/?#]+)/i.exec(String(link || ""));
+    if (!m) return "";
+    var host = m[1].toLowerCase().replace(/^www\./, "");
+    if (host === "finance.yahoo.com" || host === "yahoo.com") return "Yahoo Finance";
+    var label = host.split(".")[0].replace(/[-_]+/g, " ").trim();
+    if (label === "") return "";
+    return label.replace(/\b[a-z]/g, function (c) { return c.toUpperCase(); });
+}
+
+// Words that identify the company in a headline. Legal forms and generic words are
+// dropped so "Purcari Wineries Public Company Limited" matches "Purcari Wineries".
+var RSS_STOPWORDS = {
+    "the": 1, "and": 1, "for": 1, "of": 1, "a": 1, "an": 1, "to": 1, "in": 1, "on": 1,
+    "public": 1, "company": 1, "limited": 1, "pcl": 1, "plc": 1, "sa": 1, "ag": 1,
+    "nv": 1, "group": 1, "groupe": 1, "holding": 1, "holdings": 1, "corporation": 1,
+    "corp": 1, "inc": 1, "ltd": 1, "co": 1, "societe": 1, "societatea": 1, "srl": 1,
+    "spa": 1
+};
+
+function significantWords(name) {
+    var text = String(name === undefined || name === null ? "" : name)
+        .toLowerCase().replace(/[^a-z0-9]+/g, " ");
+    var parts = text.split(/\s+/);
+    var words = [];
+    for (var i = 0; i < parts.length; i++) {
+        var word = parts[i];
+        if (word.length < 3 || RSS_STOPWORDS[word] || words.indexOf(word) >= 0) continue;
+        words.push(word);
+    }
+    return words;
+}
+
+// RSS items have no ticker tags, so keep only headlines that mention the base symbol
+// or a significant company-name word. This removes the unrelated market articles the
+// feed occasionally mixes in (TLV.RO returned Japanese stocks in the sampled feed).
+function rssTitleMatches(title, symbol, name) {
+    var text = " " + String(title === undefined || title === null ? "" : title)
+        .toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim() + " ";
+    var sym = String(symbol === undefined || symbol === null ? "" : symbol).trim().toUpperCase();
+    var dot = sym.lastIndexOf(".");
+    var base = (dot > 0 ? sym.substring(0, dot) : sym).toLowerCase();
+    if (base.length >= 3 && text.indexOf(" " + base + " ") >= 0) return true;
+    var words = significantWords(name);
+    for (var i = 0; i < words.length; i++) {
+        if (text.indexOf(" " + words[i] + " ") >= 0) return true;
+    }
+    return false;
+}
+
+// `text` is the RSS body. Returns the same item shape as parse(), with the language
+// requested for the leg (the .RO feed is English).
+function parseRss(text, symbol, name, limit, language) {
+    var xml = String(text === undefined || text === null ? "" : text);
+    var blocks = xml.match(/<item\b[\s\S]*?<\/item>/gi) || [];
+    var lang = String(language || "en").toLowerCase();
+    var items = [];
+    var seen = {};
+    for (var i = 0; i < blocks.length; i++) {
+        var block = blocks[i];
+        var link = decodeEntities(rssTagText(block, "link")).trim();
+        if (link === "") continue;
+        var title = decodeEntities(rssTagText(block, "title")).trim();
+        if (title === "" || !rssTitleMatches(title, symbol, name)) continue;
+        var guid = decodeEntities(rssTagText(block, "guid")).trim();
+        var id = guid !== "" ? guid : link;
+        var keys = ["u:" + id.toLowerCase(), "l:" + link.toLowerCase(), "t:" + title.toLowerCase()];
+        var duplicate = false;
+        for (var k = 0; k < keys.length; k++) {
+            if (keys[k].length > 2 && seen[keys[k]]) duplicate = true;
+        }
+        if (duplicate) continue;
+        for (var m = 0; m < keys.length; m++) {
+            if (keys[m].length > 2) seen[keys[m]] = true;
+        }
+        items.push({
+            id: id,
+            title: title,
+            publisher: publisherFromLink(link),
+            source: YAHOO_SOURCE,
+            lang: lang,
+            link: link,
+            time: parseRssDate(rssTagText(block, "pubDate"))
+        });
+    }
+    items.sort(function (a, b) { return b.time - a.time; });
+    var max = Number(limit);
+    return max >= 0 ? items.slice(0, max) : items;
+}
+
+function fetchRss(ctx, language, done) {
+    Http.getText(rssUrl(ctx.symbol), { timeout: 20000 }, function(body, error) {
+        if (error) {
+            // The search endpoint already answered; a failed fallback means no
+            // headlines, not a source error.
+            done([], "");
+            return;
+        }
+        try {
+            done(parseRss(body, ctx.symbol, ctx.name, ctx.limit, language), "");
+        } catch (e) {
+            done([], "");
+        }
+    });
+}
+
 function matchesSymbol(related, symbol, base) {
     if (!Array.isArray(related)) return false;
     for (var i = 0; i < related.length; i++) {
@@ -160,6 +303,10 @@ function fetchLanguage(ctx, language, done) {
                     search(name, true);
                     return;
                 }
+            }
+            if (items.length === 0 && canUseRss(symbol, language)) {
+                fetchRss(ctx, language, function (rssItems) { done(rssItems, "", {}); });
+                return;
             }
             done(items, "", {});
         });
