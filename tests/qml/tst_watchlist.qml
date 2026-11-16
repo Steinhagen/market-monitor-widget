@@ -97,6 +97,18 @@ TestCase {
         compare(o.single.calls, 1);
     }
 
+    function test_processRowUpdatesTheSingleViewForItsOwnTicker() {
+        var o = make();
+        o.controller.ensureRows(["SAP.DE"]);
+        // The panel indicator may be auto-cycling another stock while the expanded
+        // single view still shows SAP.DE; its row must keep the header current.
+        o.applet.panelTicker = "OTHER";
+        o.applet.singleTicker = "SAP.DE";
+        var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-sap-1d.json")));
+        o.controller.processRow("SAP.DE", json, "1D");
+        compare(o.single.calls, 1);
+    }
+
     function test_processRow_flatIsNeutral() {
         var o = make();
         o.controller.ensureRows(["SAP.DE"]);

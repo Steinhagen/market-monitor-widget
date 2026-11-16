@@ -115,9 +115,11 @@ Item {
         if (!isConfiguredTicker(symbol)) return;
         var listRange = range || applet.chartRange;
 
-        // When both views use the same range, the chart can reuse this response. With a
-        // chart-only range, the chart is refreshed by its own request instead.
-        if (applet.isMultiMode && symbol === applet.panelTicker
+        // When both views use the same range, the chart can reuse this response. The
+        // single view follows its own ticker: the panel indicator may be auto-cycling
+        // through other stocks. Without this the header kept the row's older quote while
+        // the list row refreshed (WINE.RO showed 0.00 while its row showed -0.49%).
+        if (applet.isMultiMode && symbol === applet.singleTicker
                 && listRange === applet.effectiveChartRange) {
             singleQuotes.process(json, symbol, listRange);
         }

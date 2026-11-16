@@ -29,6 +29,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the change text, list percentage, panel indicator and tooltips all follow
   the neutral colour. A move that rounds to zero is also shown as `0.00`
   rather than `-0.00`.
+- The expanded view's header now follows the selected row's fresh quote even
+  when the panel indicator is auto-cycling another stock. Previously the
+  header could keep an older value while the list row and chart refreshed, so
+  WINE.RO showed 0.00 in the header but -0.49% in the list.
 - The news footer lists every source present in the visible list: one
   **More on Yahoo Finance** link per Yahoo language, plus **More on BVB** and
   **More on Google** when those sources contributed headlines. Each Yahoo link
