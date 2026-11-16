@@ -5,7 +5,7 @@ All notable changes to Market Monitor are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2] - 2026-11-16
 
 ### Added
 
@@ -24,21 +24,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- An unchanged trading day (0.00 / 0.00%) now uses the same muted grey as the
-  analyst “maintain” markers instead of green: the arrow becomes a dash, and
-  the change text, list percentage, panel indicator and tooltips all follow
-  the neutral colour. A move that rounds to zero is also shown as `0.00`
-  rather than `-0.00`.
-- The expanded view's header now follows the selected row's fresh quote even
-  when the panel indicator is auto-cycling another stock. Previously the
-  header could keep an older value while the list row and chart refreshed, so
-  WINE.RO showed 0.00 in the header but -0.49% in the list.
+- A flat change (0.00 / 0.00%, including a flat selected range) now uses the
+  same muted grey as the analyst “maintain” markers instead of green: the arrow
+  becomes a dash, and the change text (including the compact header), list
+  percentage, panel indicator and tooltips all follow the neutral colour. A move
+  that rounds to zero is also shown as `0.00` rather than `-0.00`.
+- The expanded view refreshes from its own ticker's row even when the panel
+  indicator is auto-cycling a different stock, so the header, list row and
+  chart stay on the same quote.
 - The news footer lists every source present in the visible list: one
   **More on Yahoo Finance** link per Yahoo language, plus **More on BVB** and
   **More on Google** when those sources contributed headlines. Each Yahoo link
   opens its edition's portal with the translated news route. Previously a single
   link followed the newest headline's source, so the **All** tab could show only
   Google even though it contained Yahoo and BVB headlines too.
+
+### Security
+
+- Hardened backup import/export against oversized and malformed files, and
+  escaped untrusted quote and news text before rich-text rendering. Remote links
+  are restricted to HTTPS.
+
+---
 
 ## [1.1] - 2026-11-15
 
