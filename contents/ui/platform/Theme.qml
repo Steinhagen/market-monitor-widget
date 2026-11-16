@@ -63,7 +63,8 @@ QtObject {
     readonly property color negativeColor: withContrast(config ? config.negativeColor : "#FF3B30", contrastBackground, 5.0)
     // A flat change uses the same muted colour as the neutral analyst markers.
     readonly property color neutralColor: secondaryTextColor
-    readonly property color panelNeutralColor: withContrast(secondaryTextColor, panelBackground)
+    // Keep the panel's flat price visibly grey; 4.5:1 would lift it to white.
+    readonly property color panelNeutralColor: withContrast(secondaryTextColor, panelBackground, 3.0)
 
     readonly property color tickerColor: getThemeColor("ticker")
     readonly property color priceColor: getThemeColor("price")
