@@ -37,7 +37,7 @@ Item {
         id: marketController
         showExtendedHours: configObject.showExtendedHours
         keepExtendedAfterClose: configObject.keepExtendedAfterClose
-        hideDecimals: configObject.hideDecimals
+        priceDecimals: configObject.priceDecimals
         formatPrices: configObject.formatPrices
     }
 

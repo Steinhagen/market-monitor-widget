@@ -32,7 +32,9 @@ TestCase {
         property string chartReferenceLabel: "Previous close"
         property string currencySym: "$"
         property real currentRawPrice: 3.5
+        property int quoteDecimals: 2
         function formatNumber(value, isChange) { return String(value) }
+        function formatPercent(value) { return String(value) + "%" }
     }
 
     QtObject {

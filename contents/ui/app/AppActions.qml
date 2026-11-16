@@ -146,6 +146,9 @@ Item {
             applet.singleExchangeFull = row.exchangeFull || applet.singleExchange;
             applet.currentRawPrice = row.currentRaw;
             applet.currentPrice = row.price;
+            // The header and chart reuse the row's price before the new chart reply
+            // arrives, so they must reuse its precision as well.
+            applet.quoteDecimals = row.decimals === undefined ? 2 : row.decimals;
             applet.currencySym = row.currencySym;
             applet.quoteCurrency = row.currency;
             applet.previousClose = row.prevClose;

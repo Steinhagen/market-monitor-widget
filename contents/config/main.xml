@@ -268,8 +268,14 @@
             <label>Keep the last extended-hours quote when the market is closed</label>
             <default>true</default>
         </entry>
+        <entry name="priceDecimals" type="Int">
+            <label>Price decimals (-1 = automatic, following Yahoo Finance; 0-6 = fixed)</label>
+            <default>-1</default>
+        </entry>
+        <!-- Deprecated: replaced by priceDecimals. Kept so an installed widget can
+             migrate the old "Remove decimals" choice on its first run. -->
         <entry name="hideDecimals" type="Bool">
-            <label>Hide decimals in stock price</label>
+            <label>Hide decimals in stock price (deprecated)</label>
             <default>false</default>
         </entry>
         <entry name="showChartAxis" type="Bool">

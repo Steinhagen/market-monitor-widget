@@ -113,7 +113,7 @@ Item {
         var sym = applet.getCurrencySymbol(p.currency);
         return i18n("P/L") + " "
                + applet.formatMoney(sym, p.plValue, true)
-               + " (" + applet.formatNumber(p.plPercent, true) + "%)";
+               + " (" + applet.formatPercent(p.plPercent) + ")";
     }
 
     readonly property bool plIsPos: applet && applet.hasPortfolioEntry

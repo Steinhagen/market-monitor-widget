@@ -5,6 +5,38 @@ All notable changes to Market Monitor are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- A "Price Decimals" setting with an Automatic mode that follows Yahoo
+  Finance's own precision for each instrument (`priceHint`): two decimals for
+  shares and indices, four for exchange rates, and as many as a sub-cent
+  cryptocurrency needs. A fixed choice from 0 to 6 decimals is also available.
+
+### Changed
+
+- The old "Remove decimals from stock price" switch was replaced by the
+  precision choice. An existing installation that had it enabled is migrated
+  to a fixed 0 decimals; everyone else now gets Yahoo's precision instead of a
+  hard-coded two decimals.
+- Percentages always keep two decimals; price changes follow the instrument's
+  precision (with a minimum of two) so a four-decimal exchange-rate move is no
+  longer rounded to `0.00`. The chart axis, hover card, panel, tooltips and
+  cached quotes all use the same precision.
+
+### Fixed
+
+- Exchange rates use the last completed daily close as the previous close.
+  Yahoo's FX `previousClose` can be stale (EURRON=X reported 5.3013 while the
+  real previous close was 5.3418), which made the daily change read +0.83%
+  instead of +0.07%. The 2-day chart response's `chartPreviousClose` supplies
+  the value for 1D; longer ranges fetch a short daily series, so the chart's
+  "Previous close" line is correct on 5 days, 1 month and every other filter
+  too. The correct value is cached per symbol (and reused from the 1-day row),
+  so the line no longer flashes the stale intraday value before the daily
+  reply arrives. Shares, indices and crypto keep Yahoo's `previousClose`.
+
 ## [1.2] - 2026-11-16
 
 ### Added

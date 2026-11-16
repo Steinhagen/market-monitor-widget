@@ -14,6 +14,7 @@ TestCase {
             property string singleExchangeFull: ""
             property string currentPrice: "---"
             property double currentRawPrice: 0
+            property int quoteDecimals: 2
             property string priceChange: ""
             property string percentChange: ""
             property bool isPositive: true
@@ -65,6 +66,7 @@ TestCase {
                        "change": "+1.20", "pct": "+0.57%", "isPos": true,
                        "isNeutral": true,
                        "currentRaw": 213.45, "prevClose": 212.25,
+                       "decimals": 2,
                        "currencySym": "€ ", "currency": "EUR",
                        "exchange": "XETRA", "exchangeFull": "XETRA",
                        "quoteTime": now }],
@@ -72,6 +74,7 @@ TestCase {
                         "change": "+1.20", "pct": "+0.57%", "isPos": true,
                         "isNeutral": true,
                         "currentRaw": 213.45, "prevClose": 212.25,
+                        "decimals": 2,
                         "currencySym": "€ ", "currency": "EUR",
                         "exchange": "XETRA", "exchangeFull": "XETRA",
                         "quoteTime": now, "range": "1D" },
@@ -109,6 +112,7 @@ TestCase {
         compare(applet.priceChange, "+1.20");
         compare(applet.isNeutral, true);
         compare(applet.quoteCurrency, "EUR");
+        compare(applet.quoteDecimals, 2);
         compare(applet.singleDataTicker, "SAP.DE");
         compare(applet.panelCurrentPrice, "€213.45");
         compare(applet.panelCurrentIsNeutral, true);
@@ -131,6 +135,7 @@ TestCase {
         cache.applyToRows();
         compare(rows.get(0).cached, true);
         compare(rows.get(0).price, "€213.45");
+        compare(rows.get(0).decimals, 2);
         compare(rows.get(0).isNeutral, true);
         verify(applet.lastUpdated !== "");
         compare(applet.panelUpdates, 1);
@@ -155,6 +160,7 @@ TestCase {
         var saved = JSON.parse(fakeConfiguration.cachedQuotes);
         compare(saved.single.ticker, "SAP.DE");
         compare(saved.single.price, "€213.45");
+        compare(saved.single.decimals, 2);
         compare(saved.single.isNeutral, true);
         verify(Number(fakeConfiguration.cachedQuotesTime) > 0);
         compare(cache.cachedQuotesTime, Number(fakeConfiguration.cachedQuotesTime));

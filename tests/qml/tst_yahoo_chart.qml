@@ -19,6 +19,11 @@ TestCase {
                 "https://query1.finance.yahoo.com/v8/finance/chart/TLV.RO?range=1d&interval=5m&includePrePost=true");
     }
 
+    function test_dailyUrl() {
+        compare(YahooChart.dailyUrl("EURRON=X"),
+                "https://query1.finance.yahoo.com/v8/finance/chart/EURRON%3DX?range=5d&interval=1d");
+    }
+
     function test_urlEncodesTheSymbol() {
         // Separators such as ^, & and = have to survive as data, not as URL syntax.
         compare(YahooChart.chartUrl("^GSPC", "1D", false),

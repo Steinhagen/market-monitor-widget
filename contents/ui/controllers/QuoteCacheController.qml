@@ -62,6 +62,13 @@ Item {
         if (applet.isMultiMode) refreshRowsState();
     }
 
+    // A snapshot written before the priceDecimals change has no decimal count; two is
+    // the only safe fallback until the first live reply arrives.
+    function storedDecimals(value) {
+        var num = Number(value);
+        return (isFinite(num) && num >= 0) ? Math.min(8, Math.round(num)) : 2;
+    }
+
     Timer {
         id: rowGraceTimer
         interval: cache.rowGraceMs
@@ -163,6 +170,7 @@ Item {
         applet.isNeutral = s.isNeutral === true;
         applet.currentRawPrice = Number(s.currentRaw) || 0;
         applet.previousClose = Number(s.prevClose) || 0;
+        applet.quoteDecimals = storedDecimals(s.decimals);
         applet.currencySym = s.currencySym || "";
         applet.quoteCurrency = s.currency || "";
         applet.quoteTimestamp = Number(s.quoteTime) || 0;
@@ -209,6 +217,7 @@ Item {
                     "isNeutral": c.isNeutral === true,
                     "currentRaw": Number(c.currentRaw) || 0,
                     "prevClose": Number(c.prevClose) || 0,
+                    "decimals": storedDecimals(c.decimals),
                     "currencySym": c.currencySym || "",
                     "currency": c.currency || "",
                     "exchange": c.exchange || Exchanges.shortLabel(c.ticker, "", ""),
@@ -241,6 +250,7 @@ Item {
             applet.singleExchangeFull = row.exchangeFull || applet.singleExchange;
             applet.currentRawPrice = Number(row.currentRaw) || 0;
             applet.currentPrice = row.price;
+            applet.quoteDecimals = storedDecimals(row.decimals);
             applet.currencySym = row.currencySym || "";
             applet.quoteCurrency = row.currency || "";
             applet.previousClose = Number(row.prevClose) || 0;
@@ -294,6 +304,7 @@ Item {
                 "isPos": row.isPos,
                 "isNeutral": row.isNeutral === true,
                 "currentRaw": row.currentRaw, "prevClose": row.prevClose,
+                "decimals": storedDecimals(row.decimals),
                 "currencySym": row.currencySym, "currency": row.currency,
                 "exchange": row.exchange, "exchangeFull": row.exchangeFull,
                 "quoteTime": row.quoteTime
@@ -322,6 +333,7 @@ Item {
                 "isNeutral": applet.isNeutral,
                 "currentRaw": applet.currentRawPrice,
                 "prevClose": applet.previousClose,
+                "decimals": storedDecimals(applet.quoteDecimals),
                 "currencySym": applet.currencySym,
                 "currency": applet.quoteCurrency,
                 "exchange": applet.singleExchange,

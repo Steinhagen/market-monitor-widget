@@ -69,6 +69,8 @@ Item {
                 "pct": "",
                 "isPos": true,
                 "isNeutral": false,
+                // Resolved from Yahoo's priceHint when the first quote arrives.
+                "decimals": 2,
                 "chartPoints": "[]",
                 "chartTimes": "[]",
                 // ListModel does not create a role from a null value; use an empty
@@ -109,6 +111,25 @@ Item {
         });
     }
 
+    // Yahoo's intraday meta repeats a stale previousClose for FX on every range.
+    // Fetch the daily close for the selected symbol and keep both the row's cached
+    // chart reference and the visible chart in sync.
+    function refreshRowDailyClose(symbol, range) {
+        YahooChart.getDaily(symbol, function(response, error) {
+            if (error) return;
+            var prev = Chart.lastCompletedDailyClose(response);
+            if (!(prev > 0)) return;
+            if (range !== applet.chartRange) return;
+            for (var i = 0; i < rows.count; i++) {
+                if (rows.get(i).ticker === symbol) {
+                    rows.set(i, { "chartRef": prev });
+                    break;
+                }
+            }
+            if (symbol === applet.singleTicker) store.chartReferencePrice = prev;
+        });
+    }
+
     function processRow(symbol, json, range) {
         // A reply for a request started before the watchlist changed must not put a
         // removed symbol back into the model (for example after a backup import).
@@ -144,7 +165,7 @@ Item {
             var cleanData = cleanChart.values;
             var prev;
             if (listRange === "1D") {
-                prev = meta.regularMarketPreviousClose || meta.previousClose || meta.chartPreviousClose;
+                prev = Chart.previousCloseFor(meta, listRange);
             } else {
                 prev = meta.chartPreviousClose;
                 if (!prev || prev === 0) {
@@ -154,6 +175,7 @@ Item {
 
             var change = current - prev;
             var pct = prev > 0 ? (change / prev) * 100 : 0;
+            var decimals = Format.decimalsFor(meta, applet.priceDecimals);
 
             // Keep the chart state of the list range with the row, so selecting it can
             // show its graph immediately instead of waiting for another request.
@@ -162,7 +184,7 @@ Item {
             var chartCandles = Candles.chartCandlesFor(cleanChart, listRange, quote, timestamps, listDay);
             var chartRef = preChart ? (meta.regularMarketPrice || 0) : 0;
             if (!(chartRef > 0))
-                chartRef = Chart.dailyPreviousClose(meta, cleanData.length > 0 ? cleanData[0] : 0);
+                chartRef = Chart.dailyPreviousClose(meta, cleanData.length > 0 ? cleanData[0] : 0, listRange);
             // The session label shown above the chart travels with the cached chart, so a
             // selection that reuses it does not keep the previous ticker's label.
             var sessionStart = (chartDay && chartDay.regular) ? chartDay.regular.start : 0;
@@ -176,11 +198,12 @@ Item {
             var itemData = {
                 "ticker": symbol,
                 "name": Symbols.companyName(meta, symbol),
-                "price": curSym + Format.number(current, false, applet.hideDecimals, applet.formatPrices),
-                "change": Format.number(change, true, applet.hideDecimals, applet.formatPrices),
-                "pct": Format.number(pct, true, applet.hideDecimals, applet.formatPrices) + "%",
+                "price": curSym + Format.number(current, false, decimals, applet.formatPrices),
+                "change": Format.number(change, true, decimals, applet.formatPrices),
+                "pct": Format.percent(pct, applet.formatPrices),
+                "decimals": decimals,
                 "isPos": change >= 0,
-                "isNeutral": Format.isFlatChange(change),
+                "isNeutral": Format.isFlatChange(change, decimals),
                 "chartPoints": JSON.stringify(cleanData),
                 "chartTimes": JSON.stringify(cleanChart.times),
                 "chartSessions": chartSessions,
@@ -218,6 +241,12 @@ Item {
                 }
             }
             if (!found) rows.append(itemData);
+
+            // The row's cached chart is reused when it is selected; correct its
+            // reference line for FX, whose intraday meta carries a stale close.
+            if (listRange !== "1D" && String(meta.instrumentType) === "CURRENCY"
+                    && symbol === applet.singleTicker)
+                refreshRowDailyClose(symbol, listRange);
 
             var now = new Date();
             applet.lastUpdated = now.toLocaleTimeString(Qt.locale(), "HH:mm");

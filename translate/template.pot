@@ -538,11 +538,23 @@ msgid "Value Formatting:"
 msgstr ""
 
 #: contents/ui/settings/pages/general.qml
-msgid "Format stock price with commas (e.g. 1,000.00)"
+msgid "Format prices with commas (e.g. 1,000.00)"
 msgstr ""
 
 #: contents/ui/settings/pages/general.qml
-msgid "Remove decimals from stock price"
+msgid "Price Decimals:"
+msgstr ""
+
+#: contents/ui/settings/pages/general.qml
+msgid "Automatic (Yahoo Finance)"
+msgstr ""
+
+#: contents/ui/settings/pages/general.qml
+msgid "0 (whole numbers)"
+msgstr ""
+
+#: contents/ui/settings/pages/general.qml
+msgid "Automatic follows Yahoo Finance: usually 2 decimals for shares and 4 for exchange rates."
 msgstr ""
 
 #: contents/ui/settings/pages/general.qml
@@ -1264,15 +1276,15 @@ msgid "The market is open; waiting for its first regular quote."
 msgstr ""
 
 #: contents/ui/single/NewsPane.qml
+msgid "More on Yahoo Finance"
+msgstr ""
+
+#: contents/ui/single/NewsPane.qml
 msgid "More on BVB"
 msgstr ""
 
 #: contents/ui/single/NewsPane.qml
 msgid "More on Google"
-msgstr ""
-
-#: contents/ui/single/NewsPane.qml
-msgid "More on Yahoo Finance"
 msgstr ""
 
 #: contents/ui/single/NewsPane.qml

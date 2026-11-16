@@ -203,6 +203,9 @@ PlasmoidItem {
     property alias singleExchangeFull: quoteStore.singleExchangeFull
     property alias currentPrice: quoteStore.currentPrice
     property alias currentRawPrice: quoteStore.currentRawPrice
+    // Decimals of the instrument in the single view, resolved from Yahoo's priceHint
+    // (or the fixed configuration choice); the chart and its hover text use it too.
+    property alias quoteDecimals: quoteStore.priceDecimals
     // Timestamp of the quote (seconds since epoch), shown by the market-status tooltip so
     // it is clear how fresh the Yahoo Finance data is.
     property alias quoteTimestamp: quoteStore.quoteTimestamp
@@ -276,7 +279,8 @@ PlasmoidItem {
     property bool panelShowMarketStatus: app.config.panelShowMarketStatus
     property bool hideTimestamps: app.config.hideTimestamps
     property bool formatPrices: app.config.formatPrices
-    property bool hideDecimals: app.config.hideDecimals
+    // -1 = automatic (Yahoo Finance's precision), 0-6 = fixed.
+    property int priceDecimals: app.config.priceDecimals
     property bool showChartAxis: app.config.showChartAxis
     property bool showTimeAxis: app.config.showTimeAxis
     // 0 = reference line split at the session open, 1 = candlesticks.
@@ -362,6 +366,7 @@ PlasmoidItem {
 
     Component.onCompleted: {
         app.config.migrateThemeSettings();
+        app.config.migratePriceSettings();
         // Before the startup timer sends its first request, so the placeholders are
         // replaced by the previous values while the network comes up.
         root.readCachedQuotes();
@@ -489,9 +494,11 @@ PlasmoidItem {
                                              root.portfolioCurrency, root.convertMoney, Currency);
     }
 
-    // "-$1,234.50", or "+$1,234.50" when `signed` and the amount is positive.
+    // "-$1,234.50", or "+$1,234.50" when `signed` and the amount is positive. Portfolio
+    // money uses the fixed precision when one is chosen and two decimals otherwise.
     function formatMoney(sym, v, signed) {
-        return Format.money(sym, v, signed, root.hideDecimals, root.formatPrices);
+        var decimals = root.priceDecimals >= 0 ? root.priceDecimals : 2;
+        return Format.money(sym, v, signed, decimals, root.formatPrices);
     }
 
     function getPortfolioTickers(dataStr) {
@@ -635,7 +642,12 @@ PlasmoidItem {
     }
 
     function formatNumber(amount, isChange) {
-        return Format.number(amount, isChange, root.hideDecimals, root.formatPrices);
+        return Format.number(amount, isChange, root.quoteDecimals, root.formatPrices);
+    }
+
+    // Percentages keep two decimals even when the price uses a different precision.
+    function formatPercent(amount) {
+        return Format.percent(amount, root.formatPrices);
     }
 
     // Empty the list and forget any cached state attached to its rows. The next fetch
@@ -708,7 +720,8 @@ PlasmoidItem {
     onMultiTickersChanged: { root.clearStockRows(); refreshData(); }
     onSortAlphabeticallyChanged: { root.clearStockRows(); refreshData(); }
     onFormatPricesChanged: refreshData()
-    onHideDecimalsChanged: refreshData()
+    // A precision change re-formats every visible value, so fetch the current data again.
+    onPriceDecimalsChanged: refreshData()
     // CHANGED: Update when the list's configured range changes
     onChartRangeChanged: {
         // The values on screen (and any save already queued) belong to the previous

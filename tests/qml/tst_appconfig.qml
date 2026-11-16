@@ -16,6 +16,8 @@ TestCase {
         property bool showExtendedHours: false
         property int themePreset: -1
         property int themeColors: -1
+        property int priceDecimals: -1
+        property bool hideDecimals: false
         property int selectedTheme: 1
         property int desktopThemeSource: -1
         property string multiTickers: ""
@@ -42,6 +44,8 @@ TestCase {
         compare(config.mouseRowLeftAction, "select");
         compare(config.newsSourceYahoo, true);
         compare(config.showExtendedHours, true);
+        // Automatic precision follows Yahoo Finance per instrument.
+        compare(config.priceDecimals, -1);
     }
 
     function test_overridesAndClamps() {
@@ -90,6 +94,23 @@ TestCase {
         // A second run is a no-op.
         config.migrateThemeSettings();
         compare(fake.themePreset, 0);
+    }
+
+    function test_migrateLegacyHideDecimals() {
+        var config = make(fake);
+        // Before the migration rewrites the entries, the old boolean still means 0.
+        fake.hideDecimals = true;
+        fake.priceDecimals = -1;
+        compare(config.priceDecimals, 0);
+        config.migratePriceSettings();
+        compare(fake.priceDecimals, 0);
+        compare(fake.hideDecimals, false);
+        // A fixed choice saved beside the old flag wins over the migration.
+        fake.hideDecimals = true;
+        fake.priceDecimals = 4;
+        config.migratePriceSettings();
+        compare(fake.priceDecimals, 4);
+        compare(fake.hideDecimals, false);
     }
 
     function test_reactive() {

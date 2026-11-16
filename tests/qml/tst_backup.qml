@@ -22,6 +22,8 @@ TestCase {
             newsSourceGoogle: true,
             newsLanguage: "english",
             newsLanguages: "ro,en,fr",
+            formatPrices: true,
+            priceDecimals: 4,
             themePreset: 0,
             themeColors: 0
         };
@@ -45,6 +47,7 @@ TestCase {
         compare(parsed.settings.newsLanguages, "ro,en,fr");
         compare(parsed.settings.showNews, true);
         compare(parsed.settings.refreshInterval, 5);
+        compare(parsed.settings.priceDecimals, 4);
     }
 
     function test_scope() {
@@ -104,6 +107,27 @@ TestCase {
         compare(parsed.settings.themeColors, 0);
         compare(parsed.settings.refreshInterval, 5);
         compare(parsed.settings.showNews, true);
+    }
+
+    function test_importsLegacyHideDecimals() {
+        // 1.2 and older exported a boolean instead of the priceDecimals choice.
+        var legacy = {
+            application: Backup.APPLICATION_ID,
+            format: 1,
+            settings: { hideDecimals: true, formatPrices: true }
+        };
+        var parsed = Backup.parseBackup(JSON.stringify(legacy));
+        verify(parsed.ok);
+        compare(parsed.settings.priceDecimals, 0);
+        compare(parsed.settings.hideDecimals, undefined);
+
+        var automatic = Backup.parseBackup('{"settings":{"hideDecimals":false}}');
+        verify(automatic.ok);
+        compare(automatic.settings.priceDecimals, -1);
+        compare(automatic.settings.hideDecimals, undefined);
+
+        var tooMany = Backup.parseBackup('{"settings":{"priceDecimals":9}}');
+        compare(tooMany.code, "outOfRange");
     }
 
     function test_rejectsBadFiles() {

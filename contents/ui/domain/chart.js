@@ -147,7 +147,7 @@ function seedFirstSessionPoint(chart, dayStart, meta) {
     if (!chart || !chart.values || chart.values.length !== 1) return;
     if (!chart.times || chart.times.length !== 1 || !(chart.times[0] > 0)) return;
     var dayTime = (dayStart > 0 && dayStart < chart.times[0]) ? dayStart : chart.times[0];
-    var seed = dailyPreviousClose(meta, chart.values[0]);
+    var seed = dailyPreviousClose(meta, chart.values[0], "1D");
     if (!(seed > 0)) seed = chart.values[0];
     chart.values.unshift(seed);
     chart.times.unshift(dayTime);
@@ -157,11 +157,61 @@ function seedFirstSessionPoint(chart, dayStart, meta) {
     chart.volumes.unshift(0);
 }
 
+// Yesterday's close for the daily change. Yahoo's FX feed carries a stale
+// `previousClose` (EURRON=X reported 5.3013 for a day whose real close was 5.3418),
+// but the 2-day chart's `chartPreviousClose` is the last completed daily close. Use
+// that for currencies; the other instrument types keep Yahoo's `previousClose`, which
+// is the correct one for them and differs from `chartPreviousClose` (that one points
+// one day further back in the 2-day window).
+function previousCloseFor(meta, range) {
+    if (!meta) return 0;
+    if (range === "1D" && String(meta.instrumentType) === "CURRENCY") {
+        var fx = Number(meta.chartPreviousClose);
+        if (fx > 0) return fx;
+    }
+    var prev = Number(meta.regularMarketPreviousClose);
+    if (prev > 0) return prev;
+    prev = Number(meta.previousClose);
+    if (prev > 0) return prev;
+    prev = Number(meta.chartPreviousClose);
+    return prev > 0 ? prev : 0;
+}
+
+// The last close of a completed day in a daily-series reply. The current day's bar
+// (when Yahoo includes it) starts at currentTradingPeriod.regular.start, so skip it
+// and take the bar before it. Used for FX, whose intraday meta carries a stale
+// previousClose; the daily bars are the source of the real close (EURRON=X:
+// 5.3013 intraday vs 5.3418 as the daily bar).
+function lastCompletedDailyClose(json) {
+    var result = json && json.chart && json.chart.result && json.chart.result[0];
+    if (!result) return 0;
+    var times = result.timestamp || [];
+    var quote = result.indicators && result.indicators.quote
+                ? result.indicators.quote[0] : null;
+    var closes = quote ? quote.close : null;
+    if (!closes) return 0;
+    var current = result.meta && result.meta.currentTradingPeriod
+                  && result.meta.currentTradingPeriod.regular
+                  ? Number(result.meta.currentTradingPeriod.regular.start) : 0;
+    for (var i = Math.min(times.length, closes.length) - 1; i >= 0; i--) {
+        if (current > 0 && Number(times[i]) >= current) continue;
+        var close = Number(closes[i]);
+        if (closes[i] !== null && closes[i] !== undefined && isFinite(close) && close > 0)
+            return close;
+    }
+    return 0;
+}
+
 // Yesterday's close, independent of the chart range. Yahoo sends `previousClose` only
 // for the 1D range; longer ranges still carry the day's change, so derive it from
-// regularMarketPrice - fulldayChange (or from the change percentage).
-function dailyPreviousClose(meta, fallback) {
+// regularMarketPrice - fulldayChange (or from the change percentage). `range` is
+// optional so the existing callers and tests keep their old behaviour.
+function dailyPreviousClose(meta, fallback, range) {
     if (meta) {
+        if (range === "1D") {
+            var close = previousCloseFor(meta, range);
+            if (close > 0) return close;
+        }
         var prev = meta.regularMarketPreviousClose || meta.previousClose || 0;
         if (prev > 0) return prev;
         // `fulldayChange` is the most precise day change, but it can follow an

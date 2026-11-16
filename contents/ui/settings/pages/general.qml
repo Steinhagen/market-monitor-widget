@@ -11,6 +11,8 @@ Item {
     Component.onCompleted: {
         ConfigWindow.apply(page, Window.window);
         Qt.callLater(function() { ConfigWindow.apply(page, Window.window); });
+        priceDecimalsCombo.currentIndex =
+            Math.max(0, priceDecimalsCombo.decimalValues.indexOf(page.cfg_priceDecimals));
     }
     Window.onWindowChanged: ConfigWindow.apply(page, Window.window)
 
@@ -20,7 +22,12 @@ Item {
     property alias cfg_skipWeekendRefresh: skipWeekendRefreshSwitch.checked
     property alias cfg_hideTimestamps: hideTimestampsSwitch.checked
     property alias cfg_formatPrices: formatPricesSwitch.checked
-    property alias cfg_hideDecimals: hideDecimalsSwitch.checked
+    // -1 = automatic (Yahoo Finance), 0-6 = fixed number of decimals.
+    property int cfg_priceDecimals: -1
+
+    // The configuration dialog listens for this signal to enable Apply when a control
+    // changes more than one alias at once (the precision combo writes one value).
+    signal configurationChanged()
     property alias cfg_showExtendedHours: extendedHoursSwitch.checked
     property alias cfg_keepExtendedAfterClose: keepExtendedAfterCloseSwitch.checked
     property alias cfg_startHour: startHourSpin.value
@@ -81,12 +88,31 @@ Item {
             CheckBox {
                 id: formatPricesSwitch
                 Kirigami.FormData.label: i18n("Value Formatting:")
-                text: i18n("Format stock price with commas (e.g. 1,000.00)")
+                text: i18n("Format prices with commas (e.g. 1,000.00)")
             }
 
-            CheckBox {
-                id: hideDecimalsSwitch
-                text: i18n("Remove decimals from stock price")
+            ComboBox {
+                id: priceDecimalsCombo
+                Kirigami.FormData.label: i18n("Price Decimals:")
+                // The first entry is automatic; the rest map to a fixed 0-6.
+                readonly property var decimalValues: [-1, 0, 1, 2, 3, 4, 5, 6]
+                model: [
+                    i18n("Automatic (Yahoo Finance)"),
+                    i18n("0 (whole numbers)"),
+                    "1", "2", "3", "4", "5", "6"
+                ]
+                onActivated: {
+                    page.cfg_priceDecimals = decimalValues[currentIndex];
+                    page.configurationChanged();
+                }
+            }
+
+            Label {
+                Layout.fillWidth: true
+                text: i18n("Automatic follows Yahoo Finance: usually 2 decimals for shares and 4 for exchange rates.")
+                font.pixelSize: 10
+                opacity: 0.7
+                wrapMode: Text.WordWrap
             }
 
             CheckBox {

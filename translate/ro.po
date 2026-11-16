@@ -542,12 +542,24 @@ msgid "Value Formatting:"
 msgstr "Formatarea valorilor:"
 
 #: contents/ui/settings/pages/general.qml
-msgid "Format stock price with commas (e.g. 1,000.00)"
-msgstr "Formatează prețul acțiunii cu virgule (de ex. 1,000.00)"
+msgid "Format prices with commas (e.g. 1,000.00)"
+msgstr "Formatează prețurile cu virgule (de ex. 1,000.00)"
 
 #: contents/ui/settings/pages/general.qml
-msgid "Remove decimals from stock price"
-msgstr "Elimină zecimalele din prețul acțiunii"
+msgid "Price Decimals:"
+msgstr "Zecimale pentru preț:"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Automatic (Yahoo Finance)"
+msgstr "Automat (Yahoo Finance)"
+
+#: contents/ui/settings/pages/general.qml
+msgid "0 (whole numbers)"
+msgstr "0 (numere întregi)"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Automatic follows Yahoo Finance: usually 2 decimals for shares and 4 for exchange rates."
+msgstr "Automat urmează Yahoo Finance: de obicei 2 zecimale pentru acțiuni și 4 pentru cursurile valutare."
 
 #: contents/ui/settings/pages/general.qml
 msgid "Extended Hours:"
@@ -1273,16 +1285,16 @@ msgid "The market is open; waiting for its first regular quote."
 msgstr "Piața este deschisă; se așteaptă prima cotație din sesiunea regulată."
 
 #: contents/ui/single/NewsPane.qml
+msgid "More on Yahoo Finance"
+msgstr "Mai multe pe Yahoo Finance"
+
+#: contents/ui/single/NewsPane.qml
 msgid "More on BVB"
 msgstr "Mai multe pe BVB"
 
 #: contents/ui/single/NewsPane.qml
 msgid "More on Google"
 msgstr "Mai multe pe Google"
-
-#: contents/ui/single/NewsPane.qml
-msgid "More on Yahoo Finance"
-msgstr "Mai multe pe Yahoo Finance"
 
 #: contents/ui/single/NewsPane.qml
 msgid "Open on BVB"
@@ -1481,6 +1493,12 @@ msgstr "Sesiune"
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "Updated"
 msgstr "Actualizat"
+
+#~ msgid "Format stock price with commas (e.g. 1,000.00)"
+#~ msgstr "Formatează prețul acțiunii cu virgule (de ex. 1,000.00)"
+
+#~ msgid "Remove decimals from stock price"
+#~ msgstr "Elimină zecimalele din prețul acțiunii"
 
 #~ msgid "Yahoo Finance is available in English, German, French, Spanish and Italian; a regional edition supplies headlines when it covers the stock. Google follows the selected languages and is queried once per language in Several languages mode. BVB uses its Romanian or English attachment."
 #~ msgstr "Yahoo Finance este disponibil în engleză, germană, franceză, spaniolă și italiană; o ediție regională furnizează titluri atunci când acoperă acțiunea. Google urmează limbile selectate și este interogat o dată pentru fiecare limbă în modul Mai multe limbi. BVB folosește atașamentul său în română sau engleză."

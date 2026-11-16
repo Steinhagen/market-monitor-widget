@@ -40,7 +40,7 @@ tests/
 | `tst_candles.qml` | candle targets and aggregation |
 | `tst_newsmodel.qml` | news merge, dedupe and age buckets |
 | `tst_symbols.qml` | company names, display ticker, exchange badge |
-| `tst_format.qml` | number and money formatting |
+| `tst_format.qml` | price precision (Yahoo `priceHint`), number and money formatting |
 | `tst_sessions.qml` | market status, closed state, first-quote wait |
 | `tst_quotes.qml` | chart range to API parameters |
 | `tst_yahoo_chart.qml` | Yahoo chart and extended-hours URLs |

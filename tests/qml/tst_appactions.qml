@@ -15,6 +15,7 @@ TestCase {
             property string singleExchangeFull: ""
             property string currentPrice: "---"
             property double currentRawPrice: 0
+            property int quoteDecimals: 2
             property string priceChange: ""
             property string percentChange: ""
             property bool isPositive: true
@@ -71,6 +72,7 @@ TestCase {
             "chartSessions": ({}), "chartCandles": "[]", "chartRef": 212.25,
             "chartPre": false, "chartSessionStart": 0, "chartSessionCurrent": true,
             "quoteTime": 5, "prevClose": 212.25, "currentRaw": 213.45,
+            "decimals": 2,
             "currencySym": "€ ", "currency": "EUR",
             "exchange": "XETRA", "exchangeFull": "XETRA", "cached": false
         });
@@ -98,6 +100,7 @@ TestCase {
         compare(o.applet.panelTicker, "SAP.DE");
         compare(o.applet.singleTicker, "SAP.DE");
         compare(o.applet.currentPrice, "€213.45");
+        compare(o.applet.quoteDecimals, 2);
         compare(o.applet.chartDataPoints.length, 2);
         compare(fakeConfiguration.selectedTicker, "SAP.DE");
         // The row already had a chart for the selected range.

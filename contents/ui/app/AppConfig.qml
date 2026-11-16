@@ -118,7 +118,15 @@ QtObject {
 
     // Formatting
     readonly property bool formatPrices: flag("formatPrices", true)
-    readonly property bool hideDecimals: flag("hideDecimals", false)
+    // -1 follows Yahoo Finance's per-instrument precision; 0-6 is a fixed choice.
+    readonly property int priceDecimals: {
+        var value = integer("priceDecimals", -1);
+        // Legacy configuration from before the migration runs: the old boolean meant
+        // whole numbers. This keeps the first render correct even before the config
+        // entry is rewritten.
+        if (value < 0 && flag("hideDecimals", false)) return 0;
+        return value < 0 ? -1 : Math.min(6, value);
+    }
 
     // Cached quotes (raw JSON string, parsed by the quote cache)
     readonly property string cachedQuotes: text("cachedQuotes", "")
@@ -155,5 +163,17 @@ QtObject {
         } catch (e) {
             console.log("Error migrating theme settings: " + e);
         }
+    }
+
+    // The old boolean "Remove decimals" became the priceDecimals choice. Convert a
+    // saved true to a fixed 0 and clear the deprecated flag; with no saved value the
+    // new default (automatic, following Yahoo Finance) applies.
+    function migratePriceSettings() {
+        if (!configuration) return;
+        var c = configuration;
+        if (c.hideDecimals !== true) return;
+        var current = Number(c.priceDecimals);
+        if (!isFinite(current) || current < 0) c.priceDecimals = 0;
+        c.hideDecimals = false;
     }
 }

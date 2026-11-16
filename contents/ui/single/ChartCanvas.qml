@@ -15,6 +15,7 @@ import "../domain/curve.js" as ChartCurve
             target: applet
             function onChartDataPointsChanged() { canvas.requestPaint(); }
             function onChartTimestampsChanged() { canvas.requestPaint(); }
+            function onQuoteDecimalsChanged() { canvas.requestPaint(); }
             function onChartRangeChanged() { canvas.requestPaint(); }
             function onShowChartAxisChanged() { canvas.requestPaint(); }
             function onShowTimeAxisChanged() { canvas.requestPaint(); }
@@ -728,7 +729,7 @@ import "../domain/curve.js" as ChartCurve
             var hoverPct = hoverBase > 0 ? (hoverChange / hoverBase) * 100 : 0;
             // The dot and the change text follow the sign of the change shown in the tooltip.
             var hoverAccent = hoverChange > 0 ? pos : (hoverChange < 0 ? neg : applet.secondaryTextColor);
-            var hoverDetail = applet.formatNumber(hoverChange, true) + " (" + applet.formatNumber(hoverPct, true) + "%)";
+            var hoverDetail = applet.formatNumber(hoverChange, true) + " (" + applet.formatPercent(hoverPct) + ")";
             var hoverVolume = "";
             if (volumeHeight > 0) {
                 var hvStart = s ? xAt(s.regStart) : 0;

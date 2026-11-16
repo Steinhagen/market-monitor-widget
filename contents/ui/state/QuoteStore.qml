@@ -9,6 +9,8 @@ QtObject {
     property string singleExchangeFull: ""
     property string currentPrice: "---"
     property double currentRawPrice: 0
+    // Decimals the current price/change use, resolved per instrument by the controller.
+    property int priceDecimals: 2
     property double quoteTimestamp: 0
     property string priceChange: "+0.00"
     property string percentChange: "+0.00%"
@@ -35,6 +37,7 @@ QtObject {
 
     // Compact panel quote
     property string panelCurrentPrice: "---"
+    property int panelPriceDecimals: 2
     property string panelCurrentPercent: "+0.00%"
     property bool panelCurrentIsPositive: true
     property bool panelCurrentIsNeutral: false

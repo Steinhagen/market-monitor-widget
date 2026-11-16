@@ -18,7 +18,7 @@ TestCase {
             property string effectiveChartRange: "1D"
             property bool isMultiMode: true
             property bool showExtendedHours: true
-            property bool hideDecimals: false
+            property int priceDecimals: -1
             property bool formatPrices: true
             property int refreshIntervalMinutes: 5
             property string lastUpdated: ""
@@ -86,6 +86,7 @@ TestCase {
         var row = o.controller.model.get(0);
         compare(row.ticker, "SAP.DE");
         compare(row.currency, "EUR");
+        compare(row.decimals, 2);
         verify(row.price.indexOf("213.45") >= 0);
         verify(row.pct.indexOf("%") > 0);
         verify(JSON.parse(row.chartPoints).length > 0);

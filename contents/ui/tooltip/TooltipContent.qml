@@ -193,7 +193,7 @@ Item {
                             + "<td align=\"right\" style=\"" + cell + "\">"
                             + htmlColored(p.plIsNeutral === true, p.plIsPos, applet.formatMoney(pSym, p.plValue, true)) + "</td>"
                             + "<td align=\"right\" style=\"" + cell + "\">"
-                            + htmlColored(p.plIsNeutral === true, p.plIsPos, applet.formatNumber(p.plPercent, true) + "%") + "</td></tr>");
+                            + htmlColored(p.plIsNeutral === true, p.plIsPos, applet.formatPercent(p.plPercent)) + "</td></tr>");
         }
 
         if (applet.showingCachedData) {

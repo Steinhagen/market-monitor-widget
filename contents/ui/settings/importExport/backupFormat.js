@@ -82,9 +82,9 @@ var SETTINGS_KEYS = [
     "panelBoldSymbol",
     "panelShowMarketStatus",
     "formatPrices",
+    "priceDecimals",
     "showExtendedHours",
     "keepExtendedAfterClose",
-    "hideDecimals",
     "showChartAxis",
     "showTimeAxis"
 ];
@@ -108,7 +108,6 @@ var BOOL_KEYS = {
     formatPrices: true,
     showExtendedHours: true,
     keepExtendedAfterClose: true,
-    hideDecimals: true,
     showChartAxis: true,
     showTimeAxis: true,
     showChartRangeButtons: true,
@@ -132,6 +131,7 @@ var INT_RANGES = {
     chartStyle: [0, 1],
     chartLineStyle: [0, 1],
     refreshInterval: [1, 360],
+    priceDecimals: [-1, 6],
     startHour: [0, 23],
     startMinute: [0, 59],
     endHour: [0, 23],
@@ -159,6 +159,9 @@ var CHART_RANGES = ["1D", "5D", "1M", "6M", "YTD", "1Y", "5Y", "Max"];
 // Keys from older backups. They are never exported, only read while importing so
 // migrateLegacyTheme() can turn them into the current theme keys.
 var LEGACY_THEME_KEYS = ["selectedTheme", "desktopThemeSource"];
+
+// Settings from older backups. Read and migrated on import, never exported.
+var LEGACY_SETTINGS_KEYS = ["hideDecimals"];
 
 var MOUSE_ACTIONS = {
     mouseRowLeftAction: ["select", "open"],
@@ -446,6 +449,19 @@ function migrateLegacyTheme(settings) {
     return settings;
 }
 
+// The old "Remove decimals" boolean became the priceDecimals choice: true maps to a
+// fixed 0, false to the new automatic default. Backups written by 1.2 and older only
+// carry hideDecimals, so they keep working after the rename.
+function migrateLegacyPriceDecimals(settings) {
+    if (!isObject(settings)) return settings;
+    if (!has(settings, "hideDecimals")) return settings;
+    if (!has(settings, "priceDecimals")) {
+        settings.priceDecimals = settings.hideDecimals === true ? 0 : -1;
+    }
+    delete settings.hideDecimals;
+    return settings;
+}
+
 // The Custom preset was removed. An old backup that used it keeps the background its
 // desktop used: Plasma when desktopThemeSource is 1, otherwise Application.
 function migrateCustomPreset(settings) {
@@ -517,6 +533,9 @@ function parseBackup(text) {
         for (var l = 0; l < LEGACY_THEME_KEYS.length; l++) {
             if (has(root, LEGACY_THEME_KEYS[l])) flatSettings[LEGACY_THEME_KEYS[l]] = root[LEGACY_THEME_KEYS[l]];
         }
+        for (var m = 0; m < LEGACY_SETTINGS_KEYS.length; m++) {
+            if (has(root, LEGACY_SETTINGS_KEYS[m])) flatSettings[LEGACY_SETTINGS_KEYS[m]] = root[LEGACY_SETTINGS_KEYS[m]];
+        }
         if (Object.keys(flatSettings).length > 0) rawSettings = flatSettings;
     }
 
@@ -533,6 +552,7 @@ function parseBackup(text) {
     if (rawSettings) {
         rawSettings = migrateLegacyTheme(rawSettings);
         rawSettings = migrateCustomPreset(rawSettings);
+        rawSettings = migrateLegacyPriceDecimals(rawSettings);
         for (var k = 0; k < SETTINGS_KEYS.length; k++) {
             var settingKey = SETTINGS_KEYS[k];
             if (!has(rawSettings, settingKey)) continue;

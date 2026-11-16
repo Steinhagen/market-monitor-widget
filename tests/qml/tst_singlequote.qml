@@ -5,6 +5,8 @@ import "Fixture.js" as Fixture
 TestCase {
     name: "SingleQuoteController"
 
+    ListModel { id: stockRows }
+
     Component {
         id: fakeApplet
         QtObject {
@@ -15,7 +17,7 @@ TestCase {
             property string panelSymbol: "SAP.DE"
             property bool isMultiMode: false
             property bool showExtendedHours: true
-            property bool hideDecimals: false
+            property int priceDecimals: -1
             property bool formatPrices: true
             property int refreshIntervalMinutes: 5
             property string lastUpdated: ""
@@ -59,6 +61,7 @@ TestCase {
         compare(o.store.singleDataRange, "1D");
         compare(o.store.quoteCurrency, "EUR");
         compare(o.store.currentRawPrice, 213.45);
+        compare(o.store.priceDecimals, 2);
         verify(o.store.currentPrice.indexOf("213.45") >= 0);
         verify(o.store.previousClose > 0);
         verify(o.store.chartDataPoints.length > 0);
@@ -78,6 +81,67 @@ TestCase {
         o.controller.processPanel(json, "SAP.DE", "1D");
         verify(o.store.panelCurrentPrice.indexOf("213.45") >= 0);
         verify(o.store.panelCurrentPercent.indexOf("%") > 0);
+        compare(o.store.panelPriceDecimals, 2);
         compare(o.store.panelCurrentIsCached, false);
+    }
+
+    function test_processUsesYahooPrecisionForExchangeRates() {
+        var o = make();
+        var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-sap-1d.json")));
+        var meta = json.chart.result[0].meta;
+        meta.instrumentType = "CURRENCY";
+        meta.currency = "USD";
+        meta.priceHint = 4;
+        meta.regularMarketPrice = 1.101;
+        // Yahoo's FX `previousClose` can be stale (EURRON=X: 5.3013 instead of the
+        // real 5.3418); the 2-day chart's chartPreviousClose is the correct one.
+        meta.regularMarketPreviousClose = null;
+        meta.previousClose = 1.0900;
+        meta.chartPreviousClose = 1.0995;
+        o.controller.process(json, "EURUSD=X", "1D");
+
+        compare(o.store.priceDecimals, 4);
+        compare(o.store.previousClose, 1.0995);
+        compare(o.store.currentPrice, "$1.1010");
+        compare(o.store.priceChange, "+0.0015");
+        compare(o.store.percentChange, "+0.14%");
+    }
+
+    function test_processKeepsYahooPreviousCloseForEquities() {
+        var o = make();
+        var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-sap-1d.json")));
+        var meta = json.chart.result[0].meta;
+        meta.instrumentType = "EQUITY";
+        meta.regularMarketPrice = 101;
+        meta.regularMarketPreviousClose = null;
+        meta.previousClose = 100;
+        // In the 2-day window this points one day further back; equities must not use it.
+        meta.chartPreviousClose = 90;
+        o.controller.process(json, "TEST", "1D");
+
+        compare(o.store.previousClose, 100);
+        compare(o.store.priceChange, "+1.00");
+    }
+
+    function test_knownDailyPreviousClose() {
+        stockRows.clear();
+        stockRows.append({ "ticker": "EURRON=X", "prevClose": 5.3418 });
+        var o = make();
+        o.controller.stockModel = stockRows;
+        o.applet.chartRange = "1D";
+
+        // The 1D row already carries the real daily close, so the 5D/1M chart can
+        // draw its reference line on the first paint without a wrong-value flash.
+        compare(o.controller.knownDailyPreviousClose("EURRON=X"), 5.3418);
+
+        // A value learned from a daily reply wins; it survives a range change.
+        o.controller.rememberDailyClose("EURRON=X", 5.3454);
+        compare(o.controller.knownDailyPreviousClose("EURRON=X"), 5.3454);
+
+        // With a 5D list range the row's prevClose is the range start, not a daily
+        // close; only an explicitly remembered value is safe to use.
+        o.applet.chartRange = "5D";
+        o.controller.dailyCloses = ({});
+        compare(o.controller.knownDailyPreviousClose("EURRON=X"), 0);
     }
 }

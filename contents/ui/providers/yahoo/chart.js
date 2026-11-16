@@ -16,6 +16,12 @@ function extendedUrl(symbol) {
     return BASE + encodeURIComponent(symbol) + "?range=1d&interval=5m&includePrePost=true";
 }
 
+// Daily bars, used to recover the last completed daily close for instruments whose
+// intraday meta carries a stale previousClose (notably Yahoo's FX pairs).
+function dailyUrl(symbol) {
+    return BASE + encodeURIComponent(symbol) + "?range=5d&interval=1d";
+}
+
 // done(response, error) with the parsed chart reply.
 function get(symbol, range, showExtendedHours, done) {
     Http.getJson(chartUrl(symbol, range, showExtendedHours), { timeout: 20000 }, done);
@@ -23,4 +29,8 @@ function get(symbol, range, showExtendedHours, done) {
 
 function getExtended(symbol, done) {
     Http.getJson(extendedUrl(symbol), { timeout: 20000 }, done);
+}
+
+function getDaily(symbol, done) {
+    Http.getJson(dailyUrl(symbol), { timeout: 20000 }, done);
 }

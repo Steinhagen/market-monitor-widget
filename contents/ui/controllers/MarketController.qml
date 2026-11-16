@@ -14,7 +14,7 @@ Item {
     // Owned by the app and bound to the configuration.
     property bool showExtendedHours: false
     property bool keepExtendedAfterClose: true
-    property bool hideDecimals: false
+    property int priceDecimals: -1
     property bool formatPrices: true
 
     // Latest pre/post quote per symbol, as { kind, label, time, price, change, pct, isPos }.
@@ -203,16 +203,19 @@ Item {
 
             var price = closes[last];
             var change = price - base;
+            // Extended quotes use the same precision as the regular quote.
+            var decimals = Format.decimalsFor(meta, priceDecimals);
             var entry = {
                 "kind": kind,
                 "label": label,
                 "time": stamps[last],
+                "decimals": decimals,
                 "price": Format.currencySymbol(meta.currency)
-                         + Format.number(price, false, hideDecimals, formatPrices),
-                "change": Format.number(change, true, hideDecimals, formatPrices),
-                "pct": Format.number((change / base) * 100, true, hideDecimals, formatPrices) + "%",
+                         + Format.number(price, false, decimals, formatPrices),
+                "change": Format.number(change, true, decimals, formatPrices),
+                "pct": Format.percent((change / base) * 100, formatPrices),
                 "isPos": change >= 0,
-                "isNeutral": Format.isFlatChange(change)
+                "isNeutral": Format.isFlatChange(change, decimals)
             };
             setExtendedData(symbol, entry);
             setLastExtendedData(symbol, entry);

@@ -16,9 +16,45 @@ Item {
     property var store
     property var market
     property var stockModel
+    // Last known daily close per FX symbol, so a non-1D chart can draw its
+    // reference line correctly on the first paint instead of flashing Yahoo's
+    // stale intraday previousClose and correcting a moment later.
+    property var dailyCloses: ({})
+
+    function rememberDailyClose(symbol, value) {
+        var close = Number(value);
+        if (!(close > 0) || Number(dailyCloses[symbol]) === close) return;
+        var copy = Object.assign({}, dailyCloses);
+        copy[symbol] = close;
+        dailyCloses = copy;
+    }
+
+    // The 1D list row already carries the real daily close when the list range is
+    // 1D; otherwise use a value remembered from an earlier 1D/daily reply.
+    function knownDailyPreviousClose(symbol) {
+        var cached = Number(dailyCloses[symbol]);
+        if (cached > 0) return cached;
+        if (stockModel && applet.chartRange === "1D") {
+            for (var i = 0; i < stockModel.count; i++) {
+                var row = stockModel.get(i);
+                if (row.ticker !== symbol) continue;
+                var prev = Number(row.prevClose);
+                if (prev > 0) return prev;
+            }
+        }
+        return 0;
+    }
 
     function fetch(symbol, range) {
         var chartRange = range || applet.effectiveChartRange;
+        // The header's change belongs to the range that produced it. Clear it while a
+        // different range loads, so the previous range's percentage does not flash
+        // under the new one for a moment.
+        if (symbol === applet.singleTicker && chartRange !== store.singleDataRange) {
+            store.priceChange = "";
+            store.percentChange = "";
+            store.isNeutral = false;
+        }
         YahooChart.get(symbol, chartRange, applet.showExtendedHours, function(response, error) {
             if (error) { applet.scheduleQuoteRetry(); return; }
             // Ignore a reply for a range or symbol the user has already switched away from.
@@ -49,9 +85,10 @@ Item {
             }
             var current = meta.regularMarketPrice;
             var curSym = Format.currencySymbol(meta.currency);
+            var decimals = Format.decimalsFor(meta, applet.priceDecimals);
             var prev;
             if (range === "1D") {
-                prev = meta.regularMarketPreviousClose || meta.previousClose || meta.chartPreviousClose;
+                prev = Chart.previousCloseFor(meta, range);
             } else {
                 prev = meta.chartPreviousClose;
                 if (!prev || prev === 0) {
@@ -62,15 +99,41 @@ Item {
                     prev = cleanData.length > 0 ? cleanData[0] : meta.regularMarketPreviousClose;
                 }
             }
+            if (range === "1D" && String(meta.instrumentType) === "CURRENCY")
+                rememberDailyClose(symbol, prev);
             var change = current - prev;
-            store.panelCurrentPrice = curSym + Format.number(current, false, applet.hideDecimals, applet.formatPrices);
-            store.panelCurrentPercent = Format.number(prev > 0 ? (change / prev) * 100 : 0, true,
-                                                     applet.hideDecimals, applet.formatPrices) + "%";
+            store.panelPriceDecimals = decimals;
+            store.panelCurrentPrice = curSym + Format.number(current, false, decimals, applet.formatPrices);
+            store.panelCurrentPercent = Format.percent(prev > 0 ? (change / prev) * 100 : 0,
+                                                      applet.formatPrices);
             store.panelCurrentIsPositive = change >= 0;
-            store.panelCurrentIsNeutral = Format.isFlatChange(change);
+            store.panelCurrentIsNeutral = Format.isFlatChange(change, decimals);
             store.panelCurrentIsCached = false;
             applet.noteQuoteReceived();
         } catch (e) { console.log("Error parsing panel quote: " + e); }
+    }
+
+    // The daily bars carry the real close for FX; keep only the reply that still
+    // belongs to the symbol and range on screen.
+    function refreshDailyPreviousClose(symbol, range) {
+        YahooChart.getDaily(symbol, function(response, error) {
+            if (error) return;
+            var prev = Chart.lastCompletedDailyClose(response);
+            if (!(prev > 0)) return;
+            rememberDailyClose(symbol, prev);
+            if (symbol !== applet.singleTicker || range !== applet.effectiveChartRange) return;
+            if (store.chartPreSession) return;
+            store.chartReferencePrice = prev;
+            // The list-row cache reuses chartRef when that row is selected again.
+            if (applet.isMultiMode && stockModel) {
+                for (var i = 0; i < stockModel.count; i++) {
+                    if (stockModel.get(i).ticker === symbol) {
+                        stockModel.set(i, { "chartRef": prev });
+                        break;
+                    }
+                }
+            }
+        });
     }
 
     function process(json, fallbackSymbol, range) {
@@ -91,9 +154,13 @@ Item {
             store.quoteCurrency = meta.currency || "";
             store.currentRawPrice = meta.regularMarketPrice;
             store.quoteTimestamp = meta.regularMarketTime || 0;
+            // Yahoo's priceHint is the precision the quote page uses (2 for shares,
+            // 4 for exchange rates). A fixed setting overrides it.
+            var decimals = Format.decimalsFor(meta, applet.priceDecimals);
+            store.priceDecimals = decimals;
             store.currentPrice = store.currencySym
                                  + Format.number(meta.regularMarketPrice, false,
-                                                 applet.hideDecimals, applet.formatPrices);
+                                                 decimals, applet.formatPrices);
 
             var startTime = (meta.currentTradingPeriod && meta.currentTradingPeriod.regular) ? meta.currentTradingPeriod.regular.start : 0;
             // The 1D chart plots the running pre-market, or the last completed regular
@@ -125,8 +192,25 @@ Item {
             // close, as shown in the regular quote); the regular chart uses the close
             // before the session it shows.
             var reference = preChart ? (meta.regularMarketPrice || 0) : 0;
-            store.chartReferencePrice = reference > 0 ? reference
-                : Chart.dailyPreviousClose(meta, cleanData.length > 0 ? cleanData[0] : 0);
+            var fxRange = chartRange !== "1D"
+                          && String(meta.instrumentType) === "CURRENCY" && !preChart;
+            if (reference <= 0 && fxRange)
+                reference = knownDailyPreviousClose(symbol);
+            if (reference <= 0 && fxRange) {
+                // No reliable daily close yet. Hide the reference line for the moment
+                // instead of flashing Yahoo's stale intraday previousClose and then
+                // replacing it when the daily reply arrives.
+                store.chartReferencePrice = 0;
+            } else {
+                store.chartReferencePrice = reference > 0 ? reference
+                    : Chart.dailyPreviousClose(meta, cleanData.length > 0 ? cleanData[0] : 0, chartRange);
+            }
+            // Yahoo's intraday meta repeats a stale previousClose for FX on every range
+            // (EURRON=X: 5.3013 instead of the real daily close 5.3418). Longer ranges
+            // do not carry a daily bar, so fetch the last completed daily close and use
+            // it for the chart's "Previous close" line.
+            if (fxRange)
+                refreshDailyPreviousClose(symbol, chartRange);
 
             // Keep the row's cached chart in sync with every fresh chart, so choosing that
             // row again does not briefly show the older snapshot from the list refresh.
@@ -150,20 +234,22 @@ Item {
             }
 
             if (chartRange === "1D") {
-                store.previousClose = meta.regularMarketPreviousClose || meta.previousClose || meta.chartPreviousClose;
+                store.previousClose = Chart.previousCloseFor(meta, chartRange);
             } else {
                 store.previousClose = meta.chartPreviousClose;
                 if (!store.previousClose || store.previousClose === 0) {
                     store.previousClose = cleanData.length > 0 ? cleanData[0] : meta.regularMarketPreviousClose;
                 }
             }
+            if (chartRange === "1D" && String(meta.instrumentType) === "CURRENCY")
+                rememberDailyClose(symbol, store.previousClose);
 
             var change = meta.regularMarketPrice - store.previousClose;
             store.isPositive = change >= 0;
-            store.isNeutral = Format.isFlatChange(change);
-            store.priceChange = Format.number(change, true, applet.hideDecimals, applet.formatPrices);
-            store.percentChange = Format.number((change / store.previousClose) * 100, true,
-                                                applet.hideDecimals, applet.formatPrices) + "%";
+            store.isNeutral = Format.isFlatChange(change, decimals);
+            store.priceChange = Format.number(change, true, decimals, applet.formatPrices);
+            store.percentChange = Format.percent((change / store.previousClose) * 100,
+                                                applet.formatPrices);
 
             // In single mode this response can also serve the panel when the chart is
             // showing the configured range. When the chart has its own range, a separate

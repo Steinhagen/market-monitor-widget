@@ -83,7 +83,7 @@ Item {
     property bool cfg_formatPrices
     property bool cfg_showExtendedHours
     property bool cfg_keepExtendedAfterClose
-    property bool cfg_hideDecimals
+    property int cfg_priceDecimals: -1
     property bool cfg_showChartAxis
     property bool cfg_showTimeAxis
     property string cfg_mouseRowLeftAction

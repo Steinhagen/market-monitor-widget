@@ -61,7 +61,7 @@ Item {
                        : String(shares);
         return i18n("%1 @ %2", withLots, applet.formatMoney(moneySymbol, summary.avgCost, false));
     }
-    readonly property string plPercentString: summary ? applet.formatNumber(summary.plPercent, true) + "%" : ""
+    readonly property string plPercentString: summary ? applet.formatPercent(summary.plPercent) : ""
 
     // Width of each part. They come from the texts' own implicit widths, which do not depend on
     // what is shown, so choosing the parts by width cannot loop.
