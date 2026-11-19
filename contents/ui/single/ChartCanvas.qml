@@ -10,22 +10,35 @@ import "../domain/curve.js" as ChartCurve
         anchors.fill: parent
         renderStrategy: Canvas.Threaded
         renderTarget: Canvas.Image
+        // A ticker switch changes several chart properties at once (points, timestamps,
+        // sessions, candles, reference). Repainting for each of them drew the same frame
+        // several times; schedule one paint per event-loop turn instead.
+        property bool paintScheduled: false
+        function schedulePaint() {
+            if (canvas.paintScheduled) return;
+            canvas.paintScheduled = true;
+            Qt.callLater(function() {
+                canvas.paintScheduled = false;
+                canvas.requestPaint();
+            });
+        }
         onPaint: { drawChart(getContext("2d"), width, height, applet.chartDataPoints, applet.chartTimestamps, applet.previousClose, applet.isPositive, true, applet.showChartAxis, applet.showTimeAxis); }
         Connections {
             target: applet
-            function onChartDataPointsChanged() { canvas.requestPaint(); }
-            function onChartTimestampsChanged() { canvas.requestPaint(); }
-            function onQuoteDecimalsChanged() { canvas.requestPaint(); }
-            function onChartRangeChanged() { canvas.requestPaint(); }
-            function onShowChartAxisChanged() { canvas.requestPaint(); }
-            function onShowTimeAxisChanged() { canvas.requestPaint(); }
-            function onChartStyleChanged() { canvas.requestPaint(); }
-            function onShowChartVolumeChanged() { canvas.requestPaint(); }
-            function onChartLineStyleChanged() { canvas.requestPaint(); }
-            function onChartCandlesChanged() { canvas.requestPaint(); }
-            function onChartReferencePriceChanged() { canvas.requestPaint(); }
-            function onChartSessionsChanged() { canvas.requestPaint(); }
-            function onChartPreSessionChanged() { canvas.requestPaint(); }
+            function onChartDataPointsChanged() { canvas.schedulePaint(); }
+            function onChartTimestampsChanged() { canvas.schedulePaint(); }
+            function onQuoteDecimalsChanged() { canvas.schedulePaint(); }
+            function onChartRangeChanged() { canvas.schedulePaint(); }
+            function onShowChartAxisChanged() { canvas.schedulePaint(); }
+            function onShowTimeAxisChanged() { canvas.schedulePaint(); }
+            function onChartStyleChanged() { canvas.schedulePaint(); }
+            function onShowChartVolumeChanged() { canvas.schedulePaint(); }
+            function onChartLineStyleChanged() { canvas.schedulePaint(); }
+            // Candles are only drawn in candle mode; in line mode this is a no-op.
+            function onChartCandlesChanged() { if (applet.chartStyle === 1) canvas.schedulePaint(); }
+            function onChartReferencePriceChanged() { canvas.schedulePaint(); }
+            function onChartSessionsChanged() { canvas.schedulePaint(); }
+            function onChartPreSessionChanged() { canvas.schedulePaint(); }
             // Theme changes alter the colors used while painting (and the
             // light/dark details), so repaint without waiting for new data.
             function onIsLightThemeChanged() { canvas.requestPaint(); }

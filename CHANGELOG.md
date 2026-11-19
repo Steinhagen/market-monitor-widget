@@ -5,6 +5,14 @@ All notable changes to Market Monitor are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Selecting a stock repaints the chart once instead of five times: the five chart
+  properties that change together scheduled a paint each, drawing the same frame
+  repeatedly, and candles repainted even in line mode.
+
 ## [1.4] - 2026-11-19
 
 ### Added
