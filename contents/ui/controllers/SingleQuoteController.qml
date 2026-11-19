@@ -177,8 +177,19 @@ Item {
                 || (meta.currentTradingPeriod.pre && store.chartSessionStart === meta.currentTradingPeriod.pre.start);
             store.chartPreSession = preChart;
             var chart = Chart.cleanChartData(quotes, timestamps, startTime, chartRange, quote, day);
-            if (chartRange === "1D")
+            if (chartRange === "1D") {
                 Chart.seedFirstSessionPoint(chart, (day && day.regular) ? day.regular.start : startTime, meta);
+                store.chartListedSince = 0;
+            } else {
+                // A just-listed symbol has a single bar on the daily and coarser ranges;
+                // seed it so the chart shows the move since the previous close instead of
+                // staying blank, and remember that the range reaches past the listing.
+                Chart.seedSinglePointSeries(chart, meta, chartRange);
+                var firstTrade = Number(meta.firstTradeDate) || 0;
+                var rangeStart = Chart.rangeStartTime(chartRange);
+                store.chartListedSince = (firstTrade > 0 && rangeStart > 0 && firstTrade > rangeStart)
+                                         ? firstTrade : 0;
+            }
             var cleanData = chart.values;
             store.chartSessions = (day && cleanData.length >= 2)
                                   ? Chart.extendedSessionSeries(quotes, timestamps, day) : null;
@@ -223,6 +234,7 @@ Item {
                             "chartSessions": store.chartSessions,
                             "chartCandles": JSON.stringify(store.chartCandles),
                             "chartRef": store.chartReferencePrice,
+                            "chartListedSince": store.chartListedSince,
                             "chartPre": store.chartPreSession,
                             "chartSessionStart": store.chartSessionStart,
                             "chartSessionCurrent": store.chartSessionCurrent,

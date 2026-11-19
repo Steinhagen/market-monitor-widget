@@ -5,6 +5,17 @@ All notable changes to Market Monitor are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- The 6 month, YTD, 1 year, 5 year and Max charts of a symbol that started
+  trading a few days earlier (a recent IPO) no longer stay blank. Those ranges
+  ask Yahoo for a daily (or coarser) series, and a just-listed symbol has a
+  single bar, which cannot be drawn. The bar is now seeded with the previous
+  close, so the plot shows the move since the reference, and the chart header
+  says when the symbol started trading (`Listed …`).
+
 ## [1.3] - 2026-11-16
 
 ### Added

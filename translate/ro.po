@@ -1393,6 +1393,10 @@ msgstr "Sesiunea de ieri"
 msgid "Session of %1"
 msgstr "Sesiunea din %1"
 
+#: contents/ui/SingleStockView.qml
+msgid "Listed %1"
+msgstr "Listat pe %1"
+
 #: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
 msgid "session of %1"
 msgstr "ședința de %1"

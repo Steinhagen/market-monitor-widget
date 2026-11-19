@@ -78,6 +78,8 @@ Item {
                 "chartSessions": ({}),
                 "chartCandles": "[]",
                 "chartRef": 0.0,
+                // Epoch seconds of the first trading day when the range predates it.
+                "chartListedSince": 0.0,
                 "chartPre": false,
                 "chartSessionStart": 0.0,
                 "chartSessionCurrent": true,

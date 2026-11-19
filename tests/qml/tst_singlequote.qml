@@ -75,6 +75,33 @@ TestCase {
         compare(o.store.panelCurrentPrice, o.store.currentPrice);
     }
 
+    function test_processSeedsSingleBarChart() {
+        // A symbol that started trading this morning answers the 6 month request with a
+        // single daily bar. The controller seeds it from the previous close, so the chart
+        // has a segment to draw, and records the listing date for the header note.
+        var o = make();
+        var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-ant-6m.json")));
+        o.controller.process(json, "ANT", "6M");
+
+        compare(o.store.singleDataTicker, "ANT");
+        compare(o.store.singleDataRange, "6M");
+        compare(o.store.currentRawPrice, 97.77);
+        compare(o.store.chartDataPoints.length, 2);
+        compare(o.store.chartDataPoints[0], 83);
+        compare(o.store.chartDataPoints[1], 97.77);
+        compare(o.store.chartTimestamps.length, 2);
+        verify(o.store.chartTimestamps[0] < o.store.chartTimestamps[1]);
+        verify(o.store.chartCandles.length > 1);
+        compare(o.store.chartListedSince, 1794556800);
+    }
+
+    function test_processLeavesCompleteHistoryUnannotated() {
+        var o = make();
+        var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-sap-1d.json")));
+        o.controller.process(json, "SAP.DE", "6M");
+        compare(o.store.chartListedSince, 0);
+    }
+
     function test_processPanel() {
         var o = make();
         var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-sap-1d.json")));

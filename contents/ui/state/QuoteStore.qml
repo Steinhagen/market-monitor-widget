@@ -27,6 +27,10 @@ QtObject {
     property var chartSessions: null
     property var chartCandles: []
     property double chartReferencePrice: 0
+    // Epoch seconds of the symbol's first trading day when the selected range starts
+    // before it (a recent IPO), so the view can say how far back the history goes.
+    // 0 when the range is fully covered by the symbol's history.
+    property double chartListedSince: 0
     property double chartSessionStart: 0
     property bool chartSessionCurrent: true
     property bool chartPreSession: false

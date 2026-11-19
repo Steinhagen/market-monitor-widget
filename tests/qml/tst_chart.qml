@@ -68,4 +68,57 @@ TestCase {
 
         compare(Chart.lastCompletedDailyClose(null), 0);
     }
+
+    function test_rangeStartTime() {
+        var now = 1794556800;
+        compare(Chart.rangeStartTime("1D", now), 0);
+        compare(Chart.rangeStartTime("Max", now), 0);
+        compare(Chart.rangeStartTime("6M", now), now - 182 * 86400);
+        compare(Chart.rangeStartTime("1Y", now), now - 365 * 86400);
+        compare(Chart.rangeStartTime("5Y", now), now - 5 * 365 * 86400);
+        // YTD starts at local midnight on 1 January, whichever side of UTC the machine is.
+        var date = new Date(now * 1000);
+        compare(Chart.rangeStartTime("YTD", now),
+                new Date(date.getFullYear(), 0, 1).getTime() / 1000);
+    }
+
+    function test_seedSinglePointSeries() {
+        // A symbol listed today has a single daily bar; the previous close seeds it so
+        // the chart has a segment to draw.
+        var chart = { values: [97.77], times: [1794556800],
+                      opens: [97.77], highs: [97.77], lows: [97.77], volumes: [1200000] };
+        var meta = { regularMarketPreviousClose: 83, firstTradeDate: 1794556800 };
+        verify(Chart.seedSinglePointSeries(chart, meta, "6M"));
+        compare(chart.values.length, 2);
+        compare(chart.values[0], 83);
+        compare(chart.values[1], 97.77);
+        // The listing day is the only bar, so the seed sits the day before it.
+        compare(chart.times[0], 1794556800 - 86400);
+        compare(chart.times[1], 1794556800);
+        compare(chart.volumes[0], 0);
+        compare(chart.opens.length, chart.values.length);
+
+        // A listing older than the single bar seeds on the first trading day itself.
+        var older = { values: [50], times: [1794556800],
+                      opens: [50], highs: [50], lows: [50], volumes: [0] };
+        verify(Chart.seedSinglePointSeries(older, { regularMarketPreviousClose: 40,
+                                                    firstTradeDate: 1794300000 }, "5Y"));
+        compare(older.times[0], 1794300000);
+
+        // Without a previous close the only known price is used, so the plot is flat
+        // instead of empty.
+        var bare = { values: [12], times: [1794556800],
+                     opens: [12], highs: [12], lows: [12], volumes: [0] };
+        verify(Chart.seedSinglePointSeries(bare, { firstTradeDate: 1794556800 }, "Max"));
+        compare(bare.values[0], 12);
+
+        // A real series is left alone, and 1D keeps its own seeding.
+        var full = { values: [1, 2], times: [100, 200],
+                     opens: [1, 2], highs: [1, 2], lows: [1, 2], volumes: [0, 0] };
+        verify(!Chart.seedSinglePointSeries(full, meta, "6M"));
+        compare(full.values.length, 2);
+        var oneDay = { values: [1], times: [100], opens: [1], highs: [1], lows: [1], volumes: [0] };
+        verify(!Chart.seedSinglePointSeries(oneDay, meta, "1D"));
+        compare(oneDay.values.length, 1);
+    }
 }

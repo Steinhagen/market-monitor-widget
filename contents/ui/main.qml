@@ -221,6 +221,9 @@ PlasmoidItem {
     // yesterday's close, used as the reference line of the reference-line chart.
     property alias chartCandles: quoteStore.chartCandles
     property alias chartReferencePrice: quoteStore.chartReferencePrice
+    // First trading day of a recently listed symbol when the selected range reaches
+    // before it; the view then says how far back the history goes.
+    property alias chartListedSince: quoteStore.chartListedSince
     // Start of the session a 1D chart is showing, and whether it is today's session (the
     // running pre-market or the regular one). When it is not, the chart still shows a
     // previous session and the view labels it so it is not mistaken for today's.
@@ -712,6 +715,7 @@ PlasmoidItem {
             root.chartSessions = null;
             root.chartCandles = [];
             root.chartReferencePrice = 0;
+            root.chartListedSince = 0;
             root.readCachedQuotes();
         }
         root.updateTooltipItem();

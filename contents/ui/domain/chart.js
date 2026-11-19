@@ -138,6 +138,50 @@ function cleanChartData(quotes, timestamps, startTime, range, quote, day) {
     return { values: values, times: times, opens: outOpens, highs: outHighs, lows: outLows, volumes: outVolumes };
 }
 
+// Start of the period a range covers, in epoch seconds. 0 means "no fixed start": Max
+// shows the whole history and 1D is a session, not a window. Callers use this to tell a
+// range that reaches back before the listing from one the symbol's history fills.
+function rangeStartTime(range, nowSeconds) {
+    var now = nowSeconds > 0 ? nowSeconds : Date.now() / 1000;
+    var day = new Date(now * 1000);
+    switch (range) {
+        case "5D":  return now - 5 * 86400;
+        case "1M":  return now - 30 * 86400;
+        case "6M":  return now - 182 * 86400;
+        case "YTD": return new Date(day.getFullYear(), 0, 1).getTime() / 1000;
+        case "1Y":  return now - 365 * 86400;
+        case "5Y":  return now - 5 * 365 * 86400;
+        default:    return 0;
+    }
+}
+
+// A symbol that started trading a few days ago has a single bar at daily (or coarser)
+// granularity, and two points are needed to draw a line. Seed that series with the
+// previous close, the same way seedFirstSessionPoint seeds the 1D opening tick: the
+// plot then shows the move since the reference instead of staying blank. The seed sits
+// on the listing day, or the day before it when the single bar is the listing day.
+// Returns true when a point was added.
+function seedSinglePointSeries(chart, meta, range) {
+    if (!chart || !chart.values || chart.values.length !== 1) return false;
+    if (range === "1D") return false;
+    if (!chart.times || chart.times.length !== 1 || !(chart.times[0] > 0)) return false;
+    var seed = previousCloseFor(meta, range);
+    // Without a close to compare against, a flat line at the only known price still
+    // beats an empty plot: the axis, the date and the listing note stay readable.
+    if (!(seed > 0)) seed = chart.values[0];
+    var firstTrade = meta ? Number(meta.firstTradeDate) || 0 : 0;
+    var barTime = chart.times[0];
+    var seedTime = (firstTrade > 0 && firstTrade < barTime - 3600)
+                   ? firstTrade : barTime - 86400;
+    chart.values.unshift(seed);
+    chart.times.unshift(seedTime);
+    chart.opens.unshift(seed);
+    chart.highs.unshift(seed);
+    chart.lows.unshift(seed);
+    chart.volumes.unshift(0);
+    return true;
+}
+
 // A session starts with a single tick before the next candle arrives. A one-point
 // series cannot be drawn (the canvas needs two points), so the chart went blank
 // between the first quote of the day and the second candle. Start the day's line at

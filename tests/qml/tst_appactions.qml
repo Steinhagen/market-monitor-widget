@@ -29,6 +29,7 @@ TestCase {
             property var chartSessions: null
             property var chartCandles: []
             property double chartReferencePrice: 0
+            property double chartListedSince: 0
             property bool chartPreSession: false
             property double chartSessionStart: 0
             property bool chartSessionCurrent: true

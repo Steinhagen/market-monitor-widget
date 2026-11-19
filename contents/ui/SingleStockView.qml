@@ -180,6 +180,16 @@ Rectangle {
         return i18n("Session of %1", session.toLocaleDateString(Qt.locale(), "d MMM"));
     }
 
+    // A recent IPO has no history before its listing day, so the 6 month, 1 year and Max
+    // charts are shorter than their range. Say since when the data exists instead of
+    // leaving the truncated plot unexplained.
+    readonly property string chartListingNote: {
+        if (applet.effectiveChartRange === "1D") return "";
+        if (!(applet.chartListedSince > 0)) return "";
+        var listed = new Date(applet.chartListedSince * 1000);
+        return i18n("Listed %1", listed.toLocaleDateString(Qt.locale(), "d MMM yyyy"));
+    }
+
     // Minimum width of the card. It deliberately comes from the chart controls and a fixed
     // floor, not from contentColumn.implicitWidth: prices, percentages, company names and
     // positions change with the selected ticker and range, and using them made the minimum

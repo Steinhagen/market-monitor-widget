@@ -14,13 +14,16 @@ RowLayout {
     readonly property real rangeButtonsWidth: chartRangeButtons.implicitWidth
     readonly property real styleButtonsWidth: chartStyleButtons.implicitWidth
     readonly property real rowSpacing: spacing
+    // The note slot under the range buttons: a previous session, or the listing date when
+    // the range reaches back further than the symbol's history.
+    readonly property string chartNote: host.chartSessionNote || host.chartListingNote
     // Bind to the settings, not to the children's visible: a child reads as
     // invisible while this row is hidden, which would keep the row hidden for good.
     // The news pane needs the row for its "Updated…" line and refresh button, but
     // merely enabling the news must not reserve an empty bar over the chart.
     visible: applet.showChartRangeButtons
              || applet.showChartStyleButtons
-             || host.chartSessionNote !== ""
+             || chartNote !== ""
              || host.newsMode
     Layout.fillWidth: true
     Layout.topMargin: 6
@@ -28,7 +31,7 @@ RowLayout {
     Layout.preferredHeight: Math.max(
         applet.showChartRangeButtons ? chartRangeButtons.implicitHeight : 0,
         applet.showChartStyleButtons ? 18 : 0,
-        host.chartSessionNote !== "" ? 14 : 0,
+        chartNote !== "" ? 14 : 0,
         host.newsMode ? 18 : 0)
     spacing: 6
     // A Row, not a Flow: the buttons stay on one row and its implicitWidth (the
@@ -69,7 +72,7 @@ RowLayout {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            text: host.chartSessionNote
+            text: chartHeaderRow.chartNote
             visible: text !== "" && !host.newsMode
             color: applet.secondaryTextColor
             opacity: 0.8

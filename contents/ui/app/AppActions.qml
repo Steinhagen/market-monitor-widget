@@ -136,6 +136,9 @@ Item {
             }
         }
         var chartFromCache = false;
+        // The listing note describes the chart that is on screen; without reusing that
+        // chart there is nothing to annotate until the new reply arrives.
+        applet.chartListedSince = 0;
         // A row that has not been quoted yet has no exchange metadata; fall back to the
         // suffix so the badge appears immediately.
         applet.singleExchange = Exchanges.shortLabel(clean, "", "");
@@ -166,6 +169,7 @@ Item {
                                        ? sessions : null;
                 applet.chartCandles = chartArray(row.chartCandles);
                 applet.chartReferencePrice = row.chartRef;
+                applet.chartListedSince = row.chartListedSince || 0;
                 applet.chartPreSession = row.chartPre === true;
                 applet.chartSessionStart = row.chartSessionStart || 0;
                 applet.chartSessionCurrent = row.chartSessionCurrent !== false;

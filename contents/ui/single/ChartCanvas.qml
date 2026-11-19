@@ -169,7 +169,11 @@ import "../domain/curve.js" as ChartCurve
             case "5D":  return locale.toString(date, "ddd");
             case "1M":  return locale.toString(date, "d MMM");
             case "6M":
-            case "1Y":  return locale.toString(date, "MMM");
+            case "1Y":
+                // A recently listed symbol may cover only days of a 6 month or 1 year
+                // range, where month names collapse into a single "Nov" label.
+                if (span > 60 * 86400) return locale.toString(date, "MMM");
+                return locale.toString(date, "d MMM");
             case "YTD":
                 // Early in the year YTD covers only a few days, where month names would
                 // all be the same; fall back to dates or times for those short spans.

@@ -1384,6 +1384,10 @@ msgstr ""
 msgid "Session of %1"
 msgstr ""
 
+#: contents/ui/SingleStockView.qml
+msgid "Listed %1"
+msgstr ""
+
 #: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
 msgid "session of %1"
 msgstr ""
