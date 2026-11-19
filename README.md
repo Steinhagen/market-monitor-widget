@@ -2,7 +2,7 @@
 
 A clean stock, crypto and currency widget for **KDE Plasma 6**, powered by Yahoo Finance.
 
-[![KDE Store](https://img.shields.io/badge/KDE%20Store-Install-blue)](https://store.kde.org/p/2381512/)
+[![KDE Store](https://img.shields.io/badge/KDE%20Store-Install-blue)](https://store.kde.org/p/2381891/)
 
 ![Market Monitor](screenshots/main.png)
 
@@ -27,7 +27,7 @@ A clean stock, crypto and currency widget for **KDE Plasma 6**, powered by Yahoo
 
 ### KDE Store
 
-Install **Market Monitor** from the [KDE Store](https://store.kde.org/p/2381512/).
+Install **Market Monitor** from the [KDE Store](https://store.kde.org/p/2381891/).
 
 You can also open **Add Widgets → Get New Widgets → Download New Plasma Widgets** on your desktop or panel and search for **Market Monitor**.
 
