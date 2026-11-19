@@ -261,10 +261,27 @@ Item {
         if (!Array.isArray(items) || items.length === 0) return [];
         var plot = plotRight;
         if (!(plot > 20)) return [];
+
+        // The chart covers a window; an action outside it cannot be placed and timeX()
+        // would re-read the chart arrays for every stored action on every chart change.
+        // A two-day margin keeps the same-calendar-day edges that timeX() clamps.
+        var chartTimes = applet.chartTimestamps;
+        var chartCandles = applet.chartCandles;
+        var useCandles = applet.chartStyle === 1
+                         && Array.isArray(chartCandles) && chartCandles.length > 1;
+        var firstTime = useCandles ? Number(chartCandles[0].time)
+                                   : (chartTimes && chartTimes.length ? Number(chartTimes[0]) : 0);
+        var lastTime = useCandles ? Number(chartCandles[chartCandles.length - 1].time)
+                                  : (chartTimes && chartTimes.length ? Number(chartTimes[chartTimes.length - 1]) : 0);
+        var minTime = firstTime > 0 ? firstTime - 2 * 86400 : 0;
+        var maxTime = lastTime > 0 ? lastTime + 2 * 86400 : 0;
+
         var buckets = ({});
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
-            var x = timeX(Number(item.time));
+            var itemTime = Number(item.time);
+            if (minTime > 0 && (itemTime < minTime || itemTime > maxTime)) continue;
+            var x = timeX(itemTime);
             if (!(x >= 0)) continue;
             var bucket = Math.round(x / 16);
             var group = buckets[bucket];

@@ -53,6 +53,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   selection fetched the chart again. The last chart of each ticker and range is
   now kept, shown immediately, and refreshed in the background once it is older
   than a refresh cycle.
+- Selecting a stock no longer stalls for up to a second while the analyst overlay
+  recomputes. Every stored analyst action was mapped to a chart position on each
+  chart change — hundreds of actions late in the day, all of them outside a 1D
+  window — so the overlay now filters them by the chart's time window first.
 
 ## [1.3] - 2026-11-16
 
