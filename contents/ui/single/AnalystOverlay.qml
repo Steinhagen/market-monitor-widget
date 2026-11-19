@@ -1022,23 +1022,32 @@ Item {
                         height: Math.max(20, Math.min(entriesBar.height,
                                 entriesFlick.visibleArea.heightRatio * entriesBar.height))
                         y: progress * travel
+                    }
 
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.PointingHandCursor
-                            // Grab offset inside the thumb, so dragging keeps the thumb
-                            // under the cursor even as the MouseArea itself moves.
-                            property real grabY: 0
-                            onPressed: (mouse) => grabY = mouse.y
-                            onPositionChanged: (mouse) => {
-                                if (!pressed || entriesHandle.travel <= 0
-                                        || entriesHandle.maxScroll <= 0) return;
-                                var pointerY = mapToItem(entriesBar, mouse.x, mouse.y).y;
-                                var top = Math.max(0, Math.min(entriesHandle.travel,
-                                                                pointerY - grabY));
-                                entriesFlick.contentY = top / entriesHandle.travel
-                                                        * entriesHandle.maxScroll;
-                            }
+                    // Same hit area as the stock list scrollbar: the drawn thumb is 6 px,
+                    // this invisible strip is twice as wide and covers the whole track, so
+                    // pressing beside the thumb jumps there and dragging works anywhere.
+                    MouseArea {
+                        anchors.fill: parent
+                        anchors.leftMargin: -8
+                        cursorShape: Qt.PointingHandCursor
+                        property real grabY: 0
+                        property bool onThumb: false
+
+                        function scrollTo(pointerY) {
+                            if (entriesHandle.travel <= 0 || entriesHandle.maxScroll <= 0) return;
+                            var top = Math.max(0, Math.min(entriesHandle.travel, pointerY - grabY));
+                            entriesFlick.contentY = top / entriesHandle.travel * entriesHandle.maxScroll;
+                        }
+
+                        onPressed: (mouse) => {
+                            var localY = mapToItem(entriesHandle, mouse.x, mouse.y).y;
+                            onThumb = localY >= 0 && localY <= entriesHandle.height;
+                            grabY = onThumb ? localY : entriesHandle.height / 2;
+                            if (!onThumb) scrollTo(mouse.y);
+                        }
+                        onPositionChanged: (mouse) => {
+                            if (pressed) scrollTo(mouse.y);
                         }
                     }
                 }

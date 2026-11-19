@@ -113,6 +113,7 @@ QtObject {
     readonly property string positiveColor: text("positiveColor", "#4cd964")
     readonly property string negativeColor: text("negativeColor", "#FF3B30")
     readonly property int bgOpacity: clamped("bgOpacity", 100, 0, 100)
+    readonly property bool showListScrollBar: flag("showListScrollBar", false)
     readonly property bool panelBoldSymbol: flag("panelBoldSymbol", true)
     readonly property bool panelShowMarketStatus: flag("panelShowMarketStatus", true)
 

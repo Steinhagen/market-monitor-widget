@@ -131,7 +131,9 @@ Rectangle {
         id: multiView
         anchors.fill: parent
         anchors.leftMargin: 16
-        anchors.rightMargin: 16
+        // Room for the optional scrollbar: without it the rows keep their old width,
+        // with it the price column moves left instead of sitting under the thumb.
+        anchors.rightMargin: 16 + (listScrollBar.visible ? 12 : 0)
         anchors.bottomMargin: multiStockRoot.showUpdateTimestamps ? 16 : 4
         anchors.topMargin: 0
 
@@ -183,6 +185,72 @@ Rectangle {
             }
         }
     }
+
+    // Optional scrollbar, drawn like the one in the analyst details popup: a slim handle
+    // on an invisible track, only while the rows do not fit the visible height. It sits
+    // in the card margin, clear of the row content.
+    Item {
+        id: listScrollBar
+        visible: applet.showListScrollBar && multiView.contentHeight > multiView.height + 1
+        anchors.top: multiView.top
+        anchors.bottom: multiView.bottom
+        // Inset from the list edges so the thumb does not touch the first row or the
+        // status line; the mapping below uses the resulting height, so travel adapts.
+        anchors.topMargin: 8
+        anchors.bottomMargin: 8
+        anchors.right: parent.right
+        // In the gutter the list reserves when the bar is visible: 12 px to the prices on
+        // the left and 8 px to the card edge on the right.
+        anchors.rightMargin: 8
+        width: 8
+
+        Rectangle {
+            id: listScrollHandle
+            // The thumb spans the full visible range: at the end of the list it must
+            // reach the bottom of the track.
+            readonly property real maxScroll: Math.max(0, multiView.contentHeight - multiView.height)
+            readonly property real travel: Math.max(0, listScrollBar.height - height)
+            readonly property real progress: maxScroll > 0
+                                             ? Math.max(0, Math.min(1, multiView.contentY / maxScroll))
+                                             : 0
+            x: 1
+            width: 6
+            radius: 3
+            color: applet.secondaryTextColor
+            opacity: 0.35
+            height: Math.max(20, Math.min(listScrollBar.height,
+                                          multiView.visibleArea.heightRatio * listScrollBar.height))
+            y: progress * travel
+        }
+
+        // The drawn thumb is 6 px wide, which is hard to grab. This invisible strip is
+        // twice as wide and covers the whole track: pressing it drags the thumb, pressing
+        // beside the thumb jumps there first. Nothing about the drawing changes.
+        MouseArea {
+            anchors.fill: parent
+            anchors.leftMargin: -8
+            cursorShape: Qt.PointingHandCursor
+            property real grabY: 0
+            property bool onThumb: false
+
+            function scrollTo(pointerY) {
+                if (listScrollHandle.travel <= 0 || listScrollHandle.maxScroll <= 0) return;
+                var top = Math.max(0, Math.min(listScrollHandle.travel, pointerY - grabY));
+                multiView.contentY = top / listScrollHandle.travel * listScrollHandle.maxScroll;
+            }
+
+            onPressed: (mouse) => {
+                var localY = mapToItem(listScrollHandle, mouse.x, mouse.y).y;
+                onThumb = localY >= 0 && localY <= listScrollHandle.height;
+                grabY = onThumb ? localY : listScrollHandle.height / 2;
+                if (!onThumb) scrollTo(mouse.y);
+            }
+            onPositionChanged: (mouse) => {
+                if (pressed) scrollTo(mouse.y);
+            }
+        }
+    }
+
     Text {
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter

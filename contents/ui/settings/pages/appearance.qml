@@ -22,6 +22,7 @@ Item {
     property alias cfg_tickerOpacity: tickerOpacitySlider.value
     property alias cfg_priceColor: priceColorButton.text
     property alias cfg_priceOpacity: priceOpacitySlider.value
+    property alias cfg_showListScrollBar: listScrollBarSwitch.checked
 
     // Only the Application preset paints its own background, so only then do the
     // opacity and color controls apply. Plasma follows the system colors.
@@ -222,6 +223,17 @@ Item {
                     text: priceOpacitySlider.value + "%"
                 }
 
+            }
+
+            Item {
+                Kirigami.FormData.isSection: true
+                Kirigami.FormData.label: i18n("Stock List")
+            }
+
+            CheckBox {
+                id: listScrollBarSwitch
+                Kirigami.FormData.label: i18n("Scrollbar:")
+                text: i18n("Show a scrollbar when the list does not fit")
             }
 
         }

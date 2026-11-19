@@ -1522,3 +1522,15 @@ msgstr ""
 #: contents/ui/panel/CompactPanel.qml
 msgid "invalid"
 msgstr ""
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Stock List"
+msgstr ""
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Scrollbar:"
+msgstr ""
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Show a scrollbar when the list does not fit"
+msgstr ""

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- An Appearance option, off by default, that shows a scrollbar on the stock list
+  when the rows do not fit. It is drawn like the handle in the analyst details
+  popup: a slim draggable thumb on an invisible track. Both scrollbars take a hit
+  area twice as wide as the thumb, and pressing beside it jumps there first.
+
 ### Fixed
 
 - With the news pane open, selecting a stock showed only the first source that

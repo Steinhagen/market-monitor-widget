@@ -294,6 +294,8 @@ PlasmoidItem {
     property bool panelBoldSymbol: app.config.panelBoldSymbol
     property bool panelShowMarketStatus: app.config.panelShowMarketStatus
     property bool hideTimestamps: app.config.hideTimestamps
+    // Off by default: the rows can still be scrolled by dragging or with the wheel.
+    property bool showListScrollBar: app.config.showListScrollBar
     property bool formatPrices: app.config.formatPrices
     // -1 = automatic (Yahoo Finance's precision), 0-6 = fixed.
     property int priceDecimals: app.config.priceDecimals

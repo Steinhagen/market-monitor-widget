@@ -1825,3 +1825,15 @@ msgstr "Elimină-le din listă"
 #: contents/ui/panel/CompactPanel.qml
 msgid "invalid"
 msgstr "invalid"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Stock List"
+msgstr "Lista de acțiuni"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Scrollbar:"
+msgstr "Bară de derulare:"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Show a scrollbar when the list does not fit"
+msgstr "Arată o bară de derulare când lista nu încape"
