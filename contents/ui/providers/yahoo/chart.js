@@ -22,6 +22,12 @@ function dailyUrl(symbol) {
     return BASE + encodeURIComponent(symbol) + "?range=5d&interval=1d";
 }
 
+// A month of daily bars. Mutual funds have no intraday series: Yahoo answers the 1D
+// request with meta only, so this is the closest chart such an instrument can have.
+function dailyMonthUrl(symbol) {
+    return BASE + encodeURIComponent(symbol) + "?range=1mo&interval=1d";
+}
+
 // done(response, error) with the parsed chart reply.
 function get(symbol, range, showExtendedHours, done) {
     Http.getJson(chartUrl(symbol, range, showExtendedHours), { timeout: 20000 }, done);
@@ -33,4 +39,8 @@ function getExtended(symbol, done) {
 
 function getDaily(symbol, done) {
     Http.getJson(dailyUrl(symbol), { timeout: 20000 }, done);
+}
+
+function getDailyMonth(symbol, done) {
+    Http.getJson(dailyMonthUrl(symbol), { timeout: 20000 }, done);
 }

@@ -100,6 +100,42 @@ TestCase {
         var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-sap-1d.json")));
         o.controller.process(json, "SAP.DE", "6M");
         compare(o.store.chartListedSince, 0);
+        // A reply with bars leaves the "no data" state off and asks for no fallback.
+        compare(o.store.chartNoData, false);
+        compare(o.store.chartDailyFallback, false);
+    }
+
+    function test_processHandlesFundWithoutIntradayData() {
+        // A mutual fund answers the 1D request with meta only: no timestamps, an empty
+        // quote object. The price is still valid and the chart needs the daily fallback.
+        var o = make();
+        var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-fbllx-1d.json")));
+        var points = o.controller.process(json, "FBLLX", "1D");
+
+        compare(points, 0);
+        compare(o.store.chartNoData, true);
+        compare(o.store.quoteIsDailyOnly, true);
+        verify(o.store.currentPrice.indexOf("17.23") >= 0);
+        verify(o.store.priceChange.indexOf("0.01") >= 0);
+        compare(o.store.chartDataPoints.length, 0);
+    }
+
+    function test_processDailyFallbackFillsTheChart() {
+        var o = make();
+        var daily = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-fbllx-1m-daily.json")));
+        var points = o.controller.processDailyFallback(daily, "FBLLX", "1D");
+
+        compare(points, 4);
+        compare(o.store.chartDataPoints.length, 4);
+        compare(o.store.chartTimestamps.length, 4);
+        compare(o.store.chartNoData, false);
+        compare(o.store.chartDailyFallback, true);
+        verify(o.store.chartCandles.length > 1);
+        // A daily series has no session: the 1D session labels must stay off.
+        compare(o.store.chartSessions, null);
+        compare(o.store.chartSessionStart, 0);
+        compare(o.store.chartPreSession, false);
+        compare(o.store.chartReferencePrice, 17.9709);
     }
 
     function test_processPanel() {

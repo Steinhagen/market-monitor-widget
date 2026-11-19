@@ -1388,6 +1388,14 @@ msgstr ""
 msgid "Listed %1"
 msgstr ""
 
+#: contents/ui/SingleStockView.qml
+msgid "Daily values, last month"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgid "No chart data for this range"
+msgstr ""
+
 #: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
 msgid "session of %1"
 msgstr ""

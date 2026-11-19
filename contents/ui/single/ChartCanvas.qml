@@ -165,7 +165,11 @@ import "../domain/curve.js" as ChartCurve
         var date = new Date(timestamp * 1000);
         var locale = Qt.locale();
         switch (applet.effectiveChartRange) {
-            case "1D":  return locale.toString(date, "HH:mm");
+            case "1D":
+                // A daily-series fallback (mutual funds have no intraday data) spans
+                // more than a day, where hour labels would all read the same.
+                if (span > 2 * 86400) return locale.toString(date, "d MMM");
+                return locale.toString(date, "HH:mm");
             case "5D":  return locale.toString(date, "ddd");
             case "1M":  return locale.toString(date, "d MMM");
             case "6M":
@@ -302,7 +306,10 @@ import "../domain/curve.js" as ChartCurve
         var date = new Date(timestamp * 1000);
         var locale = Qt.locale();
         switch (applet.effectiveChartRange) {
-            case "1D":  return locale.toString(date, "HH:mm");
+            case "1D":
+                // The daily fallback of a fund plots one point per day, not per minute.
+                if (applet.chartDailyFallback) return locale.toString(date, "d MMM");
+                return locale.toString(date, "HH:mm");
             case "5D":  return locale.toString(date, "ddd HH:mm");
             case "1M":  return locale.toString(date, "d MMM HH:mm");
             case "6M":

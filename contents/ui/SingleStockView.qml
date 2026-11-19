@@ -138,7 +138,10 @@ Rectangle {
     // wrong for exchanges with real-time data.
     readonly property bool marketDataAvailable: applet.lastUpdated !== ""
                                                  || applet.quoteTimestamp > 0
-    readonly property bool waitingForFirstQuote: applet.awaitingFirstRegularQuote(applet.singleTicker)
+    // A mutual fund publishes one price per day, so the session has no "first regular
+    // quote" to wait for and the last known price is current.
+    readonly property bool waitingForFirstQuote: !applet.quoteIsDailyOnly
+                                                 && applet.awaitingFirstRegularQuote(applet.singleTicker)
     readonly property string marketDataQuoteTime: {
         // During the opening seconds the regular quote is still the previous close;
         // show the pre-market quote time that is actually on screen instead.
@@ -190,6 +193,11 @@ Rectangle {
         return i18n("Listed %1", listed.toLocaleDateString(Qt.locale(), "d MMM yyyy"));
     }
 
+    // Instruments without intraday data (mutual funds) show a month of daily bars; label
+    // the chart so those points are not read as a single session.
+    readonly property string chartFallbackNote: applet.chartDailyFallback
+                                                ? i18n("Daily values, last month") : ""
+
     // Minimum width of the card. It deliberately comes from the chart controls and a fixed
     // floor, not from contentColumn.implicitWidth: prices, percentages, company names and
     // positions change with the selected ticker and range, and using them made the minimum
@@ -213,14 +221,6 @@ Rectangle {
     color: applet.bgColor
     radius: applet.appDrawnSurface ? 22 : 0
     clip: true
-
-    Text {
-        anchors.centerIn: parent
-        text: i18n("Loading...")
-        color: applet.secondaryTextColor
-        font.pixelSize: 14
-        visible: applet.isMultiMode && singleStockRoot.visible && (!applet.chartDataPoints || applet.chartDataPoints.length === 0)
-    }
 
     Item {
         id: singleView
@@ -268,6 +268,24 @@ Rectangle {
                 Layout.preferredHeight: 130
                 Layout.topMargin: 8
                 Layout.bottomMargin: 4
+
+                // While a quote is in flight, and when a reply turns out to have no bars
+                // at all (a range an instrument does not support), say so instead of
+                // leaving an empty plot that looks like a freeze.
+                Text {
+                    id: chartStateText
+                    anchors.centerIn: parent
+                    text: singleStockRoot.applet.chartNoData
+                          ? i18n("No chart data for this range") : i18n("Loading...")
+                    color: singleStockRoot.applet.secondaryTextColor
+                    font.pixelSize: 13
+                    horizontalAlignment: Text.AlignHCenter
+                    wrapMode: Text.WordWrap
+                    width: Math.min(parent.width - 32, 280)
+                    visible: !singleStockRoot.newsMode
+                             && (!singleStockRoot.applet.chartDataPoints
+                                 || singleStockRoot.applet.chartDataPoints.length === 0)
+                }
 
                 ChartCanvas {
                     id: singleCanvas

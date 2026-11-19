@@ -224,6 +224,13 @@ PlasmoidItem {
     // First trading day of a recently listed symbol when the selected range reaches
     // before it; the view then says how far back the history goes.
     property alias chartListedSince: quoteStore.chartListedSince
+    // True when the reply had no bars at all, and when the chart shows the daily month
+    // fallback of an instrument without intraday data (a mutual fund).
+    property alias chartNoData: quoteStore.chartNoData
+    property alias chartDailyFallback: quoteStore.chartDailyFallback
+    // The instrument publishes one price per day, so the price on screen is current even
+    // when no regular quote has arrived during the session.
+    property alias quoteIsDailyOnly: quoteStore.quoteIsDailyOnly
     // Start of the session a 1D chart is showing, and whether it is today's session (the
     // running pre-market or the regular one). When it is not, the chart still shows a
     // previous session and the view labels it so it is not mistaken for today's.
@@ -716,6 +723,8 @@ PlasmoidItem {
             root.chartCandles = [];
             root.chartReferencePrice = 0;
             root.chartListedSince = 0;
+            root.chartDailyFallback = false;
+            root.chartNoData = false;
             root.readCachedQuotes();
         }
         root.updateTooltipItem();

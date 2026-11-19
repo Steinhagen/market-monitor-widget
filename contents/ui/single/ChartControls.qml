@@ -14,9 +14,10 @@ RowLayout {
     readonly property real rangeButtonsWidth: chartRangeButtons.implicitWidth
     readonly property real styleButtonsWidth: chartStyleButtons.implicitWidth
     readonly property real rowSpacing: spacing
-    // The note slot under the range buttons: a previous session, or the listing date when
-    // the range reaches back further than the symbol's history.
+    // The note slot under the range buttons: a previous session, the listing date when
+    // the range reaches back further than the symbol's history, or the daily fallback.
     readonly property string chartNote: host.chartSessionNote || host.chartListingNote
+                                        || host.chartFallbackNote
     // Bind to the settings, not to the children's visible: a child reads as
     // invisible while this row is hidden, which would keep the row hidden for good.
     // The news pane needs the row for its "Updated…" line and refresh button, but

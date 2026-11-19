@@ -1397,6 +1397,14 @@ msgstr "Sesiunea din %1"
 msgid "Listed %1"
 msgstr "Listat pe %1"
 
+#: contents/ui/SingleStockView.qml
+msgid "Daily values, last month"
+msgstr "Valori zilnice, ultima lună"
+
+#: contents/ui/SingleStockView.qml
+msgid "No chart data for this range"
+msgstr "Nu există date pentru acest interval"
+
 #: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
 msgid "session of %1"
 msgstr "ședința de %1"

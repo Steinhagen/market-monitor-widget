@@ -30,6 +30,8 @@ TestCase {
             property var chartCandles: []
             property double chartReferencePrice: 0
             property double chartListedSince: 0
+            property bool chartDailyFallback: false
+            property bool chartNoData: false
             property bool chartPreSession: false
             property double chartSessionStart: 0
             property bool chartSessionCurrent: true

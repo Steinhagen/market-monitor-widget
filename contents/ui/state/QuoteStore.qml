@@ -31,6 +31,15 @@ QtObject {
     // before it (a recent IPO), so the view can say how far back the history goes.
     // 0 when the range is fully covered by the symbol's history.
     property double chartListedSince: 0
+    // True once a reply arrived and it had no bars at all: the view then shows "no data
+    // for this range" instead of an endless loading state.
+    property bool chartNoData: false
+    // True when the chart shows the daily month fallback used for instruments without
+    // intraday data (mutual funds), where the 1D request returns no series at all.
+    property bool chartDailyFallback: false
+    // The quote is published once a day (a mutual fund), so the regular session has no
+    // "first quote" to wait for; the price on screen is the current one.
+    property bool quoteIsDailyOnly: false
     property double chartSessionStart: 0
     property bool chartSessionCurrent: true
     property bool chartPreSession: false

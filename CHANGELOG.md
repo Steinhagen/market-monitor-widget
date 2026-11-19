@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- A "no chart data" state: when a reply carries no bars, the chart area says so
+  instead of showing an endless loading placeholder.
+- Mutual funds and other instruments without intraday data no longer have a
+  permanently empty 1D chart. Yahoo answers their intraday request with
+  metadata only, so the widget now falls back to a month of daily bars, labelled
+  `Daily values, last month`. The same fallback covers any range that comes back
+  without a single bar.
+
 ### Fixed
 
 - The 6 month, YTD, 1 year, 5 year and Max charts of a symbol that started
@@ -15,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   single bar, which cannot be drawn. The bar is now seeded with the previous
   close, so the plot shows the move since the reference, and the chart header
   says when the symbol started trading (`Listed …`).
+- The price of an instrument that is quoted once a day (a mutual fund) is shown
+  during the session. It was hidden behind the "waiting for the first regular
+  quote" state, which can never clear for such an instrument because its quote is
+  always older than the session open.
 
 ## [1.3] - 2026-11-16
 

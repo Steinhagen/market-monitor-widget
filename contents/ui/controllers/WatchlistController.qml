@@ -80,6 +80,8 @@ Item {
                 "chartRef": 0.0,
                 // Epoch seconds of the first trading day when the range predates it.
                 "chartListedSince": 0.0,
+                // True when the row's chart is the daily month fallback.
+                "chartDailyFallback": false,
                 "chartPre": false,
                 "chartSessionStart": 0.0,
                 "chartSessionCurrent": true,

@@ -55,12 +55,92 @@ Item {
             store.percentChange = "";
             store.isNeutral = false;
         }
+        if (symbol === applet.singleTicker) store.chartNoData = false;
         YahooChart.get(symbol, chartRange, applet.showExtendedHours, function(response, error) {
             if (error) { applet.scheduleQuoteRetry(); return; }
             // Ignore a reply for a range or symbol the user has already switched away from.
             if (chartRange !== applet.effectiveChartRange || symbol !== applet.singleTicker) return;
-            process(response, symbol, chartRange);
+            var points = process(response, symbol, chartRange);
+            // A reply with no bars at all cannot be drawn: mutual funds have no intraday
+            // series, so the 1D request returns meta only. Ask for a month of daily bars
+            // instead, which is the closest chart such an instrument can have.
+            if (points === 0) fetchDailyFallback(symbol, chartRange);
         });
+    }
+
+    // The chart fallback for instruments without intraday data: a month of daily bars
+    // for the symbol on screen. A reply that is no longer current is dropped, like the
+    // main request.
+    function fetchDailyFallback(symbol, userRange) {
+        // The chart is being filled with the next reply; keep the loading state rather
+        // than flashing "no data" in between.
+        store.chartNoData = false;
+        YahooChart.getDailyMonth(symbol, function(response, error) {
+            if (symbol !== applet.singleTicker || userRange !== applet.effectiveChartRange) return;
+            if (error) {
+                store.chartNoData = true;
+                return;
+            }
+            processDailyFallback(response, symbol, userRange);
+        });
+    }
+
+    // Fills the chart from a daily month reply, leaving the header quote alone: it came
+    // from the intraday reply and already carries the right price and daily change.
+    // Returns the number of points the chart now has.
+    function processDailyFallback(json, symbol, userRange) {
+        try {
+            var result = json.chart.result[0];
+            var meta = result.meta;
+            var quote = result.indicators.quote[0] || {};
+            var timestamps = result.timestamp;
+            var chart = Chart.cleanChartData(quote.close || [], timestamps, 0, "1M", quote, null);
+            Chart.seedSinglePointSeries(chart, meta, "1M");
+            if (chart.values.length === 0) {
+                store.chartNoData = true;
+                return 0;
+            }
+
+            store.chartDataPoints = chart.values;
+            store.chartTimestamps = chart.times;
+            store.chartCandles = Candles.chartCandlesFor(chart, "1M", quote, timestamps, null);
+            // A daily series has no session to show: the 1D session labels stay off.
+            store.chartSessions = null;
+            store.chartSessionStart = 0;
+            store.chartSessionCurrent = true;
+            store.chartPreSession = false;
+            var reference = Number(meta.chartPreviousClose) || 0;
+            store.chartReferencePrice = reference > 0 ? reference : chart.values[0];
+            var firstTrade = Number(meta.firstTradeDate) || 0;
+            var rangeStart = Chart.rangeStartTime("1M");
+            store.chartListedSince = (firstTrade > 0 && rangeStart > 0 && firstTrade > rangeStart)
+                                     ? firstTrade : 0;
+            store.chartDailyFallback = true;
+            store.chartNoData = false;
+            if (applet.isMultiMode && stockModel) {
+                for (var i = 0; i < stockModel.count; i++) {
+                    if (stockModel.get(i).ticker === symbol) {
+                        stockModel.set(i, {
+                            "chartPoints": JSON.stringify(chart.values),
+                            "chartTimes": JSON.stringify(chart.times),
+                            "chartSessions": null,
+                            "chartCandles": JSON.stringify(store.chartCandles),
+                            "chartRef": store.chartReferencePrice,
+                            "chartDailyFallback": true,
+                            "chartListedSince": store.chartListedSince,
+                            "chartPre": false,
+                            "chartSessionStart": 0,
+                            "chartSessionCurrent": true
+                        });
+                        break;
+                    }
+                }
+            }
+            return chart.values.length;
+        } catch (e) {
+            store.chartNoData = true;
+            return 0;
+        }
     }
 
     // Quote for the compact panel indicator, fetched separately when the chart uses a
@@ -154,6 +234,9 @@ Item {
             store.quoteCurrency = meta.currency || "";
             store.currentRawPrice = meta.regularMarketPrice;
             store.quoteTimestamp = meta.regularMarketTime || 0;
+            // Mutual funds publish one price per day, after the close, so there is no
+            // "first regular quote" to wait for while the market is open.
+            store.quoteIsDailyOnly = String(meta.instrumentType) === "MUTUALFUND";
             // Yahoo's priceHint is the precision the quote page uses (2 for shares,
             // 4 for exchange rates). A fixed setting overrides it.
             var decimals = Format.decimalsFor(meta, applet.priceDecimals);
@@ -191,6 +274,10 @@ Item {
                                          ? firstTrade : 0;
             }
             var cleanData = chart.values;
+            // A reply with no bars leaves nothing to draw; the caller asks for the daily
+            // month fallback, and the view shows its "no data" state until that arrives.
+            store.chartNoData = cleanData.length === 0;
+            store.chartDailyFallback = false;
             store.chartSessions = (day && cleanData.length >= 2)
                                   ? Chart.extendedSessionSeries(quotes, timestamps, day) : null;
             store.chartDataPoints = cleanData;
@@ -235,6 +322,7 @@ Item {
                             "chartCandles": JSON.stringify(store.chartCandles),
                             "chartRef": store.chartReferencePrice,
                             "chartListedSince": store.chartListedSince,
+                            "chartDailyFallback": false,
                             "chartPre": store.chartPreSession,
                             "chartSessionStart": store.chartSessionStart,
                             "chartSessionCurrent": store.chartSessionCurrent,
@@ -283,6 +371,10 @@ Item {
             if (!applet.isMultiMode) applet.showingCachedData = false;
             applet.noteQuoteReceived();
             applet.queueQuotesCacheSave();
-        } catch (e) { console.log("Error parsing single: " + e); }
+            return cleanData.length;
+        } catch (e) {
+            console.log("Error parsing single: " + e);
+            return 0;
+        }
     }
 }
