@@ -42,3 +42,30 @@ function search(query, done) {
         done(parse(reply), null);
     });
 }
+
+// The same chart endpoint the quotes use, for one symbol. A 404 there is Yahoo saying
+// the symbol does not exist, which is the check the settings page needs.
+function checkUrl(symbol) {
+    return "https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(symbol)
+           + "?range=1d&interval=1d";
+}
+
+// done(valid, error): valid is true for a known symbol and false for one Yahoo does not
+// have. A network failure passes valid = null with the error, so a valid symbol is never
+// reported as unknown just because the check could not run.
+function check(symbol, done) {
+    var text = String(symbol === undefined || symbol === null ? "" : symbol).trim().toUpperCase();
+    if (text === "" || !Symbols.isValidSymbol(text)) {
+        done(false, null);
+        return;
+    }
+    Http.getJson(checkUrl(text), { timeout: 15000 }, function(reply, error) {
+        if (error) {
+            if (error.status === 404 || error.status === 400) done(false, null);
+            else done(null, error);
+            return;
+        }
+        var result = reply && reply.chart ? reply.chart.result : null;
+        done(!!(result && result.length > 0 && result[0] && result[0].meta), null);
+    });
+}

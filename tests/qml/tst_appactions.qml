@@ -32,6 +32,8 @@ TestCase {
             property double chartListedSince: 0
             property bool chartDailyFallback: false
             property bool chartNoData: false
+            property bool panelInvalid: false
+            property bool quoteInvalid: false
             property bool chartPreSession: false
             property double chartSessionStart: 0
             property bool chartSessionCurrent: true
@@ -77,7 +79,7 @@ TestCase {
             "quoteTime": 5, "prevClose": 212.25, "currentRaw": 213.45,
             "decimals": 2,
             "currencySym": "€ ", "currency": "EUR",
-            "exchange": "XETRA", "exchangeFull": "XETRA", "cached": false
+            "exchange": "XETRA", "exchangeFull": "XETRA", "invalid": false, "cached": false
         });
         var applet = createTemporaryObject(fakeApplet, this);
         var component = Qt.createComponent(Qt.resolvedUrl("../../contents/ui/app/AppActions.qml"));
@@ -118,12 +120,54 @@ TestCase {
         compare(o.applet.panelTicker, "SAP.DE");
     }
 
+    function test_selectTickerWithoutCachedChartClearsTheOldOne() {
+        // A row that has not been quoted yet must not leave the previous ticker's chart
+        // and change under the new name while its own request is in flight.
+        resetConfig();
+        var o = make();
+        o.applet.chartDataPoints = [1, 2];
+        o.applet.priceChange = "+1.20";
+        o.applet.percentChange = "+0.57%";
+        rows.set(0, { "chartPoints": "[]", "chartTimes": "[]", "chartCandles": "[]" });
+
+        o.actions.selectTicker("SAP.DE", false);
+        compare(o.applet.chartDataPoints.length, 0);
+        compare(o.applet.priceChange, "");
+        compare(o.applet.percentChange, "");
+        compare(o.applet.fetches, 1);
+    }
+
     function test_updatePanelFromRow() {
         var o = make();
         o.actions.updatePanelFromRow("SAP.DE");
         compare(o.applet.panelCurrentPrice, "€213.45");
         compare(o.applet.panelCurrentPercent, "+0.57%");
         compare(o.applet.panelCurrentIsCached, false);
+    }
+
+    function test_panelInvalidFollowsTheSelectedRow() {
+        // Selecting an unknown ticker marks the panel; selecting a valid one after it must
+        // clear the mark and show that row's values again.
+        resetConfig();
+        var o = make();
+        rows.append({
+            "ticker": "FBLL", "name": "FBLL", "price": "---",
+            "change": "", "pct": "", "isPos": true,
+            "chartPoints": "[]", "chartTimes": "[]",
+            "chartCandles": "[]", "cached": false, "invalid": true
+        });
+
+        o.actions.selectTicker("FBLL", false);
+        compare(o.applet.panelInvalid, true);
+        compare(o.applet.panelCurrentPrice, "—");
+        compare(o.applet.panelCurrentPercent, "");
+
+        o.applet.quoteInvalid = true;
+        o.actions.selectTicker("SAP.DE", false);
+        compare(o.applet.panelInvalid, false);
+        compare(o.applet.quoteInvalid, false);
+        verify(o.applet.panelCurrentPrice.indexOf("213.45") >= 0);
+        compare(o.applet.panelCurrentPercent, "+0.57%");
     }
 
     function test_chartRangeAndStyle() {

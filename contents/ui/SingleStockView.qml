@@ -139,9 +139,11 @@ Rectangle {
     readonly property bool marketDataAvailable: applet.lastUpdated !== ""
                                                  || applet.quoteTimestamp > 0
     // A mutual fund publishes one price per day, so the session has no "first regular
-    // quote" to wait for and the last known price is current.
-    readonly property bool waitingForFirstQuote: !applet.quoteIsDailyOnly
-                                                 && applet.awaitingFirstRegularQuote(applet.singleTicker)
+    // quote" to wait for and the last known price is current. An unknown ticker has no
+    // price at all: the card shows "—" and the chart explains why.
+    readonly property bool waitingForFirstQuote: applet.quoteInvalid
+                                                 || (!applet.quoteIsDailyOnly
+                                                     && applet.awaitingFirstRegularQuote(applet.singleTicker))
     readonly property string marketDataQuoteTime: {
         // During the opening seconds the regular quote is still the previous close;
         // show the pre-market quote time that is actually on screen instead.
@@ -275,8 +277,10 @@ Rectangle {
                 Text {
                     id: chartStateText
                     anchors.centerIn: parent
-                    text: singleStockRoot.applet.chartNoData
-                          ? i18n("No chart data for this range") : i18n("Loading...")
+                    text: singleStockRoot.applet.quoteInvalid
+                          ? i18n("Symbol %1 not found", singleStockRoot.applet.singleTicker)
+                          : (singleStockRoot.applet.chartNoData
+                             ? i18n("No chart data for this range") : i18n("Loading..."))
                     color: singleStockRoot.applet.secondaryTextColor
                     font.pixelSize: 13
                     horizontalAlignment: Text.AlignHCenter

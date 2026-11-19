@@ -55,9 +55,21 @@ Item {
             store.percentChange = "";
             store.isNeutral = false;
         }
-        if (symbol === applet.singleTicker) store.chartNoData = false;
+        if (symbol === applet.singleTicker) {
+            store.chartNoData = false;
+            store.quoteInvalid = false;
+        }
         YahooChart.get(symbol, chartRange, applet.showExtendedHours, function(response, error) {
-            if (error) { applet.scheduleQuoteRetry(); return; }
+            if (error) {
+                // A 404 is Yahoo saying the symbol does not exist: retrying cannot help,
+                // and the previous ticker's values must not stay on screen.
+                if (error.status === 404 || error.status === 400) {
+                    if (symbol === applet.singleTicker) markInvalid(symbol, chartRange);
+                } else {
+                    applet.scheduleQuoteRetry();
+                }
+                return;
+            }
             // Ignore a reply for a range or symbol the user has already switched away from.
             if (chartRange !== applet.effectiveChartRange || symbol !== applet.singleTicker) return;
             var points = process(response, symbol, chartRange);
@@ -66,6 +78,40 @@ Item {
             // instead, which is the closest chart such an instrument can have.
             if (points === 0) fetchDailyFallback(symbol, chartRange);
         });
+    }
+
+    // Yahoo has no such symbol. Everything that came from the previously selected ticker
+    // is cleared, so the card cannot show one symbol's name next to another one's price
+    // and chart.
+    function markInvalid(symbol, range) {
+        store.quoteInvalid = true;
+        store.chartNoData = false;
+        store.chartDailyFallback = false;
+        store.chartDataPoints = [];
+        store.chartTimestamps = [];
+        store.chartCandles = [];
+        store.chartSessions = null;
+        store.chartSessionStart = 0;
+        store.chartSessionCurrent = true;
+        store.chartPreSession = false;
+        store.chartReferencePrice = 0;
+        store.chartListedSince = 0;
+        store.currentPrice = "---";
+        store.priceChange = "";
+        store.percentChange = "";
+        store.currentRawPrice = 0;
+        store.previousClose = 0;
+        store.quoteTimestamp = 0;
+        store.singleDataRange = range;
+        store.singleDataTicker = symbol;
+        // In single mode the panel follows the same symbol; in multi mode the panel has
+        // its own ticker, which the watchlist marks when that row is invalid.
+        if (symbol === applet.panelSymbol) {
+            store.panelInvalid = true;
+            store.panelCurrentPrice = "—";
+            store.panelCurrentPercent = "";
+            store.panelCurrentIsNeutral = false;
+        }
     }
 
     // The chart fallback for instruments without intraday data: a month of daily bars
@@ -148,7 +194,18 @@ Item {
     function fetchPanel(symbol) {
         var range = applet.chartRange;
         YahooChart.get(symbol, range, applet.showExtendedHours, function(response, error) {
-            if (error) { applet.scheduleQuoteRetry(); return; }
+            if (error) {
+                if (error.status === 404 || error.status === 400) {
+                    if (symbol === applet.panelSymbol) {
+                        store.panelInvalid = true;
+                        store.panelCurrentPrice = "—";
+                        store.panelCurrentPercent = "";
+                    }
+                } else {
+                    applet.scheduleQuoteRetry();
+                }
+                return;
+            }
             if (range !== applet.chartRange || symbol !== applet.panelSymbol) return;
             processPanel(response, symbol, range);
         });
@@ -156,6 +213,7 @@ Item {
 
     function processPanel(json, symbol, range) {
         try {
+            store.panelInvalid = false;
             var result = json.chart.result[0];
             var meta = result.meta;
             market.setMarketSession(symbol, meta);
@@ -170,13 +228,14 @@ Item {
             if (range === "1D") {
                 prev = Chart.previousCloseFor(meta, range);
             } else {
-                prev = meta.chartPreviousClose;
-                if (!prev || prev === 0) {
+                prev = Number(meta.chartPreviousClose) || 0;
+                if (!(prev > 0)) prev = Chart.dailyPreviousClose(meta, 0, range);
+                if (!(prev > 0)) {
                     var quotes = result.indicators.quote[0].close;
                     var timestamps = result.timestamp;
                     var startTime = (meta.currentTradingPeriod && meta.currentTradingPeriod.regular) ? meta.currentTradingPeriod.regular.start : 0;
                     var cleanData = Chart.cleanChartData(quotes, timestamps, startTime, range).values;
-                    prev = cleanData.length > 0 ? cleanData[0] : meta.regularMarketPreviousClose;
+                    prev = cleanData.length > 0 ? cleanData[0] : (Number(meta.regularMarketPreviousClose) || 0);
                 }
             }
             if (range === "1D" && String(meta.instrumentType) === "CURRENCY")
@@ -237,6 +296,7 @@ Item {
             // Mutual funds publish one price per day, after the close, so there is no
             // "first regular quote" to wait for while the market is open.
             store.quoteIsDailyOnly = String(meta.instrumentType) === "MUTUALFUND";
+            store.quoteInvalid = false;
             // Yahoo's priceHint is the precision the quote page uses (2 for shares,
             // 4 for exchange rates). A fixed setting overrides it.
             var decimals = Format.decimalsFor(meta, applet.priceDecimals);
@@ -336,10 +396,15 @@ Item {
             if (chartRange === "1D") {
                 store.previousClose = Chart.previousCloseFor(meta, chartRange);
             } else {
-                store.previousClose = meta.chartPreviousClose;
-                if (!store.previousClose || store.previousClose === 0) {
-                    store.previousClose = cleanData.length > 0 ? cleanData[0] : meta.regularMarketPreviousClose;
-                }
+                // The range's own reference close when Yahoo sends it, then the daily
+                // close from the meta (a Max reply may omit chartPreviousClose), and only
+                // then the first bar of the series. Using that first bar made a Max chart
+                // of the Dow read "+1,464%" against its 1992 close.
+                var rangeClose = Number(meta.chartPreviousClose) || 0;
+                if (!(rangeClose > 0)) rangeClose = Chart.dailyPreviousClose(meta, 0, chartRange);
+                if (!(rangeClose > 0)) rangeClose = cleanData.length > 0 ? cleanData[0]
+                                                                        : (Number(meta.regularMarketPreviousClose) || 0);
+                store.previousClose = rangeClose;
             }
             if (chartRange === "1D" && String(meta.instrumentType) === "CURRENCY")
                 rememberDailyClose(symbol, store.previousClose);
@@ -355,6 +420,7 @@ Item {
             // showing the configured range. When the chart has its own range, a separate
             // panel request supplies these values instead.
             if (!applet.isMultiMode && chartRange === applet.chartRange) {
+                store.panelInvalid = false;
                 store.panelCurrentPrice = store.currentPrice;
                 store.panelCurrentPercent = store.percentChange;
                 store.panelCurrentIsPositive = store.isPositive;

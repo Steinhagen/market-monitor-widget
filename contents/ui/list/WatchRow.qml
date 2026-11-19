@@ -35,6 +35,11 @@ Item {
         ? (rowRoot.row.isNeutral ? rowRoot.applet.neutralColor
            : (rowRoot.row.isPos ? rowRoot.applet.positiveColor : rowRoot.applet.negativeColor))
         : (rowRoot.applet ? rowRoot.applet.secondaryTextColor : "#8e8e93")
+    // Amber that stays readable on both card backgrounds, like the status warning.
+    readonly property color invalidColor: rowRoot.applet.isLightTheme ? "#8a5a00" : "#e0b25a"
+    // Yahoo answered 404 for this ticker: say so instead of showing a price that is
+    // still loading and a change badge with nothing in it.
+    readonly property bool rowInvalid: rowRoot.row ? rowRoot.row.invalid === true : false
     // True while the market is closed, with or without a kept extended quote.
     property bool rowClosed: rowRoot.applet.showExtendedHours
                              && rowRoot.applet.isMarketClosedFor(rowRoot.row.ticker)
@@ -172,8 +177,9 @@ Item {
 
                     Text {
                         id: listArrowText
-                        text: rowRoot.row.isNeutral ? "—" : (rowRoot.row.isPos ? "▲" : "▼")
-                        color: rowRoot.rowAccent
+                        text: rowRoot.rowInvalid ? ""
+                              : (rowRoot.row.isNeutral ? "—" : (rowRoot.row.isPos ? "▲" : "▼"))
+                        color: rowRoot.rowInvalid ? rowRoot.invalidColor : rowRoot.rowAccent
                         font.pixelSize: 10
                     }
                     Row {
@@ -234,8 +240,8 @@ Item {
                     Item { Layout.fillWidth: true }
                     Text {
                         id: listPriceText
-                        text: rowRoot.row.price
-                        color: rowRoot.applet.priceColor
+                        text: rowRoot.rowInvalid ? i18n("Invalid symbol") : rowRoot.row.price
+                        color: rowRoot.rowInvalid ? rowRoot.invalidColor : rowRoot.applet.priceColor
                         opacity: rowRoot.applet.priceOpacity / 100.0
                         font.pixelSize: 14
                         // The price carries the currency symbol from the quote feed.
@@ -315,7 +321,8 @@ Item {
                             if (rowRoot.rowNoQuote !== "") return rowRoot.rowNoQuote + " · " + name;
                             return name;
                         }
-                        text: ext ? extText(width) : plainText()
+                        text: rowRoot.rowInvalid ? i18n("Not found on Yahoo Finance")
+                              : (ext ? extText(width) : plainText())
                         color: rowRoot.applet.secondaryTextColor
                         font.pixelSize: 10
                         elide: Text.ElideRight
@@ -327,6 +334,9 @@ Item {
                     }
                     Rectangle {
                         radius: 4
+                        // An invalid ticker has no change to show, so the badge goes away
+                        // instead of rendering " ()".
+                        visible: !rowRoot.rowInvalid
                         // Background: translucent tint of the color for theme independence
                         color: Qt.rgba(rowRoot.rowAccent.r, rowRoot.rowAccent.g,
                                        rowRoot.rowAccent.b, 0.15)

@@ -207,4 +207,59 @@ TestCase {
         o.controller.dailyCloses = ({});
         compare(o.controller.knownDailyPreviousClose("EURRON=X"), 0);
     }
+
+    function test_markInvalidClearsTheCard() {
+        // A ticker Yahoo does not know must not keep the previous ticker's chart and
+        // change on screen next to its own name.
+        var o = make();
+        var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-sap-1d.json")));
+        o.controller.process(json, "SAP.DE", "1D");
+        verify(o.store.chartDataPoints.length > 0);
+
+        o.controller.markInvalid("FBLL", "1D");
+        compare(o.store.quoteInvalid, true);
+        compare(o.store.chartDataPoints.length, 0);
+        compare(o.store.chartTimestamps.length, 0);
+        compare(o.store.chartCandles.length, 0);
+        compare(o.store.chartSessions, null);
+        compare(o.store.previousClose, 0);
+        compare(o.store.currentPrice, "---");
+        compare(o.store.priceChange, "");
+        compare(o.store.percentChange, "");
+        compare(o.store.singleDataTicker, "FBLL");
+    }
+
+    function test_markInvalidReachesThePanelIndicator() {
+        // The panel can show the invalid ticker on its own: it must say so instead of
+        // keeping the previous price and change.
+        var o = make();
+        o.store.panelCurrentPrice = "€213.45";
+        o.store.panelCurrentPercent = "+0.57%";
+        o.controller.markInvalid("SAP.DE", "1D");
+
+        compare(o.store.panelInvalid, true);
+        compare(o.store.panelCurrentPrice, "—");
+        compare(o.store.panelCurrentPercent, "");
+        // A different ticker leaves the panel alone.
+        var p = make();
+        p.controller.markInvalid("FBLL", "1D");
+        compare(p.store.panelInvalid, false);
+    }
+
+    function test_maxRangeUsesTheDailyCloseNotTheFirstBar() {
+        // A Max reply can omit chartPreviousClose; the change must then use the daily
+        // close from the meta, never the first bar of the series (a 1992 close made the
+        // Dow read "+1,464%").
+        var o = make();
+        var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-sap-1d.json")));
+        var meta = json.chart.result[0].meta;
+        delete meta.chartPreviousClose;
+        meta.regularMarketPreviousClose = 210.5;
+        o.controller.process(json, "SAP.DE", "Max");
+
+        compare(o.store.previousClose, 210.5);
+        verify(o.store.percentChange.indexOf("%") > 0);
+        var change = Number(o.store.priceChange.replace(",", "").replace("+", ""));
+        verify(Math.abs(change - (meta.regularMarketPrice - 210.5)) < 0.01);
+    }
 }

@@ -1506,6 +1506,30 @@ msgstr "Sesiune"
 msgid "Updated"
 msgstr "Actualizat"
 
+
+#: contents/ui/list/WatchRow.qml
+msgid "Invalid symbol"
+msgstr "Simbol invalid"
+
+#: contents/ui/list/WatchRow.qml
+msgid "Not found on Yahoo Finance"
+msgstr "Nu a fost găsit pe Yahoo Finance"
+
+#: contents/ui/SingleStockView.qml
+msgid "Symbol %1 not found"
+msgstr "Simbolul %1 nu a fost găsit"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Not found on Yahoo Finance: %1"
+msgstr "Nu au fost găsite pe Yahoo Finance: %1"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Listed twice: %1"
+msgstr "Apare de două ori: %1"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Remove them from the list"
+msgstr "Elimină-le din listă"
 #~ msgid "Format stock price with commas (e.g. 1,000.00)"
 #~ msgstr "Formatează prețul acțiunii cu virgule (de ex. 1,000.00)"
 
@@ -1797,3 +1821,7 @@ msgstr "Actualizat"
 
 #~ msgid "No portfolio data to export."
 #~ msgstr "Nu există date de portofoliu de exportat."
+
+#: contents/ui/panel/CompactPanel.qml
+msgid "invalid"
+msgstr "invalid"

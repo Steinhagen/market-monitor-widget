@@ -140,6 +140,16 @@ MouseArea {
     readonly property string shownPercent: ext ? ext.pct : applet.panelCurrentPercent
     readonly property bool shownPositive: ext ? ext.isPos : applet.panelCurrentIsPositive
     readonly property bool shownNeutral: ext ? ext.isNeutral === true : applet.panelCurrentIsNeutral
+    // The panel's ticker is not on Yahoo: a price and a change would mean nothing, so the
+    // indicator shows "invalid" in the warning colour, without a badge.
+    readonly property bool invalidSymbol: applet.panelInvalid === true
+    readonly property string invalidLabel: i18n("invalid")
+    // What the price slot shows: the quote, or the invalid label.
+    readonly property string displayPrice: compactRoot.invalidSymbol
+                                           ? compactRoot.invalidLabel
+                                           : (applet.isVerticalPanel && applet.currencySym !== ""
+                                              ? compactRoot.shownPrice.replace(applet.currencySym, "")
+                                              : compactRoot.shownPrice)
     readonly property color shownColor: shownNeutral ? applet.panelNeutralColor
         : (shownPositive ? applet.panelPositiveColor : applet.panelNegativeColor)
     readonly property color shownTint: Qt.rgba(shownColor.r, shownColor.g, shownColor.b, 0.18)
@@ -212,6 +222,9 @@ MouseArea {
                     + (tagW > 0 ? 4 + tagW : 0);
 
         // Second line: price and change badge (or the wider of the two when they alternate).
+        // The invalid label is reserved while it can appear, so a fixed-width panel never
+        // clips it.
+        if (compactRoot.invalidSymbol) prices.push(compactRoot.invalidLabel);
         var priceW = widest(prices, probePrice);
         var showBadge = !applet.hideChangePercentage;
         var badgeW = showBadge ? widest(pcts, probeBadge) + (Kirigami.Units.smallSpacing * 2) : 0;
@@ -229,8 +242,9 @@ MouseArea {
         var currentTagW = showCurrentTag ? tagW : 0;
         var currentLine1 = widthOf(probeTicker, currentTicker) + 4 + arrowW
                            + (currentTagW > 0 ? 4 + currentTagW : 0);
-        var currentPriceW = widthOf(probePrice, compactRoot.shownPrice);
-        var currentBadgeW = showBadge
+        var currentPriceW = widthOf(probePrice, compactRoot.displayPrice);
+        // An invalid ticker has no badge to show.
+        var currentBadgeW = showBadge && !compactRoot.invalidSymbol
                             ? widthOf(probeBadge, compactRoot.shownPercent) + (Kirigami.Units.smallSpacing * 2)
                             : 0;
         var currentLine2 = applet.isVerticalPanel
@@ -342,8 +356,11 @@ MouseArea {
                 // carries the session tag.
                 Text {
                     visible: !applet.isVerticalPanel
-                    text: compactRoot.shownNeutral ? "—" : (compactRoot.shownPositive ? "▲" : "▼")
-                    color: compactRoot.shownColor
+                    // A warning sign instead of the direction arrow: there is no direction
+                    // to report for a ticker that does not exist.
+                    text: compactRoot.invalidSymbol ? "⚠"
+                          : (compactRoot.shownNeutral ? "—" : (compactRoot.shownPositive ? "▲" : "▼"))
+                    color: compactRoot.invalidSymbol ? applet.warningTextColor : compactRoot.shownColor
                     font.pixelSize: 8 * compactRoot.textScale
                     renderType: Text.NativeRendering
                 }
@@ -382,17 +399,14 @@ MouseArea {
                     id: panelPrice
                     // The currency symbol does not fit in the panel thickness together
                     // with a five-digit price, and the ticker already identifies the
-                    // instrument; the tooltip shows the full value.
-                    text: {
-                        var price = compactRoot.shownPrice;
-                        return applet.isVerticalPanel && applet.currencySym !== ""
-                               ? price.replace(applet.currencySym, "")
-                               : price;
-                    }
+                    // instrument; the tooltip shows the full value. An invalid ticker has
+                    // no price at all: the slot carries the word instead.
+                    text: compactRoot.displayPrice
                     // When alternating, the price and the percentage badge share one spot:
                     // this item is hidden while the percentage is shown, and both keep the
                     // width of the wider one so the panel does not resize on every switch.
-                    visible: !compactRoot.alternatePrice || !applet.panelShowPercent
+                    visible: compactRoot.invalidSymbol
+                             || !compactRoot.alternatePrice || !applet.panelShowPercent
                     horizontalAlignment: applet.isVerticalPanel
                                          ? Text.AlignHCenter
                                          : (compactRoot.alternatePrice ? Text.AlignHCenter : Text.AlignLeft)
@@ -401,10 +415,10 @@ MouseArea {
                     Layout.minimumWidth: 0
                     Layout.fillWidth: applet.isVerticalPanel
                     elide: Text.ElideRight
-                    color: compactRoot.shownColor
+                    color: compactRoot.invalidSymbol ? applet.warningTextColor : compactRoot.shownColor
                     font.pixelSize: (applet.isVerticalPanel
-                                     ? (compactRoot.shownPrice.length > 10 ? 7
-                                        : compactRoot.shownPrice.length > 7 ? 7 : 11)
+                                     ? (compactRoot.displayPrice.length > 10 ? 7
+                                        : compactRoot.displayPrice.length > 7 ? 7 : 11)
                                      : 10) * compactRoot.textScale
                     textFormat: Text.PlainText
                     renderType: Text.NativeRendering
@@ -418,6 +432,7 @@ MouseArea {
                     opacity: applet.panelCurrentIsCached ? 0.7 : 1.0
                     visible: !applet.isVerticalPanel
                              && !applet.hideChangePercentage
+                             && !compactRoot.invalidSymbol
                              && (!compactRoot.alternatePrice || applet.panelShowPercent)
                     // Background: translucent tint of the positive/negative color for theme independence
                     color: compactRoot.shownTint
@@ -445,6 +460,7 @@ MouseArea {
                     visible: applet.isVerticalPanel
                              && compactRoot.alternatePrice
                              && !applet.hideChangePercentage
+                             && !compactRoot.invalidSymbol
                              && applet.panelShowPercent
                     radius: 3
                     opacity: applet.panelCurrentIsCached ? 0.7 : 1.0
@@ -470,6 +486,7 @@ MouseArea {
                 visible: applet.isVerticalPanel
                          && !compactRoot.alternatePrice
                          && !applet.hideChangePercentage
+                         && !compactRoot.invalidSymbol
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter
                 Layout.minimumHeight: Math.ceil(12 * compactRoot.textScale)
@@ -568,8 +585,8 @@ MouseArea {
             Text {
                 id: onePrice
                 visible: true
-                text: compactRoot.shownPrice
-                color: compactRoot.shownColor
+                text: compactRoot.displayPrice
+                color: compactRoot.invalidSymbol ? applet.warningTextColor : compactRoot.shownColor
                 font.pixelSize: 13 * compactRoot.oneRowScale
                 textFormat: Text.PlainText
                 renderType: Text.NativeRendering
@@ -579,7 +596,7 @@ MouseArea {
             }
 
             Rectangle {
-                visible: !applet.hideChangePercentage
+                visible: !applet.hideChangePercentage && !compactRoot.invalidSymbol
                 radius: 3
                 color: compactRoot.shownTint
                 border.color: compactRoot.shownColor

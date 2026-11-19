@@ -86,8 +86,12 @@ Item {
         for (var i = 0; i < model.count; i++) {
             var row = model.get(i);
             if (row.ticker !== ticker) continue;
-            applet.panelCurrentPrice = row.price;
-            applet.panelCurrentPercent = row.pct;
+            // The invalid state belongs to the ticker, not to the panel: selecting a
+            // valid row after an unknown one must clear it right away, even before the
+            // new reply arrives.
+            applet.panelInvalid = row.invalid === true;
+            applet.panelCurrentPrice = applet.panelInvalid ? "—" : row.price;
+            applet.panelCurrentPercent = applet.panelInvalid ? "" : row.pct;
             applet.panelCurrentIsPositive = row.isPos;
             applet.panelCurrentIsNeutral = row.isNeutral === true;
             applet.panelCurrentIsCached = row.cached === true;
@@ -136,6 +140,10 @@ Item {
             }
         }
         var chartFromCache = false;
+        // Both flags describe the ticker that was on screen before this selection: a new
+        // one starts clean and is marked again only if its own reply says so.
+        applet.quoteInvalid = false;
+        applet.chartNoData = false;
         // The listing note describes the chart that is on screen; without reusing that
         // chart there is nothing to annotate until the new reply arrives.
         applet.chartListedSince = 0;
@@ -179,6 +187,20 @@ Item {
                 applet.quoteTimestamp = row.quoteTime || 0;
                 chartFromCache = applet.chartDataPoints.length > 0;
             }
+        }
+
+        // A row without a cached chart must not leave the previously selected ticker's
+        // chart and change under the new name while its own request is in flight.
+        if (!chartFromCache) {
+            applet.chartDataPoints = [];
+            applet.chartTimestamps = [];
+            applet.chartSessions = null;
+            applet.chartCandles = [];
+            applet.chartReferencePrice = 0;
+            applet.chartListedSince = 0;
+            applet.chartDailyFallback = false;
+            applet.priceChange = "";
+            applet.percentChange = "";
         }
 
         // Switching to a row uses what was already fetched for it; the list refresh (and

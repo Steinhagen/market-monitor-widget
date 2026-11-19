@@ -62,6 +62,39 @@ TestCase {
         compare(o.controller.configuredTickers().join(","), "TLV.RO,SAP.DE");
         o.applet.sortAlphabetically = true;
         compare(o.controller.configuredTickers().join(","), "SAP.DE,TLV.RO");
+        // The field is free text: the same ticker typed twice keeps one row, otherwise
+        // the second copy can never be fed (replies are matched by ticker).
+        o.applet.sortAlphabetically = false;
+        o.applet.multiTickers = "AAPL, aapl, TSLA, AAPL";
+        compare(o.controller.configuredTickers().join(","), "AAPL,TSLA");
+    }
+
+    function test_markInvalidRow() {
+        var o = make();
+        o.controller.ensureRows(["FBLL"]);
+        o.controller.markInvalidRow("FBLL");
+        var row = o.controller.model.get(0);
+        compare(row.invalid, true);
+        compare(row.price, "---");
+        compare(row.change, "");
+        compare(JSON.parse(row.chartPoints).length, 0);
+        // The panel indicator follows this row when it is the panel's ticker.
+        compare(o.applet.panelTicker, "FBLL");
+        compare(o.store.panelInvalid, true);
+        compare(o.store.panelCurrentPrice, "—");
+        compare(o.store.panelCurrentPercent, "");
+    }
+
+    function test_processRowFeedsEveryCopyOfATicker() {
+        // A model built before the list was deduplicated can still hold the same ticker
+        // twice; both rows must get the reply instead of the second staying empty.
+        var o = make();
+        o.controller.ensureRows(["SAP.DE", "SAP.DE"]);
+        var json = JSON.parse(Fixture.read(Qt.resolvedUrl("../fixtures/yahoo-chart-sap-1d.json")));
+        o.controller.processRow("SAP.DE", json, "1D");
+        compare(o.controller.model.count, 2);
+        verify(o.controller.model.get(0).price.indexOf("213.45") >= 0);
+        verify(o.controller.model.get(1).price.indexOf("213.45") >= 0);
     }
 
     function test_ensureRows() {

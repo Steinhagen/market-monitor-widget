@@ -13,6 +13,7 @@ Item {
     Component.onCompleted: {
         ConfigWindow.apply(page, Window.window);
         Qt.callLater(function() { ConfigWindow.apply(page, Window.window); });
+        symbolCheckTimer.start();
     }
     Window.onWindowChanged: ConfigWindow.apply(page, Window.window)
 
@@ -27,6 +28,87 @@ Item {
 
     ListModel {
         id: resultsModel
+    }
+
+    // Symbols the Yahoo chart endpoint does not know, and symbols typed more than once.
+    // The check runs after a short pause and only marks a token when Yahoo answered 404;
+    // a network failure leaves it unmarked, so nothing valid is reported as unknown.
+    property var unknownSymbols: []
+    property var duplicateSymbols: []
+    property var knownSymbols: ({})
+
+    Timer {
+        id: symbolCheckTimer
+        interval: 700
+        repeat: false
+        onTriggered: page.revalidateSymbols()
+    }
+
+    function listTokens() {
+        var out = [];
+        String(page.cfg_multiTickers || "").split(",").forEach(function(t) {
+            var clean = t.trim();
+            if (clean !== "") out.push(clean);
+        });
+        return out;
+    }
+
+    function revalidateSymbols() {
+        var tokens = page.listTokens();
+        var unique = [];
+        var seen = {};
+        var duplicates = [];
+        for (var i = 0; i < tokens.length; i++) {
+            var key = tokens[i].toUpperCase();
+            if (seen[key]) {
+                if (duplicates.indexOf(tokens[i]) === -1) duplicates.push(tokens[i]);
+                continue;
+            }
+            seen[key] = true;
+            unique.push(tokens[i]);
+        }
+        page.duplicateSymbols = duplicates;
+
+        unique.forEach(function(symbol) {
+            var code = symbol.toUpperCase();
+            if (page.knownSymbols.hasOwnProperty(code)) return;
+            YahooSearch.check(symbol, function(valid, error) {
+                // null means the check could not run; try again after the next edit.
+                if (valid === null || error) return;
+                var copy = {};
+                for (var k in page.knownSymbols) {
+                    if (page.knownSymbols.hasOwnProperty(k)) copy[k] = page.knownSymbols[k];
+                }
+                copy[code] = valid;
+                page.knownSymbols = copy;
+                page.refreshUnknown();
+            });
+        });
+        page.refreshUnknown();
+    }
+
+    function refreshUnknown() {
+        var unknown = [];
+        page.listTokens().forEach(function(symbol) {
+            var code = symbol.toUpperCase();
+            if (page.knownSymbols[code] === false && unknown.indexOf(symbol) === -1)
+                unknown.push(symbol);
+        });
+        page.unknownSymbols = unknown;
+    }
+
+    // Drops the unknown and repeated tokens, keeping the first spelling of each symbol.
+    function cleanList() {
+        var out = [];
+        var seen = {};
+        page.listTokens().forEach(function(symbol) {
+            var code = symbol.toUpperCase();
+            if (seen[code] || page.knownSymbols[code] === false) return;
+            seen[code] = true;
+            out.push(symbol);
+        });
+        page.cfg_multiTickers = out.join(", ");
+        page.revalidateSymbols();
     }
 
     function searchSymbols(query) {
@@ -90,18 +172,52 @@ Item {
                 placeholderText: i18n("e.g., AAPL")
             }
 
-            ScrollView {
+            // The list field and its warnings are one form row: the messages stay attached
+            // to the field they are about, instead of appearing as a separate section.
+            ColumnLayout {
                 visible: modeSwitch.checked
                 Kirigami.FormData.label: i18n("Ticker List:")
                 Layout.fillWidth: true
-                Layout.minimumHeight: 60
-                Layout.maximumHeight: 500
+                spacing: 4
 
-                TextArea {
-                    id: multiListField
-                    // Ticker symbols are the same in every language, so the example is not translated.
-                    placeholderText: "AAPL, TSLA"
-                    wrapMode: TextEdit.Wrap
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.minimumHeight: 60
+                    Layout.maximumHeight: 500
+
+                    TextArea {
+                        id: multiListField
+                        // Ticker symbols are the same in every language, so the example is not translated.
+                        placeholderText: "AAPL, TSLA"
+                        wrapMode: TextEdit.Wrap
+                        onTextChanged: symbolCheckTimer.restart()
+                    }
+                }
+
+                ColumnLayout {
+                    visible: page.unknownSymbols.length > 0 || page.duplicateSymbols.length > 0
+                    Layout.fillWidth: true
+                    spacing: 0
+
+                    Label {
+                        Layout.fillWidth: true
+                        wrapMode: Text.WordWrap
+                        font.pixelSize: 11
+                        color: Kirigami.Theme.neutralTextColor
+                        text: {
+                            var parts = [];
+                            if (page.unknownSymbols.length > 0)
+                                parts.push("⚠ " + i18n("Not found on Yahoo Finance: %1", page.unknownSymbols.join(", ")));
+                            if (page.duplicateSymbols.length > 0)
+                                parts.push("⚠ " + i18n("Listed twice: %1", page.duplicateSymbols.join(", ")));
+                            return parts.join("\n");
+                        }
+                    }
+
+                    Kirigami.LinkButton {
+                        text: i18n("Remove them from the list")
+                        onClicked: page.cleanList()
+                    }
                 }
             }
 

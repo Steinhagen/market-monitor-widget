@@ -231,6 +231,9 @@ PlasmoidItem {
     // The instrument publishes one price per day, so the price on screen is current even
     // when no regular quote has arrived during the session.
     property alias quoteIsDailyOnly: quoteStore.quoteIsDailyOnly
+    // Yahoo has no such symbol (HTTP 404): the view says so instead of showing values
+    // left over from the previously selected ticker.
+    property alias quoteInvalid: quoteStore.quoteInvalid
     // Start of the session a 1D chart is showing, and whether it is today's session (the
     // running pre-market or the regular one). When it is not, the chart still shows a
     // previous session and the view labels it so it is not mistaken for today's.
@@ -350,6 +353,9 @@ PlasmoidItem {
     // row can still be cached while another is already live, so the panel marks its own
     // ticker instead of trusting the list-wide flag.
     property alias panelCurrentIsCached: quoteStore.panelCurrentIsCached
+    // The panel's ticker does not exist on Yahoo: the indicator says so instead of
+    // showing a price and a change that mean nothing.
+    property alias panelInvalid: quoteStore.panelInvalid
     readonly property string cachedQuotesLabel: root.cachedQuotesTime > 0
         ? new Date(root.cachedQuotesTime * 1000).toLocaleString(Qt.locale(), Locale.ShortFormat)
         : ""
@@ -725,6 +731,7 @@ PlasmoidItem {
             root.chartListedSince = 0;
             root.chartDailyFallback = false;
             root.chartNoData = false;
+            root.quoteInvalid = false;
             root.readCachedQuotes();
         }
         root.updateTooltipItem();

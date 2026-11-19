@@ -25,9 +25,17 @@ Item {
     function configuredTickers() {
         var tickers = String(applet.multiTickers || "").split(",");
         var list = [];
+        var seen = {};
         tickers.forEach(function(t) {
             var clean = t.trim();
-            if (clean !== "") list.push(clean);
+            if (clean === "") return;
+            // The field is comma-separated text, so the same ticker can be typed twice.
+            // Keep one row and one request per symbol: a duplicate reply is matched by
+            // ticker, so the second row could never be fed and stayed empty.
+            var key = clean.toUpperCase();
+            if (seen[key]) return;
+            seen[key] = true;
+            list.push(clean);
         });
         if (applet.sortAlphabetically) {
             list.sort(function(a, b) {
@@ -53,9 +61,15 @@ Item {
     // Creates the list placeholders in display order and keeps the panel selection.
     function ensureRows(targetTickers) {
         var defaultPanelTicker = targetTickers.length > 0 ? targetTickers[0] : "";
-        applet.panelTicker = applet.manualPanelTickerOverride !== ""
-                             && targetTickers.indexOf(applet.manualPanelTickerOverride) !== -1
-                             ? applet.manualPanelTickerOverride : defaultPanelTicker;
+        var nextPanelTicker = applet.manualPanelTickerOverride !== ""
+                              && targetTickers.indexOf(applet.manualPanelTickerOverride) !== -1
+                              ? applet.manualPanelTickerOverride : defaultPanelTicker;
+        if (nextPanelTicker !== applet.panelTicker) {
+            applet.panelTicker = nextPanelTicker;
+            // The invalid state belongs to a ticker, not to the panel: a new selection
+            // starts clean and is marked again only if its own request comes back 404.
+            store.panelInvalid = false;
+        }
         applet.singleTicker = applet.panelTicker;
 
         if (rowsMatch(targetTickers)) return;
@@ -92,6 +106,7 @@ Item {
                 "currency": "",
                 "exchange": Exchanges.shortLabel(cleanSymbol, "", ""),
                 "exchangeFull": "",
+                "invalid": false,
                 "cached": false
             });
         });
@@ -107,12 +122,47 @@ Item {
 
         targets.forEach(function(symbol) {
             YahooChart.get(symbol, range, applet.showExtendedHours, function(response, error) {
-                if (error) { applet.scheduleQuoteRetry(); return; }
+                if (error) {
+                    // A 404 is Yahoo saying the symbol does not exist: retrying cannot
+                    // help, so mark the row instead of leaving it on "---" forever.
+                    if (error.status === 404 || error.status === 400) markInvalidRow(symbol);
+                    else applet.scheduleQuoteRetry();
+                    return;
+                }
                 // Ignore a reply for a range the user has already switched away from.
                 if (range !== applet.chartRange) return;
                 processRow(symbol, response, range);
             });
         });
+    }
+
+    // Marks every row of an unknown symbol, so the list says the ticker is wrong instead
+    // of looking like a quote that is still loading.
+    function markInvalidRow(symbol) {
+        for (var i = 0; i < rows.count; i++) {
+            if (rows.get(i).ticker !== symbol) continue;
+            rows.set(i, {
+                "invalid": true,
+                "price": "---",
+                "change": "",
+                "pct": "",
+                "chartPoints": "[]",
+                "chartTimes": "[]",
+                "chartCandles": "[]",
+                "chartRef": 0,
+                "chartSessions": ({}),
+                "cached": false
+            });
+        }
+        // The panel indicator can show this ticker on its own; it must say the symbol is
+        // invalid instead of keeping the previous price and change.
+        if (symbol === applet.panelTicker) {
+            store.panelInvalid = true;
+            store.panelCurrentPrice = "—";
+            store.panelCurrentPercent = "";
+            store.panelCurrentIsPositive = true;
+            store.panelCurrentIsNeutral = false;
+        }
     }
 
     // Yahoo's intraday meta repeats a stale previousClose for FX on every range.
@@ -171,10 +221,13 @@ Item {
             if (listRange === "1D") {
                 prev = Chart.previousCloseFor(meta, listRange);
             } else {
-                prev = meta.chartPreviousClose;
-                if (!prev || prev === 0) {
-                    prev = cleanData.length > 0 ? cleanData[0] : meta.regularMarketPreviousClose;
-                }
+                // The range's own reference close when Yahoo sends it, then the daily
+                // close from the meta (a Max reply may omit chartPreviousClose), and only
+                // then the first bar of the series.
+                prev = Number(meta.chartPreviousClose) || 0;
+                if (!(prev > 0)) prev = Chart.dailyPreviousClose(meta, 0, listRange);
+                if (!(prev > 0)) prev = cleanData.length > 0 ? cleanData[0]
+                                                             : (Number(meta.regularMarketPreviousClose) || 0);
             }
 
             var change = current - prev;
@@ -223,10 +276,12 @@ Item {
                 "currency": meta.currency || "",
                 "exchange": exchange,
                 "exchangeFull": exchangeFull,
+                "invalid": false,
                 "cached": false
             };
 
             if (applet.isMultiMode && symbol === applet.panelTicker) {
+                store.panelInvalid = false;
                 store.panelCurrentPrice = itemData.price;
                 store.panelCurrentPercent = itemData.pct;
                 store.panelCurrentIsPositive = itemData.isPos;
@@ -239,9 +294,10 @@ Item {
             var found = false;
             for (var k = 0; k < rows.count; k++) {
                 if (rows.get(k).ticker === symbol) {
+                    // Every copy, not just the first: a model built before the list was
+                    // deduplicated may still hold the same ticker twice.
                     rows.set(k, itemData);
                     found = true;
-                    break;
                 }
             }
             if (!found) rows.append(itemData);

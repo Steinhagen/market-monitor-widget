@@ -40,6 +40,9 @@ QtObject {
     // The quote is published once a day (a mutual fund), so the regular session has no
     // "first quote" to wait for; the price on screen is the current one.
     property bool quoteIsDailyOnly: false
+    // Yahoo answered 404 for the selected symbol: it does not exist, so there is no
+    // price or chart to show and the view says so instead of keeping stale values.
+    property bool quoteInvalid: false
     property double chartSessionStart: 0
     property bool chartSessionCurrent: true
     property bool chartPreSession: false
@@ -55,4 +58,7 @@ QtObject {
     property bool panelCurrentIsPositive: true
     property bool panelCurrentIsNeutral: false
     property bool panelCurrentIsCached: false
+    // The panel indicator shows a symbol Yahoo does not know: the price and the change
+    // are meaningless, so the indicator says "invalid" instead.
+    property bool panelInvalid: false
 }

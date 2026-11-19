@@ -1494,3 +1494,31 @@ msgstr ""
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "Updated"
 msgstr ""
+
+#: contents/ui/list/WatchRow.qml
+msgid "Invalid symbol"
+msgstr ""
+
+#: contents/ui/list/WatchRow.qml
+msgid "Not found on Yahoo Finance"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgid "Symbol %1 not found"
+msgstr ""
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Not found on Yahoo Finance: %1"
+msgstr ""
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Listed twice: %1"
+msgstr ""
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Remove them from the list"
+msgstr ""
+
+#: contents/ui/panel/CompactPanel.qml
+msgid "invalid"
+msgstr ""

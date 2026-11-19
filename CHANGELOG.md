@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   metadata only, so the widget now falls back to a month of daily bars, labelled
   `Daily values, last month`. The same fallback covers any range that comes back
   without a single bar.
+- The Symbols & Lists page checks what is typed: symbols Yahoo does not know, and
+  symbols listed twice, are reported under the field, with a button that removes
+  them. The check only marks a symbol when Yahoo answers 404, so a network
+  problem never flags a valid ticker.
 
 ### Fixed
 
@@ -29,6 +33,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   during the session. It was hidden behind the "waiting for the first regular
   quote" state, which can never clear for such an instrument because its quote is
   always older than the session open.
+- A ticker typed twice in the list keeps one row. The second copy could never be
+  filled, because a reply is matched to the row by its ticker, so it stayed on
+  "---" while the first row looked right.
+- An unknown ticker (HTTP 404 from Yahoo) no longer leaves the previous ticker's
+  chart, price and change on screen. The row says `Invalid symbol`, the card says
+  `Symbol … not found`, the values are cleared and the retry loop stops.
+- The change of a Max chart is computed against the daily close from the meta
+  instead of the first bar of the series, which made a Max chart of the Dow read
+  "+1,464%" against its 1992 close.
+- The panel indicator shows that its ticker is unknown: a warning sign instead of
+  the direction arrow, the word `invalid` in the warning colour instead of the
+  price, and no change badge, instead of the previous ticker's values.
+- Selecting a valid ticker after an unknown one clears the invalid state of the
+  panel indicator and of the card immediately, instead of waiting for the next
+  reply: the state belongs to the ticker, not to the panel.
 
 ## [1.3] - 2026-11-16
 
