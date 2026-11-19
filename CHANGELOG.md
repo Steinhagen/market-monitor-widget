@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- With the news pane open, selecting a stock showed only the first source that
+  answered (`Google`) and added `All` and `Yahoo` a moment later. The filter
+  buttons now start from the sources being queried, so the row is stable from the
+  first frame.
+
 ### Changed
 
 - Selecting a stock repaints the chart once instead of five times: the five chart

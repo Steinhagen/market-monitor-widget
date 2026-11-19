@@ -312,8 +312,12 @@ Item {
         }
         var sources = effectiveSources(applet, sym);
         if (sources.length === 0) return;
+        // The labels travel with the entry so the pane can show every source it is
+        // waiting for; the providers answer one at a time, so deriving the buttons from
+        // the items alone made them appear one by one.
         setNewsEntry(key, { pending: true, remaining: sources.length,
-                            attempt: now, error: false, sourceNeedsName: {} });
+                            attempt: now, error: false, sourceNeedsName: {},
+                            requestedSources: sources.map(function(s) { return s.label; }) });
         for (var i = 0; i < sources.length; i++) fetchSource(key, sym, sources[i]);
     }
 

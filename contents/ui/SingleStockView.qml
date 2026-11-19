@@ -38,6 +38,18 @@ Rectangle {
             seen[source] = true;
             sources.push(source);
         }
+        // A new symbol's headlines arrive one provider at a time, so the buttons start
+        // from the sources being queried and only later reflect what actually arrived.
+        var pendingEntry = applet.newsEntry;
+        if (pendingEntry && pendingEntry.pending === true
+                && Array.isArray(pendingEntry.requestedSources)) {
+            for (var r = 0; r < pendingEntry.requestedSources.length; r++) {
+                var requested = String(pendingEntry.requestedSources[r] || "").trim();
+                if (requested === "" || seen[requested]) continue;
+                seen[requested] = true;
+                sources.push(requested);
+            }
+        }
         // Yahoo is the primary feed, BVB follows, then Google; unknown providers
         // are alphabetical.
         var order = ["Yahoo", "BVB", "Google"];
