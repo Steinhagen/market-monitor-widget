@@ -168,16 +168,19 @@ Item {
             // The change and the chart itself depend on the selected range. They can only
             // be reused when the list and the chart share the range.
             if (applet.effectiveChartRange === applet.chartRange) {
+                var restoredPoints = chartArray(row.chartPoints);
+                var restoredTimes = chartArray(row.chartTimes);
+                var restoredCandles = chartArray(row.chartCandles);
                 applet.isPositive = row.isPos;
                 applet.isNeutral = row.isNeutral === true;
                 applet.priceChange = row.change;
                 applet.percentChange = row.pct;
-                applet.chartDataPoints = chartArray(row.chartPoints);
-                applet.chartTimestamps = chartArray(row.chartTimes);
+                applet.chartDataPoints = restoredPoints;
+                applet.chartTimestamps = restoredTimes;
                 var sessions = row.chartSessions;
                 applet.chartSessions = (sessions && sessions.preValues !== undefined)
                                        ? sessions : null;
-                applet.chartCandles = chartArray(row.chartCandles);
+                applet.chartCandles = restoredCandles;
                 applet.chartReferencePrice = row.chartRef;
                 applet.chartListedSince = row.chartListedSince || 0;
                 applet.chartDailyFallback = row.chartDailyFallback === true;
@@ -186,6 +189,32 @@ Item {
                 applet.chartSessionCurrent = row.chartSessionCurrent !== false;
                 applet.quoteTimestamp = row.quoteTime || 0;
                 chartFromCache = applet.chartDataPoints.length > 0;
+            }
+        }
+
+        // The row only holds the list range. When the chart shows another range, reuse the
+        // chart this ticker already produced for that range instead of fetching it again.
+        var viewCacheTime = 0;
+        if (!chartFromCache && applet.chartCache) {
+            var cached = applet.chartCache[clean + "|" + applet.effectiveChartRange];
+            if (cached && cached.points && cached.points.length > 0) {
+                applet.chartDataPoints = cached.points;
+                applet.chartTimestamps = cached.times;
+                applet.chartSessions = cached.sessions || null;
+                applet.chartCandles = cached.candles || [];
+                applet.chartReferencePrice = cached.reference || 0;
+                applet.chartListedSince = cached.listedSince || 0;
+                applet.chartDailyFallback = cached.dailyFallback === true;
+                applet.chartPreSession = cached.preSession === true;
+                applet.chartSessionStart = cached.sessionStart || 0;
+                applet.chartSessionCurrent = cached.sessionCurrent !== false;
+                applet.priceChange = cached.change || "";
+                applet.percentChange = cached.pct || "";
+                applet.isPositive = cached.isPositive !== false;
+                applet.isNeutral = cached.isNeutral === true;
+                applet.previousClose = cached.previousClose || 0;
+                chartFromCache = true;
+                viewCacheTime = Number(cached.time) || 0;
             }
         }
 
@@ -204,9 +233,14 @@ Item {
         }
 
         // Switching to a row uses what was already fetched for it; the list refresh (and
-        // middle-click) keep that data current. Ask for a chart only when the row has no
-        // cached chart yet, or when the chart range differs from the list's.
-        var needsChart = !chartFromCache || applet.effectiveChartRange !== applet.chartRange;
+        // middle-click) keep that data current. Ask for a chart only when there is none to
+        // show, or when the chart of this ticker's range is older than a refresh cycle:
+        // the list refresh cannot update a chart whose range differs from its own.
+        var needsChart = !chartFromCache;
+        if (needsChart === false && viewCacheTime > 0) {
+            var maxAge = Math.max(1, applet.refreshIntervalMinutes) * 60000;
+            needsChart = Date.now() - viewCacheTime > maxAge;
+        }
         if (applet.singleTicker !== clean) {
             applet.singleTicker = clean;
             if (needsChart) applet.fetchSingleStock(clean, applet.effectiveChartRange);

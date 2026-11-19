@@ -302,6 +302,23 @@ Item {
             }
             if (!found) rows.append(itemData);
 
+            // The row carries the chart of the list's range; the shared per-range cache
+            // lets the single view reuse it even when the chart shows another range.
+            var cacheKey = symbol + "|" + listRange;
+            var cacheCopy = {};
+            for (var ck in store.chartCache) {
+                if (store.chartCache.hasOwnProperty(ck)) cacheCopy[ck] = store.chartCache[ck];
+            }
+            cacheCopy[cacheKey] = {
+                time: Date.now(),
+                points: cleanData, times: cleanChart.times, sessions: chartSessions,
+                candles: chartCandles, reference: chartRef, listedSince: 0,
+                dailyFallback: false, preSession: preChart, sessionStart: sessionStart,
+                sessionCurrent: sessionCurrent, change: itemData.change, pct: itemData.pct,
+                isPositive: itemData.isPos, isNeutral: itemData.isNeutral, previousClose: prev
+            };
+            store.chartCache = cacheCopy;
+
             // The row's cached chart is reused when it is selected; correct its
             // reference line for FX, whose intraday meta carries a stale close.
             if (listRange !== "1D" && String(meta.instrumentType) === "CURRENCY"

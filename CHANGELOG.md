@@ -48,6 +48,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Selecting a valid ticker after an unknown one clears the invalid state of the
   panel indicator and of the card immediately, instead of waiting for the next
   reply: the state belongs to the ticker, not to the panel.
+- Switching between stocks was slow whenever the in-chart range buttons showed a
+  range other than the list's: the row only carries its own chart, so every
+  selection fetched the chart again. The last chart of each ticker and range is
+  now kept, shown immediately, and refreshed in the background once it is older
+  than a refresh cycle.
 
 ## [1.3] - 2026-11-16
 

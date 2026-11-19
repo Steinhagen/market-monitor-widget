@@ -182,6 +182,9 @@ Item {
                     }
                 }
             }
+            // The fallback chart belongs to the range the user asked for: keep it under
+            // that key so selecting the row again does not fetch it twice.
+            rememberChart(symbol, userRange);
             return chart.values.length;
         } catch (e) {
             store.chartNoData = true;
@@ -434,6 +437,7 @@ Item {
             applet.nextUpdate = next.toLocaleTimeString(Qt.locale(), "HH:mm");
             store.singleDataRange = chartRange;
             store.singleDataTicker = symbol;
+            rememberChart(symbol, chartRange);
             if (!applet.isMultiMode) applet.showingCachedData = false;
             applet.noteQuoteReceived();
             applet.queueQuotesCacheSave();
@@ -442,5 +446,35 @@ Item {
             console.log("Error parsing single: " + e);
             return 0;
         }
+    }
+
+    // Keeps what the view needs to show this chart again without a request: the same
+    // symbol with the same range. The list only caches its own range, so this is what
+    // makes switching instant while the in-chart buttons show another one.
+    function rememberChart(symbol, range) {
+        var key = symbol + "|" + range;
+        var copy = {};
+        for (var k in store.chartCache) {
+            if (store.chartCache.hasOwnProperty(k)) copy[k] = store.chartCache[k];
+        }
+        copy[key] = {
+            time: Date.now(),
+            points: store.chartDataPoints,
+            times: store.chartTimestamps,
+            sessions: store.chartSessions,
+            candles: store.chartCandles,
+            reference: store.chartReferencePrice,
+            listedSince: store.chartListedSince,
+            dailyFallback: store.chartDailyFallback,
+            preSession: store.chartPreSession,
+            sessionStart: store.chartSessionStart,
+            sessionCurrent: store.chartSessionCurrent,
+            change: store.priceChange,
+            pct: store.percentChange,
+            isPositive: store.isPositive,
+            isNeutral: store.isNeutral,
+            previousClose: store.previousClose
+        };
+        store.chartCache = copy;
     }
 }

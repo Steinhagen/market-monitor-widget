@@ -34,6 +34,8 @@ TestCase {
             property bool chartNoData: false
             property bool panelInvalid: false
             property bool quoteInvalid: false
+            property var chartCache: ({})
+            property int refreshIntervalMinutes: 5
             property bool chartPreSession: false
             property double chartSessionStart: 0
             property bool chartSessionCurrent: true
@@ -143,6 +145,41 @@ TestCase {
         compare(o.applet.panelCurrentPrice, "€213.45");
         compare(o.applet.panelCurrentPercent, "+0.57%");
         compare(o.applet.panelCurrentIsCached, false);
+    }
+
+    function test_selectTickerReusesTheChartCacheForAnotherRange() {
+        // The list row only carries the list range. With the in-chart buttons showing a
+        // different range, the chart this ticker already produced for it is reused, so a
+        // selection is not a network round trip.
+        resetConfig();
+        var o = make();
+        o.applet.chartRange = "1D";
+        o.applet.effectiveChartRange = "Max";
+        o.applet.chartCache = {
+            "SAP.DE|Max": {
+                time: Date.now(),
+                points: [1, 2, 3], times: [10, 20, 30], candles: [], sessions: null,
+                reference: 2, previousClose: 2, change: "+1.00", pct: "+0.50%",
+                isPositive: true, isNeutral: false
+            }
+        };
+
+        o.actions.selectTicker("SAP.DE", false);
+        compare(o.applet.chartDataPoints.length, 3);
+        compare(o.applet.chartTimestamps.length, 3);
+        compare(o.applet.priceChange, "+1.00");
+        compare(o.applet.percentChange, "+0.50%");
+        compare(o.applet.previousClose, 2);
+        compare(o.applet.fetches, 0);
+
+        // An entry older than a refresh cycle is still shown at once, and refreshed in
+        // the background instead of leaving the card empty.
+        o.applet.chartCache = {
+            "SAP.DE|Max": { time: Date.now() - 3600000, points: [1, 2, 3], times: [10, 20, 30] }
+        };
+        o.actions.selectTicker("SAP.DE", false);
+        compare(o.applet.chartDataPoints.length, 3);
+        compare(o.applet.fetches, 1);
     }
 
     function test_panelInvalidFollowsTheSelectedRow() {

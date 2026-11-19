@@ -61,4 +61,9 @@ QtObject {
     // The panel indicator shows a symbol Yahoo does not know: the price and the change
     // are meaningless, so the indicator says "invalid" instead.
     property bool panelInvalid: false
+
+    // The last chart per "symbol|range". The list only carries the chart of its own range,
+    // so a chart viewed with another range (the in-chart buttons) was fetched again on
+    // every selection; this keeps it for the next one.
+    property var chartCache: ({})
 }
