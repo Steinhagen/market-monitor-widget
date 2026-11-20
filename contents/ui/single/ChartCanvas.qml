@@ -22,6 +22,20 @@ import "../domain/curve.js" as ChartCurve
                 canvas.requestPaint();
             });
         }
+
+        // Hover moves arrive faster than a full chart repaint. Requesting one paint per
+        // move queued frames faster than they could be drawn, so the canvas lagged
+        // behind the cursor and replayed the path it had taken. Coalesce them to at most
+        // one paint per frame, always at the latest position.
+        function requestHoverPaint() {
+            if (!hoverPaintTimer.running) hoverPaintTimer.start();
+        }
+        Timer {
+            id: hoverPaintTimer
+            interval: 16
+            repeat: false
+            onTriggered: canvas.requestPaint()
+        }
         onPaint: { drawChart(getContext("2d"), width, height, applet.chartDataPoints, applet.chartTimestamps, applet.previousClose, applet.isPositive, true, applet.showChartAxis, applet.showTimeAxis); }
         Connections {
             target: applet
@@ -53,8 +67,8 @@ import "../domain/curve.js" as ChartCurve
         }
         Connections {
             target: host
-            function onChartHoverActiveChanged() { canvas.requestPaint(); }
-            function onChartHoverXChanged() { canvas.requestPaint(); }
+            function onChartHoverActiveChanged() { canvas.requestHoverPaint(); }
+            function onChartHoverXChanged() { canvas.requestHoverPaint(); }
             function onAnalystMarkersShownChanged() { canvas.requestPaint(); }
             function onExtendedQuoteChanged() { canvas.requestPaint(); }
         }

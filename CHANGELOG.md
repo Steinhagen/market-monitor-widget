@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Moving the cursor quickly across the chart queued a repaint per mouse move, so
+  the crosshair fell behind and kept replaying where the pointer had been before
+  reaching its current position. Hover repaints are now coalesced to one per
+  frame, always at the latest position.
+
 - With the news pane open, selecting a stock showed only the first source that
   answered (`Google`) and added `All` and `Yahoo` a moment later. The filter
   buttons now start from the sources being queried, so the row is stable from the
