@@ -5,6 +5,16 @@ All notable changes to Market Monitor are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- The **All** news tab is ordered by date in the "local with English backup"
+  language mode. The English headlines were appended as a block after the local
+  ones, so an older local headline could appear above a much newer backup
+  headline. The local and backup headlines are now merged into one newest-first
+  list, and the source filters keep that order.
+
 ## [1.5] - 2026-11-22
 
 ### Added

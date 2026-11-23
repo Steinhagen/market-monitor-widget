@@ -151,6 +151,10 @@ msgid "Refresh"
 msgstr "Reîmprospătează"
 
 #: contents/ui/list/WatchRow.qml
+msgid "Invalid symbol"
+msgstr "Simbol invalid"
+
+#: contents/ui/list/WatchRow.qml
 msgctxt "@item:market status"
 msgid "closed"
 msgstr "închisă"
@@ -168,6 +172,10 @@ msgstr "După"
 #: contents/ui/list/WatchRow.qml contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "Market closed"
 msgstr "Piața este închisă"
+
+#: contents/ui/list/WatchRow.qml
+msgid "Not found on Yahoo Finance"
+msgstr "Nu a fost găsit pe Yahoo Finance"
 
 #: contents/ui/main.qml
 msgctxt "@item:panel stock market session tag"
@@ -237,6 +245,10 @@ msgstr "Max"
 msgctxt "@item:chart range"
 msgid "All"
 msgstr "Tot"
+
+#: contents/ui/panel/CompactPanel.qml
+msgid "invalid"
+msgstr "invalid"
 
 #: contents/ui/panel/CompactPanel.qml
 msgctxt "@item:panel stock data state"
@@ -337,9 +349,25 @@ msgstr "Opacitate:"
 msgid "Stock Price Text"
 msgstr "Textul prețului acțiunii"
 
+#: contents/ui/settings/pages/appearance.qml
+msgid "Stock List"
+msgstr "Lista de acțiuni"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Scrollbar:"
+msgstr "Bară de derulare:"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Show a scrollbar when the list does not fit"
+msgstr "Arată o bară de derulare când lista nu încape"
+
 #: contents/ui/settings/pages/chartNews.qml
 msgid "Local language only"
 msgstr "Doar limba locală"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local language, English fallback"
+msgstr "Limba locală, cu engleza ca rezervă"
 
 #: contents/ui/settings/pages/chartNews.qml
 msgid "English only"
@@ -348,10 +376,6 @@ msgstr "Doar engleză"
 #: contents/ui/settings/pages/chartNews.qml
 msgid "Several languages"
 msgstr "Mai multe limbi"
-
-#: contents/ui/settings/pages/chartNews.qml
-msgid "Local language, English fallback"
-msgstr "Limba locală, cu engleza ca rezervă"
 
 #: contents/ui/settings/pages/chartNews.qml
 msgid "Chart style:"
@@ -450,8 +474,8 @@ msgid "Yahoo Finance is available in English, German, French, Spanish and Italia
 msgstr "Yahoo Finance este disponibil în engleză, germană, franceză, spaniolă și italiană; este interogat în fiecare limbă selectată din această listă. Google urmează limbile selectate și este interogat o dată pentru fiecare limbă în modul Mai multe limbi. BVB folosește atașamentul său în română sau engleză."
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Local headlines first; English headlines from Google and Yahoo are appended as backup."
-msgstr "Întâi știrile locale; titlurile în engleză de la Google și Yahoo sunt adăugate ca rezervă."
+msgid "Local headlines with English headlines from Google and Yahoo as backup, all ordered newest first."
+msgstr "Titluri locale, plus titluri în engleză de la Google și Yahoo ca rezervă, ordonate de la cea mai recentă."
 
 #: contents/ui/settings/pages/chartNews.qml
 msgid "Languages:"
@@ -997,6 +1021,18 @@ msgid "Ticker List:"
 msgstr "Listă de simboluri:"
 
 #: contents/ui/settings/pages/symbolsLists.qml
+msgid "Not found on Yahoo Finance: %1"
+msgstr "Nu au fost găsite pe Yahoo Finance: %1"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Listed twice: %1"
+msgstr "Apare de două ori: %1"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Remove them from the list"
+msgstr "Elimină-le din listă"
+
+#: contents/ui/settings/pages/symbolsLists.qml
 msgid "Sorting:"
 msgstr "Sortare:"
 
@@ -1402,6 +1438,10 @@ msgid "Daily values, last month"
 msgstr "Valori zilnice, ultima lună"
 
 #: contents/ui/SingleStockView.qml
+msgid "Symbol %1 not found"
+msgstr "Simbolul %1 nu a fost găsit"
+
+#: contents/ui/SingleStockView.qml
 msgid "No chart data for this range"
 msgstr "Nu există date pentru acest interval"
 
@@ -1506,30 +1546,9 @@ msgstr "Sesiune"
 msgid "Updated"
 msgstr "Actualizat"
 
+#~ msgid "Local headlines first; English headlines from Google and Yahoo are appended as backup."
+#~ msgstr "Întâi știrile locale; titlurile în engleză de la Google și Yahoo sunt adăugate ca rezervă."
 
-#: contents/ui/list/WatchRow.qml
-msgid "Invalid symbol"
-msgstr "Simbol invalid"
-
-#: contents/ui/list/WatchRow.qml
-msgid "Not found on Yahoo Finance"
-msgstr "Nu a fost găsit pe Yahoo Finance"
-
-#: contents/ui/SingleStockView.qml
-msgid "Symbol %1 not found"
-msgstr "Simbolul %1 nu a fost găsit"
-
-#: contents/ui/settings/pages/symbolsLists.qml
-msgid "Not found on Yahoo Finance: %1"
-msgstr "Nu au fost găsite pe Yahoo Finance: %1"
-
-#: contents/ui/settings/pages/symbolsLists.qml
-msgid "Listed twice: %1"
-msgstr "Apare de două ori: %1"
-
-#: contents/ui/settings/pages/symbolsLists.qml
-msgid "Remove them from the list"
-msgstr "Elimină-le din listă"
 #~ msgid "Format stock price with commas (e.g. 1,000.00)"
 #~ msgstr "Formatează prețul acțiunii cu virgule (de ex. 1,000.00)"
 
@@ -1821,19 +1840,3 @@ msgstr "Elimină-le din listă"
 
 #~ msgid "No portfolio data to export."
 #~ msgstr "Nu există date de portofoliu de exportat."
-
-#: contents/ui/panel/CompactPanel.qml
-msgid "invalid"
-msgstr "invalid"
-
-#: contents/ui/settings/pages/appearance.qml
-msgid "Stock List"
-msgstr "Lista de acțiuni"
-
-#: contents/ui/settings/pages/appearance.qml
-msgid "Scrollbar:"
-msgstr "Bară de derulare:"
-
-#: contents/ui/settings/pages/appearance.qml
-msgid "Show a scrollbar when the list does not fit"
-msgstr "Arată o bară de derulare când lista nu încape"

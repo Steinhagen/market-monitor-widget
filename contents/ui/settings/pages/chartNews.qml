@@ -273,7 +273,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.maximumWidth: Kirigami.Units.gridUnit * 22
                 visible: newsSwitch.checked && page.cfg_newsLanguage === "systemFallback"
-                text: i18n("Local headlines first; English headlines from Google and Yahoo are appended as backup.")
+                text: i18n("Local headlines with English headlines from Google and Yahoo as backup, all ordered newest first.")
                 wrapMode: Text.WordWrap
                 font.pixelSize: 10
                 color: Kirigami.Theme.disabledTextColor

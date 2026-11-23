@@ -90,12 +90,14 @@ TestCase {
         compare(shown[0].title, "BVB RO");
         compare(shown[1].title, "Google local");
 
+        // The fallback list mixes the local and the English headlines but stays newest
+        // first, so an English backup headline can sit above an older local one.
         controller.applet.newsLanguage = "systemFallback";
         shown = controller.visibleItems(items, true);
         compare(shown.length, 3);
-        compare(shown[0].title, "BVB RO");
-        compare(shown[1].title, "Google local");
-        compare(shown[2].title, "Yahoo EN");
+        compare(shown[0].title, "Yahoo EN");
+        compare(shown[1].title, "BVB RO");
+        compare(shown[2].title, "Google local");
 
         controller.applet.newsLanguage = "english";
         shown = controller.visibleItems(items, true);
@@ -201,7 +203,7 @@ TestCase {
         compare(controller.bvbLanguages().join(","), "ro,en");
     }
 
-    function test_englishFallbackAppendsGoogleAndYahoo() {
+    function test_englishFallbackStaysNewestFirst() {
         var controller = makeController();
         controller.localeName = "ro_RO";
         var sourceItems = {
@@ -213,13 +215,15 @@ TestCase {
             ]
         };
 
+        // The English backup no longer forms its own block after the local headlines:
+        // the All tab is one list ordered by date, whichever language a headline has.
         controller.applet.newsLanguage = "systemFallback";
         var shown = controller.visibleItems(sourceItems, true);
         compare(shown.length, 4);
-        compare(shown[0].title, "BVB RO");
-        compare(shown[1].title, "Google local");
-        compare(shown[2].title, "Google EN");
-        compare(shown[3].title, "Yahoo EN");
+        compare(shown[0].title, "Google EN");
+        compare(shown[1].title, "Yahoo EN");
+        compare(shown[2].title, "BVB RO");
+        compare(shown[3].title, "Google local");
 
         controller.applet.newsLanguage = "system";
         shown = controller.visibleItems(sourceItems, true);
@@ -231,6 +235,35 @@ TestCase {
         shown = controller.visibleItems({ yahoo: sourceItems.yahoo, bvb: [], google: [] }, true);
         compare(shown.length, 1);
         compare(shown[0].title, "Yahoo EN");
+    }
+
+    function test_fallbackSortsTheProviderInput() {
+        var controller = makeController();
+        controller.localeName = "ro_RO";
+        // Providers may hand over their lists in any order; the visible list must not
+        // depend on it.
+        var sourceItems = {
+            yahoo: [
+                { id: "y1", title: "Yahoo old EN", source: "Yahoo", time: 5, lang: "en" },
+                { id: "y2", title: "Yahoo new EN", source: "Yahoo", time: 50, lang: "en" }
+            ],
+            bvb: [
+                { id: "b1", title: "BVB older RO", source: "BVB", time: 10, lang: "ro" },
+                { id: "b2", title: "BVB newest RO", source: "BVB", time: 60, lang: "ro" }
+            ],
+            google: [
+                { id: "g1", title: "Google mid RO", source: "Google", time: 40, lang: "ro" },
+                { id: "g2", title: "Google old EN", source: "Google", time: 20, lang: "en" }
+            ]
+        };
+
+        controller.applet.newsLanguage = "systemFallback";
+        var shown = controller.visibleItems(sourceItems, true);
+        var expected = ["BVB newest RO", "Yahoo new EN", "Google mid RO",
+                        "Google old EN", "BVB older RO", "Yahoo old EN"];
+        compare(shown.length, expected.length);
+        for (var i = 0; i < expected.length; i++)
+            compare(shown[i].title, expected[i]);
     }
 
     function test_availableRespectsLanguage() {

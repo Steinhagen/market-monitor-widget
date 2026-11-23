@@ -163,8 +163,8 @@ Item {
         return NewsModel.merge(lists);
     }
 
-    // What the pane shows for the current language mode. In fallback mode the local
-    // headlines come first and the English Google/Yahoo ones follow as backup.
+    // What the pane shows for the current language mode. Every mode returns one list
+    // ordered newest first; the "All" tab (and each source tab) renders that order.
     function visibleItems(sourceItems, completed) {
         var language = String(applet.newsLanguage || "systemFallback");
         if (language === "multi")
@@ -173,29 +173,13 @@ Item {
         var localCode = localLanguageCode();
         var local = filterLanguages(sourceItems, ["google", "bvb", "yahoo"], [localCode]);
         if (language === "system" || localCode === "en") return local;
-        // "Local with English backup": query Google for English as well and keep the
-        // local headlines first, followed by the English ones from Google and Yahoo.
-        var result = [];
-        var seen = {};
-        var add = function (items) {
-            for (var i = 0; i < items.length; i++) {
-                var item = items[i];
-                var keys = ["l:" + String(item.link || "").toLowerCase(),
-                            "t:" + String(item.title || "").toLowerCase()];
-                var duplicate = false;
-                for (var k = 0; k < keys.length; k++) {
-                    if (keys[k].length > 2 && seen[keys[k]]) duplicate = true;
-                }
-                if (duplicate) continue;
-                for (var m = 0; m < keys.length; m++) {
-                    if (keys[m].length > 2) seen[keys[m]] = true;
-                }
-                result.push(item);
-            }
-        };
-        add(local);
-        add(filterLanguages(sourceItems, ["google", "bvb", "yahoo"], ["en"]));
-        return result;
+        // "Local with English backup": query Google for English as well and add the
+        // English headlines from Google, BVB and Yahoo to the local ones. The mixed list
+        // goes through the same newest-first merge as the other modes, so a backup
+        // headline never splits the chronology of the local ones. The local copy of a
+        // story that both languages carry is the one kept (it comes first in the merge).
+        var backup = filterLanguages(sourceItems, ["google", "bvb", "yahoo"], ["en"]);
+        return NewsModel.merge([local, backup]);
     }
 
     // Copy-on-write, so bindings on newsCache (and newsEntry) re-evaluate.

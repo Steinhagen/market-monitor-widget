@@ -147,6 +147,10 @@ msgid "Refresh"
 msgstr ""
 
 #: contents/ui/list/WatchRow.qml
+msgid "Invalid symbol"
+msgstr ""
+
+#: contents/ui/list/WatchRow.qml
 msgctxt "@item:market status"
 msgid "closed"
 msgstr ""
@@ -163,6 +167,10 @@ msgstr ""
 
 #: contents/ui/list/WatchRow.qml contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
 msgid "Market closed"
+msgstr ""
+
+#: contents/ui/list/WatchRow.qml
+msgid "Not found on Yahoo Finance"
 msgstr ""
 
 #: contents/ui/main.qml
@@ -232,6 +240,10 @@ msgstr ""
 #: contents/ui/main.qml
 msgctxt "@item:chart range"
 msgid "All"
+msgstr ""
+
+#: contents/ui/panel/CompactPanel.qml
+msgid "invalid"
 msgstr ""
 
 #: contents/ui/panel/CompactPanel.qml
@@ -333,8 +345,24 @@ msgstr ""
 msgid "Stock Price Text"
 msgstr ""
 
+#: contents/ui/settings/pages/appearance.qml
+msgid "Stock List"
+msgstr ""
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Scrollbar:"
+msgstr ""
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Show a scrollbar when the list does not fit"
+msgstr ""
+
 #: contents/ui/settings/pages/chartNews.qml
 msgid "Local language only"
+msgstr ""
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local language, English fallback"
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
@@ -343,10 +371,6 @@ msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
 msgid "Several languages"
-msgstr ""
-
-#: contents/ui/settings/pages/chartNews.qml
-msgid "Local language, English fallback"
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
@@ -446,7 +470,7 @@ msgid "Yahoo Finance is available in English, German, French, Spanish and Italia
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
-msgid "Local headlines first; English headlines from Google and Yahoo are appended as backup."
+msgid "Local headlines with English headlines from Google and Yahoo as backup, all ordered newest first."
 msgstr ""
 
 #: contents/ui/settings/pages/chartNews.qml
@@ -992,6 +1016,18 @@ msgid "Ticker List:"
 msgstr ""
 
 #: contents/ui/settings/pages/symbolsLists.qml
+msgid "Not found on Yahoo Finance: %1"
+msgstr ""
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Listed twice: %1"
+msgstr ""
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Remove them from the list"
+msgstr ""
+
+#: contents/ui/settings/pages/symbolsLists.qml
 msgid "Sorting:"
 msgstr ""
 
@@ -1393,6 +1429,10 @@ msgid "Daily values, last month"
 msgstr ""
 
 #: contents/ui/SingleStockView.qml
+msgid "Symbol %1 not found"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
 msgid "No chart data for this range"
 msgstr ""
 
@@ -1493,44 +1533,4 @@ msgstr ""
 
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "Updated"
-msgstr ""
-
-#: contents/ui/list/WatchRow.qml
-msgid "Invalid symbol"
-msgstr ""
-
-#: contents/ui/list/WatchRow.qml
-msgid "Not found on Yahoo Finance"
-msgstr ""
-
-#: contents/ui/SingleStockView.qml
-msgid "Symbol %1 not found"
-msgstr ""
-
-#: contents/ui/settings/pages/symbolsLists.qml
-msgid "Not found on Yahoo Finance: %1"
-msgstr ""
-
-#: contents/ui/settings/pages/symbolsLists.qml
-msgid "Listed twice: %1"
-msgstr ""
-
-#: contents/ui/settings/pages/symbolsLists.qml
-msgid "Remove them from the list"
-msgstr ""
-
-#: contents/ui/panel/CompactPanel.qml
-msgid "invalid"
-msgstr ""
-
-#: contents/ui/settings/pages/appearance.qml
-msgid "Stock List"
-msgstr ""
-
-#: contents/ui/settings/pages/appearance.qml
-msgid "Scrollbar:"
-msgstr ""
-
-#: contents/ui/settings/pages/appearance.qml
-msgid "Show a scrollbar when the list does not fit"
 msgstr ""
