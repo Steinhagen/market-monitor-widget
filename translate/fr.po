@@ -1,0 +1,1565 @@
+# French translation of Market Monitor.
+# Copyright (C) 2026 The Market Monitor authors
+# This file is distributed under the same license as the plasma_applet_io.github.steinhagen.marketmonitor package.
+# Distributed under the GPL-3.0-or-later, like the widget.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: plasma_applet_io.github.steinhagen.marketmonitor\n"
+"Report-Msgid-Bugs-To: https://github.com/Steinhagen/market-monitor-widget\n"
+"POT-Creation-Date: 2026-11-08 16:15+0200\n"
+"PO-Revision-Date: 2026-11-25 23:50+0200\n"
+"Last-Translator: Market Monitor translators\n"
+"Language-Team: French <fr@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: contents/config/config.qml
+msgid "General"
+msgstr "Général"
+
+#: contents/config/config.qml
+msgid "Symbols & Lists"
+msgstr "Symboles et listes"
+
+#: contents/config/config.qml
+msgid "Chart & News"
+msgstr "Graphique et actualités"
+
+#: contents/config/config.qml
+msgid "Panel view"
+msgstr "Panneau"
+
+#: contents/config/config.qml
+msgid "Portfolio Tracking"
+msgstr "Suivi du portefeuille"
+
+#: contents/config/config.qml
+msgid "Appearance"
+msgstr "Apparence"
+
+#: contents/config/config.qml
+msgid "Mouse actions"
+msgstr "Actions de la souris"
+
+#: contents/config/config.qml
+msgid "Import / Export"
+msgstr "Importer / Exporter"
+
+#: contents/ui/components/PositionLine.qml contents/ui/settings/pages/portfolio.qml
+msgid "%1 lot"
+msgid_plural "%1 lots"
+msgstr[0] "%1 lot"
+msgstr[1] "%1 lots"
+
+#: contents/ui/components/PositionLine.qml
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: contents/ui/components/PositionLine.qml
+msgid "%1 @ %2"
+msgstr "%1 @ %2"
+
+#: contents/ui/components/PositionLine.qml contents/ui/settings/pages/portfolio.qml
+msgid "Value"
+msgstr "Valeur"
+
+#: contents/ui/components/PositionLine.qml contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "P/L"
+msgstr "P/L"
+
+#: contents/ui/controllers/MarketController.qml
+msgid "Pre-Market"
+msgstr "Pré-marché"
+
+#: contents/ui/controllers/MarketController.qml
+msgid "After-Hours"
+msgstr "Après-bourse"
+
+#: contents/ui/controllers/NewsController.qml
+msgctxt "@item:news age"
+msgid "just now"
+msgstr "à l’instant"
+
+#: contents/ui/controllers/NewsController.qml
+msgctxt "@item:news age"
+msgid "%1 min ago"
+msgid_plural "%1 min ago"
+msgstr[0] "il y a %1 min"
+msgstr[1] "il y a %1 min"
+
+#: contents/ui/controllers/NewsController.qml
+msgctxt "@item:news age"
+msgid "%1 h ago"
+msgid_plural "%1 h ago"
+msgstr[0] "il y a %1 h"
+msgstr[1] "il y a %1 h"
+
+#: contents/ui/controllers/NewsController.qml
+msgctxt "@item:news age"
+msgid "%1 d ago"
+msgid_plural "%1 d ago"
+msgstr[0] "il y a %1 j"
+msgstr[1] "il y a %1 j"
+
+#: contents/ui/list/MultiStockView.qml
+msgid "%1 position"
+msgid_plural "%1 positions"
+msgstr[0] "%1 position"
+msgstr[1] "%1 positions"
+
+#: contents/ui/list/MultiStockView.qml
+msgctxt "@info:portfolio"
+msgid "%1 of %2 positions"
+msgstr "%1 sur %2 positions"
+
+#: contents/ui/list/MultiStockView.qml
+msgctxt "@info:portfolio"
+msgid "%1 · no rate for %2"
+msgstr "%1 · aucun taux pour %2"
+
+#: contents/ui/list/MultiStockView.qml contents/ui/main.qml contents/ui/SingleStockView.qml
+msgid "Loading..."
+msgstr "Chargement…"
+
+#: contents/ui/list/WatchRow.qml contents/ui/SingleStockView.qml
+msgid "No pre-market quote"
+msgstr "Aucun cours de pré-marché"
+
+#: contents/ui/list/WatchRow.qml contents/ui/SingleStockView.qml
+msgid "No after-hours quote"
+msgstr "Aucun cours d’après-bourse"
+
+#: contents/ui/list/WatchRow.qml contents/ui/settings/pages/mouseActions.qml contents/ui/single/NewsPane.qml contents/ui/SingleStockView.qml
+msgid "Open on Yahoo Finance"
+msgstr "Ouvrir sur Yahoo Finance"
+
+#: contents/ui/list/WatchRow.qml
+msgid "Set as panel stock"
+msgstr "Définir comme action du panneau"
+
+#: contents/ui/list/WatchRow.qml contents/ui/settings/pages/mouseActions.qml contents/ui/SingleStockView.qml
+msgid "Refresh"
+msgstr "Actualiser"
+
+#: contents/ui/list/WatchRow.qml
+msgid "Invalid symbol"
+msgstr "Symbole invalide"
+
+#: contents/ui/list/WatchRow.qml
+msgctxt "@item:market status"
+msgid "closed"
+msgstr "fermé"
+
+#: contents/ui/list/WatchRow.qml
+msgctxt "@item:short stock market session"
+msgid "Pre"
+msgstr "Pré"
+
+#: contents/ui/list/WatchRow.qml
+msgctxt "@item:short stock market session"
+msgid "After"
+msgstr "Après"
+
+#: contents/ui/list/WatchRow.qml contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "Market closed"
+msgstr "Marché fermé"
+
+#: contents/ui/list/WatchRow.qml
+msgid "Not found on Yahoo Finance"
+msgstr "Introuvable sur Yahoo Finance"
+
+#: contents/ui/main.qml
+msgctxt "@item:panel stock market session tag"
+msgid "PRE"
+msgstr "AVANT"
+
+#: contents/ui/main.qml
+msgctxt "@item:panel stock market session tag"
+msgid "AH"
+msgstr "APRÈS"
+
+#: contents/ui/main.qml
+msgctxt "@item:panel stock market session tag"
+msgid "CLOSED"
+msgstr "FERMÉ"
+
+#: contents/ui/main.qml
+msgctxt "@item:chart previous close"
+msgid "Previous close"
+msgstr "Clôture précédente"
+
+#: contents/ui/main.qml contents/ui/settings/portfolio/DatePicker.qml contents/ui/settings/portfolio/PortfolioTotals.qml
+msgid "Today"
+msgstr "Aujourd’hui"
+
+#: contents/ui/main.qml contents/ui/tooltip/TooltipContent.qml
+msgid "Cached data from %1"
+msgstr "Données en cache du %1"
+
+#: contents/ui/main.qml
+msgid "Updated: %1 • Next: %2"
+msgstr "Mis à jour : %1 • Prochaine : %2"
+
+#: contents/ui/main.qml contents/ui/settings/pages/chartNews.qml
+msgid "1D"
+msgstr "1D"
+
+#: contents/ui/main.qml contents/ui/settings/pages/chartNews.qml
+msgid "5D"
+msgstr "5D"
+
+#: contents/ui/main.qml contents/ui/settings/pages/chartNews.qml
+msgid "1M"
+msgstr "1M"
+
+#: contents/ui/main.qml contents/ui/settings/pages/chartNews.qml
+msgid "6M"
+msgstr "6M"
+
+#: contents/ui/main.qml contents/ui/settings/pages/chartNews.qml
+msgid "YTD"
+msgstr "YTD"
+
+#: contents/ui/main.qml contents/ui/settings/pages/chartNews.qml
+msgid "1Y"
+msgstr "1Y"
+
+#: contents/ui/main.qml contents/ui/settings/pages/chartNews.qml
+msgid "5Y"
+msgstr "5Y"
+
+#: contents/ui/main.qml contents/ui/settings/pages/chartNews.qml
+msgid "Max"
+msgstr "Max"
+
+#: contents/ui/main.qml
+msgctxt "@item:chart range"
+msgid "All"
+msgstr "Tout"
+
+#: contents/ui/panel/CompactPanel.qml
+msgid "invalid"
+msgstr "invalide"
+
+#: contents/ui/panel/CompactPanel.qml
+msgctxt "@item:panel stock data state"
+msgid "OFF"
+msgstr "OFF"
+
+#: contents/ui/settings/importExport/FileDialogs.qml
+msgid "Export Settings"
+msgstr "Exporter les paramètres"
+
+#: contents/ui/settings/importExport/FileDialogs.qml
+msgctxt "file filter"
+msgid "JSON backup files (*.json)"
+msgstr "Fichiers de sauvegarde JSON (*.json)"
+
+#: contents/ui/settings/importExport/FileDialogs.qml
+msgctxt "file filter"
+msgid "All files (*)"
+msgstr "Tous les fichiers (*)"
+
+#: contents/ui/settings/importExport/FileDialogs.qml
+msgid "Import Settings"
+msgstr "Importer les paramètres"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "The widget follows the system Plasma theme, including its background and colors."
+msgstr "Le widget suit le thème Plasma du système, y compris son arrière-plan et ses couleurs."
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "The widget draws its own background and rounded cards. Choose its colors below."
+msgstr "Le widget dessine son propre arrière-plan et ses cartes arrondies. Choisissez ses couleurs ci-dessous."
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Theme"
+msgstr "Thème"
+
+#: contents/ui/settings/pages/appearance.qml contents/ui/settings/pages/mouseActions.qml
+msgid "Preset:"
+msgstr "Préréglage :"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Application"
+msgstr "Application"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Plasma"
+msgstr "Plasma"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Colors:"
+msgstr "Couleurs :"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Light"
+msgstr "Clair"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Dark"
+msgstr "Sombre"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "System"
+msgstr "Système"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Colors apply only to the Application preset. Plasma always uses the system colors."
+msgstr "Les couleurs ne s’appliquent qu’au préréglage Application. Plasma utilise toujours les couleurs du système."
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "The panel indicator stays transparent and uses the panel colors, whichever theme is selected."
+msgstr "L’indicateur du panneau reste transparent et utilise les couleurs du panneau, quel que soit le thème sélectionné."
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Positive Color (Hex):"
+msgstr "Couleur positive (hexadécimal) :"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Negative Color (Hex):"
+msgstr "Couleur négative (hexadécimal) :"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Background Opacity:"
+msgstr "Opacité de l’arrière-plan :"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Ticker Symbol Text"
+msgstr "Texte du symbole"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Color (Hex):"
+msgstr "Couleur (hexadécimal) :"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Opacity:"
+msgstr "Opacité :"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Stock Price Text"
+msgstr "Texte du cours de l’action"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Stock List"
+msgstr "Liste des actions"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Scrollbar:"
+msgstr "Barre de défilement :"
+
+#: contents/ui/settings/pages/appearance.qml
+msgid "Show a scrollbar when the list does not fit"
+msgstr "Afficher une barre de défilement lorsque la liste ne tient pas"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local language only"
+msgstr "Langue locale uniquement"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local language, English fallback"
+msgstr "Langue locale, repli en anglais"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "English only"
+msgstr "Anglais uniquement"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Several languages"
+msgstr "Plusieurs langues"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Chart style:"
+msgstr "Style de graphique :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Reference line (open)"
+msgstr "Ligne de référence (ouverture)"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Candles"
+msgstr "Chandeliers"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Line style:"
+msgstr "Style de ligne :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Smooth"
+msgstr "Lissée"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Straight"
+msgstr "Droite"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Show chart style buttons"
+msgstr "Afficher les boutons de style de graphique"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Range Selection:"
+msgstr "Sélection de la période :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Show the range buttons in the chart"
+msgstr "Afficher les boutons de période dans le graphique"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Data Range:"
+msgstr "Période des données :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Hover:"
+msgstr "Survol :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Show values when hovering over the chart"
+msgstr "Afficher les valeurs au survol du graphique"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Price scale:"
+msgstr "Échelle des cours :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Show price values on the right of the chart"
+msgstr "Afficher les valeurs de cours à droite du graphique"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Time scale:"
+msgstr "Échelle de temps :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Show dates and times under the chart"
+msgstr "Afficher les dates et heures sous le graphique"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Volume:"
+msgstr "Volume :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Show trading volume under the chart"
+msgstr "Afficher le volume d’échanges sous le graphique"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Analyst targets:"
+msgstr "Objectifs des analystes :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Show analyst price-target changes under the chart"
+msgstr "Afficher les changements d’objectif de cours des analystes sous le graphique"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "News"
+msgstr "Actualités"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Show news headlines in the single-stock view"
+msgstr "Afficher les titres d’actualités dans la vue d’une action"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "News language:"
+msgstr "Langue des actualités :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Yahoo Finance is available in English, German, French, Spanish and Italian; it is queried in each selected language from that list. Google follows the selected languages and is queried once per language in Several languages mode. BVB uses its Romanian or English attachment."
+msgstr "Yahoo Finance est disponible en anglais, allemand, français, espagnol et italien ; il est interrogé dans chaque langue sélectionnée de cette liste. Google suit les langues sélectionnées et est interrogé une fois par langue en mode Plusieurs langues. BVB utilise sa pièce jointe en roumain ou en anglais."
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local headlines with English headlines from Google and Yahoo as backup, all ordered newest first."
+msgstr "Titres locaux avec des titres anglais de Google et Yahoo en secours, tous triés du plus récent au plus ancien."
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Languages:"
+msgstr "Langues :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Select the languages you want to see. When more than one language is shown, each headline gets a small language badge."
+msgstr "Sélectionnez les langues que vous souhaitez voir. Lorsque plusieurs langues sont affichées, chaque titre reçoit un petit badge de langue."
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "News sources:"
+msgstr "Sources d’actualités :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Yahoo Finance (English and regional editions)"
+msgstr "Yahoo Finance (édition anglaise et éditions régionales)"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "BVB (Romanian/English, .RO symbols)"
+msgstr "BVB (roumain/anglais, symboles .RO)"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Google (selected languages)"
+msgstr "Google (langues sélectionnées)"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Select at least one news source."
+msgstr "Sélectionnez au moins une source d’actualités."
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Select at least one language."
+msgstr "Sélectionnez au moins une langue."
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Local-only mode needs a source that covers this language."
+msgstr "Le mode langue locale nécessite une source qui couvre cette langue."
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Headlines from the sources selected above. Yahoo Finance covers general news in English, German, French, Spanish and Italian; Google adds a web search by company name; BVB provides the issuer's announcements for symbols ending in .RO. Switch with the icons next to the market status. Not available in the list-only view."
+msgstr "Titres provenant des sources sélectionnées ci-dessus. Yahoo Finance couvre l’actualité générale en anglais, allemand, français, espagnol et italien ; Google ajoute une recherche web par nom d’entreprise ; BVB fournit les annonces de l’émetteur pour les symboles terminés par .RO. Basculez avec les icônes à côté de l’état du marché. Non disponible dans la vue liste uniquement."
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Headlines per source (5–50):"
+msgstr "Titres par source (5–50) :"
+
+#: contents/ui/settings/pages/chartNews.qml
+msgid "Update every (minutes):"
+msgstr "Actualiser toutes les (minutes) :"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Refresh Interval (minutes):"
+msgstr "Intervalle d’actualisation (minutes) :"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Active Hours:"
+msgstr "Heures d’activité :"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Only refresh data during market hours"
+msgstr "Actualiser les données uniquement pendant les heures de Bourse"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Weekend Refresh:"
+msgstr "Actualisation le week-end :"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Do not refresh data on weekends (Sat,Sun)"
+msgstr "Ne pas actualiser les données le week-end (sam. et dim.)"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Market Open:"
+msgstr "Ouverture du marché :"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Market Close:"
+msgstr "Clôture du marché :"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Update Timestamps:"
+msgstr "Horodatages de mise à jour :"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Hide update timestamps"
+msgstr "Masquer les horodatages de mise à jour"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Value Formatting:"
+msgstr "Format des valeurs :"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Format prices with commas (e.g. 1,000.00)"
+msgstr "Formater les cours avec des virgules (ex. 1,000.00)"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Price Decimals:"
+msgstr "Décimales des cours :"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Automatic (Yahoo Finance)"
+msgstr "Automatique (Yahoo Finance)"
+
+#: contents/ui/settings/pages/general.qml
+msgid "0 (whole numbers)"
+msgstr "0 (nombres entiers)"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Automatic follows Yahoo Finance: usually 2 decimals for shares and 4 for exchange rates."
+msgstr "Le mode automatique suit Yahoo Finance : généralement 2 décimales pour les actions et 4 pour les taux de change."
+
+#: contents/ui/settings/pages/general.qml
+msgid "Extended Hours:"
+msgstr "Séance prolongée :"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Show pre-market and after-hours values and market-closed status"
+msgstr "Afficher les valeurs de pré-marché et d’après-bourse ainsi que l’état de fermeture du marché"
+
+#: contents/ui/settings/pages/general.qml
+msgid "When Closed:"
+msgstr "À la fermeture :"
+
+#: contents/ui/settings/pages/general.qml
+msgid "Keep showing the last pre-market/after-hours quote"
+msgstr "Continuer d’afficher le dernier cours de pré-marché/d’après-bourse"
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "The selected file is empty."
+msgstr "Le fichier sélectionné est vide."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "The selected file is not valid JSON."
+msgstr "Le fichier sélectionné n’est pas un JSON valide."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "The selected file is not a Market Monitor backup."
+msgstr "Le fichier sélectionné n’est pas une sauvegarde de Market Monitor."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "This backup was created by a newer version of the widget."
+msgstr "Cette sauvegarde a été créée par une version plus récente du widget."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "The portfolio data in this backup is invalid."
+msgstr "Les données de portefeuille de cette sauvegarde sont invalides."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Portfolio entry %1 in this backup is invalid."
+msgstr "L’entrée de portefeuille %1 de cette sauvegarde est invalide."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "The backup contains an invalid value for \"%1\"."
+msgstr "La sauvegarde contient une valeur invalide pour « %1 »."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "The value for \"%1\" is outside the allowed range."
+msgstr "La valeur de « %1 » est en dehors de la plage autorisée."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "The backup could not be imported."
+msgstr "La sauvegarde n’a pas pu être importée."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Writing %1..."
+msgstr "Écriture de %1…"
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Reading %1..."
+msgstr "Lecture de %1…"
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "This backup does not contain portfolio or watchlist data."
+msgstr "Cette sauvegarde ne contient aucune donnée de portefeuille ni de liste de suivi."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "This backup does not contain application settings."
+msgstr "Cette sauvegarde ne contient aucun paramètre de l’application."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "This backup does not contain any data or settings."
+msgstr "Cette sauvegarde ne contient aucune donnée ni aucun paramètre."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Imported from %1. Click Apply or OK to save the changes."
+msgstr "Importé depuis %1. Cliquez sur Appliquer ou OK pour enregistrer les modifications."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "The file could not be read."
+msgstr "Le fichier n’a pas pu être lu."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "The file could not be saved."
+msgstr "Le fichier n’a pas pu être enregistré."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "The file operation timed out."
+msgstr "L’opération sur le fichier a expiré."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Details: %1"
+msgstr "Détails : %1"
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Save your portfolio, watchlist and settings to a JSON file, or restore them from a backup."
+msgstr "Enregistrez votre portefeuille, votre liste de suivi et vos paramètres dans un fichier JSON, ou restaurez-les à partir d’une sauvegarde."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Content:"
+msgstr "Contenu :"
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Portfolio and watchlist"
+msgstr "Portefeuille et liste de suivi"
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Application settings"
+msgstr "Paramètres de l’application"
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Everything (portfolio and settings)"
+msgstr "Tout (portefeuille et paramètres)"
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Holdings, purchase lots, portfolio currency and the ticker list."
+msgstr "Positions, lots d’achat, devise du portefeuille et liste de symboles."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Refresh, market hours, appearance, panel and display preferences."
+msgstr "Actualisation, heures de Bourse, apparence, préférences du panneau et d’affichage."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "A full backup of the portfolio, watchlist and all settings."
+msgstr "Une sauvegarde complète du portefeuille, de la liste de suivi et de tous les paramètres."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Backup:"
+msgstr "Sauvegarde :"
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Export to File..."
+msgstr "Exporter vers un fichier…"
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Import from File..."
+msgstr "Importer depuis un fichier…"
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "File import and export are not available because the Plasma5Support module is missing on this system."
+msgstr "L’importation et l’exportation de fichiers ne sont pas disponibles car le module Plasma5Support est absent de ce système."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Backups are plain JSON files. Cached exchange rates are not included because they are downloaded again automatically."
+msgstr "Les sauvegardes sont de simples fichiers JSON. Les taux de change mis en cache ne sont pas inclus car ils sont téléchargés à nouveau automatiquement."
+
+#: contents/ui/settings/pages/importExport.qml
+msgid "Exported to %1."
+msgstr "Exporté vers %1."
+
+#: contents/ui/settings/pages/mouseActions.qml
+msgid "Standard"
+msgstr "Standard"
+
+#: contents/ui/settings/pages/mouseActions.qml
+msgid "Minimal"
+msgstr "Minimal"
+
+#: contents/ui/settings/pages/mouseActions.qml
+msgid "Custom"
+msgstr "Personnalisé"
+
+#: contents/ui/settings/pages/mouseActions.qml
+msgid "List row, left click:"
+msgstr "Ligne de la liste, clic gauche :"
+
+#: contents/ui/settings/pages/mouseActions.qml
+msgid "Select for panel and chart"
+msgstr "Sélectionner pour le panneau et le graphique"
+
+#: contents/ui/settings/pages/mouseActions.qml
+msgid "Middle click:"
+msgstr "Clic du milieu :"
+
+#: contents/ui/settings/pages/mouseActions.qml
+msgid "Do nothing"
+msgstr "Ne rien faire"
+
+#: contents/ui/settings/pages/mouseActions.qml
+msgid "Double click:"
+msgstr "Double-clic :"
+
+#: contents/ui/settings/pages/mouseActions.qml
+msgid "Middle click applies to the panel indicator, watchlist rows and the chart."
+msgstr "Le clic du milieu s’applique à l’indicateur du panneau, aux lignes de la liste de suivi et au graphique."
+
+#: contents/ui/settings/pages/mouseActions.qml
+msgid "Right click always opens the context menu. Wheel behaviour is unchanged."
+msgstr "Le clic droit ouvre toujours le menu contextuel. Le comportement de la molette reste inchangé."
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Symbol:"
+msgstr "Symbole :"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Show the symbol in bold"
+msgstr "Afficher le symbole en gras"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Market status:"
+msgstr "État du marché :"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Show the market status tag"
+msgstr "Afficher l’étiquette d’état du marché"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Price and percentage:"
+msgstr "Cours et pourcentage :"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Alternate them in the same spot"
+msgstr "Les alterner au même endroit"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Does not work in horizontal single-line or vertical mode."
+msgstr "Ne fonctionne pas en mode horizontal sur une ligne ni en mode vertical."
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Switch every (seconds):"
+msgstr "Changer toutes les (secondes) :"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Stock Change Percentage:"
+msgstr "Pourcentage de variation de l’action :"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Hide stock change percentage"
+msgstr "Masquer le pourcentage de variation de l’action"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Cycle panel stock:"
+msgstr "Défilement des actions du panneau :"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Automatically cycle through the stocks"
+msgstr "Faire défiler automatiquement les actions"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Cycle every (seconds):"
+msgstr "Défiler toutes les (secondes) :"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Panel width:"
+msgstr "Largeur du panneau :"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Keep the panel indicator at a fixed width"
+msgstr "Conserver une largeur fixe pour l’indicateur du panneau"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Width (pixels):"
+msgstr "Largeur (pixels) :"
+
+#: contents/ui/settings/pages/panelView.qml
+msgid "Fit the widest value"
+msgstr "Ajuster à la valeur la plus large"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Enter a ticker and a number of shares greater than zero."
+msgstr "Saisissez un symbole et un nombre d’actions supérieur à zéro."
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Settings for the whole portfolio"
+msgstr "Paramètres pour l’ensemble du portefeuille"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Applies to every symbol and lot; it does not depend on the selected lot."
+msgstr "S’applique à chaque symbole et lot ; ne dépend pas du lot sélectionné."
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Show gain/loss in the widget"
+msgstr "Afficher les gains/pertes dans le widget"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Shows the gain/loss summary on the widget's main panel. The lot table always shows values and gains."
+msgstr "Affiche le résumé des gains/pertes sur le panneau principal du widget. Le tableau des lots affiche toujours les valeurs et les gains."
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Base currency"
+msgstr "Devise de base"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "About portfolio tracking"
+msgstr "À propos du suivi de portefeuille"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Lots"
+msgstr "Lots"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "%1 share"
+msgid_plural "%1 shares"
+msgstr[0] "%1 action"
+msgstr[1] "%1 actions"
+
+#: contents/ui/settings/pages/portfolio.qml contents/ui/settings/portfolio/LotEditor.qml
+msgid "Add Lot"
+msgstr "Ajouter un lot"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Refresh quotes"
+msgstr "Actualiser les cours"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Search symbol or details…"
+msgstr "Rechercher un symbole ou des détails…"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Symbol"
+msgstr "Symbole"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Click to sort"
+msgstr "Cliquer pour trier"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Shares"
+msgstr "Actions"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Average cost"
+msgstr "Coût moyen"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Currency"
+msgstr "Devise"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Date"
+msgstr "Date"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Gain"
+msgstr "Gain"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Options"
+msgstr "Options"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "No holdings added yet."
+msgstr "Aucune position ajoutée pour l’instant."
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "No lots match the search."
+msgstr "Aucun lot ne correspond à la recherche."
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Use the Import / Export page to back up or restore the portfolio and watchlist."
+msgstr "Utilisez la page Importer / Exporter pour sauvegarder ou restaurer le portefeuille et la liste de suivi."
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Each purchase is its own lot — buying more of the same ticker at a different price adds a new lot instead of overwriting the old one."
+msgstr "Chaque achat constitue un lot distinct — acheter davantage du même symbole à un autre prix ajoute un nouveau lot au lieu d’écraser l’ancien."
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "The average cost is in the lot's currency (USD by default). Exchange rates for all currencies are downloaded once a day and used to show portfolio totals in the portfolio currency. For markets quoted in pence or cents (e.g. London), enter the cost in the major currency (GBP, ZAR)."
+msgstr "Le coût moyen est exprimé dans la devise du lot (USD par défaut). Les taux de change de toutes les devises sont téléchargés une fois par jour et servent à afficher les totaux du portefeuille dans la devise du portefeuille. Pour les marchés cotés en pence ou en cents (p. ex. Londres), saisissez le coût dans la devise principale (GBP, ZAR)."
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Exchange rates are downloaded once a day."
+msgstr "Les taux de change sont téléchargés une fois par jour."
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Exchange rates: not downloaded yet."
+msgstr "Taux de change : pas encore téléchargés."
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Exchange rates: updated %1"
+msgstr "Taux de change : mis à jour %1"
+
+#: contents/ui/settings/pages/portfolio.qml
+msgid "Close"
+msgstr "Fermer"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Enter a search term."
+msgstr "Saisissez un terme de recherche."
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Searching..."
+msgstr "Recherche…"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Error parsing search results."
+msgstr "Erreur lors de l’analyse des résultats de recherche."
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Search failed (HTTP %1)."
+msgstr "La recherche a échoué (HTTP %1)."
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Search failed."
+msgstr "La recherche a échoué."
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "No symbols found."
+msgstr "Aucun symbole trouvé."
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Suggestions:"
+msgstr "Suggestions :"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Lists"
+msgstr "Listes"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Display Mode:"
+msgstr "Mode d’affichage :"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Show Multi-Stock List"
+msgstr "Afficher la liste multi-actions"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Two List:"
+msgstr "Deux listes :"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "single-stock on left side and multi-stock on right side"
+msgstr "une action à gauche et la liste multi-actions à droite"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Single Ticker:"
+msgstr "Symbole unique :"
+
+#: contents/ui/settings/pages/symbolsLists.qml contents/ui/settings/portfolio/LotEditor.qml
+msgid "e.g., AAPL"
+msgstr "ex. AAPL"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Ticker List:"
+msgstr "Liste de symboles :"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Not found on Yahoo Finance: %1"
+msgstr "Introuvable sur Yahoo Finance : %1"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Listed twice: %1"
+msgstr "Présent deux fois : %1"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Remove them from the list"
+msgstr "Les retirer de la liste"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Sorting:"
+msgstr "Tri :"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Sort stocks alphabetically"
+msgstr "Trier les actions par ordre alphabétique"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Names:"
+msgstr "Noms :"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Show company name and ticker together, e.g. Apple Inc. (AAPL)"
+msgstr "Afficher le nom de l’entreprise et le symbole ensemble, ex. Apple Inc. (AAPL)"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Swap the order: ticker symbol first, e.g. AAPL (Apple Inc.)"
+msgstr "Inverser l’ordre : le symbole d’abord, ex. AAPL (Apple Inc.)"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Swap company name and ticker symbol"
+msgstr "Inverser le nom de l’entreprise et le symbole"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Symbol display:"
+msgstr "Affichage du symbole :"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Yahoo Finance symbol, e.g. BRD.RO"
+msgstr "Symbole Yahoo Finance, ex. BRD.RO"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Symbol only, e.g. BRD"
+msgstr "Symbole seul, ex. BRD"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Symbol and exchange, e.g. BRD · BVB"
+msgstr "Symbole et Bourse, ex. BRD · BVB"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "The exchange badge is shown only where the Yahoo symbol has an exchange suffix, such as .RO or .DE. The full symbol and the exchange name stay visible in the tooltip."
+msgstr "Le badge de la Bourse n’apparaît que lorsque le symbole Yahoo comporte un suffixe de Bourse, comme .RO ou .DE. Le symbole complet et le nom de la Bourse restent visibles dans l’infobulle."
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Find symbols"
+msgstr "Trouver des symboles"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Search:"
+msgstr "Rechercher :"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "e.g. Tesla, AAPL..."
+msgstr "ex. Tesla, AAPL…"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Search"
+msgstr "Rechercher"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Type to find symbols and click Search."
+msgstr "Saisissez un terme pour trouver des symboles, puis cliquez sur Rechercher."
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgctxt "@action:button abbreviation for single stock"
+msgid "SS"
+msgstr "SS"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Add to Single Stock"
+msgstr "Ajouter à l’action unique"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Set %1 as Single Stock."
+msgstr "Définir %1 comme action unique."
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgctxt "@action:button abbreviation for multi stock list"
+msgid "MSL"
+msgstr "MSL"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Add to Multi Stock List"
+msgstr "Ajouter à la liste multi-actions"
+
+#: contents/ui/settings/pages/symbolsLists.qml
+msgid "Added %1 to Multi Stock List."
+msgstr "%1 a été ajouté à la liste multi-actions."
+
+#: contents/ui/settings/portfolio/LotEditor.qml
+msgid "Edit Lot"
+msgstr "Modifier le lot"
+
+#: contents/ui/settings/portfolio/LotEditor.qml
+msgid "Ticker:"
+msgstr "Symbole :"
+
+#: contents/ui/settings/portfolio/LotEditor.qml
+msgid "Shares:"
+msgstr "Actions :"
+
+#: contents/ui/settings/portfolio/LotEditor.qml
+msgid "Average Cost:"
+msgstr "Coût moyen :"
+
+#: contents/ui/settings/portfolio/LotEditor.qml
+msgid "Currency:"
+msgstr "Devise :"
+
+#: contents/ui/settings/portfolio/LotEditor.qml
+msgid "Purchase Date:"
+msgstr "Date d’achat :"
+
+#: contents/ui/settings/portfolio/LotEditor.qml
+msgid "Details (optional):"
+msgstr "Détails (facultatif) :"
+
+#: contents/ui/settings/portfolio/LotEditor.qml
+msgid "e.g., E*TRADE - 8122"
+msgstr "ex. E*TRADE - 8122"
+
+#: contents/ui/settings/portfolio/LotEditor.qml
+msgid "Cancel"
+msgstr "Annuler"
+
+#: contents/ui/settings/portfolio/LotEditor.qml
+msgid "Save Lot"
+msgstr "Enregistrer le lot"
+
+#: contents/ui/settings/portfolio/PortfolioQuotes.qml
+msgid "Some quotes are unavailable."
+msgstr "Certains cours sont indisponibles."
+
+#: contents/ui/settings/portfolio/PortfolioRow.qml
+msgid "Gain per share: %1"
+msgstr "Gain par action : %1"
+
+#: contents/ui/settings/portfolio/PortfolioRow.qml
+msgid "Quote unavailable."
+msgstr "Cours indisponible."
+
+#: contents/ui/settings/portfolio/PortfolioRow.qml
+msgid "Lot actions"
+msgstr "Actions du lot"
+
+#: contents/ui/settings/portfolio/PortfolioRow.qml
+msgid "Edit"
+msgstr "Modifier"
+
+#: contents/ui/settings/portfolio/PortfolioRow.qml
+msgid "Remove"
+msgstr "Supprimer"
+
+#: contents/ui/settings/portfolio/PortfolioTotals.qml
+msgid "Invested"
+msgstr "Investi"
+
+#: contents/ui/settings/portfolio/PortfolioTotals.qml
+msgid "Current value"
+msgstr "Valeur actuelle"
+
+#: contents/ui/settings/portfolio/PortfolioTotals.qml
+msgid "Total gain"
+msgstr "Gain total"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Raised target from %1 to %2"
+msgstr "Objectif relevé de %1 à %2"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "New target %1"
+msgstr "Nouvel objectif %1"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Lowered target from %1 to %2"
+msgstr "Objectif abaissé de %1 à %2"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Maintained target at %1"
+msgstr "Objectif maintenu à %1"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Rating: %1 → %2"
+msgstr "Note : %1 → %2"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Rating: %1"
+msgstr "Note : %1"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "%1 analyst action"
+msgid_plural "%1 analyst actions"
+msgstr[0] "%1 action d’analyste"
+msgstr[1] "%1 actions d’analystes"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Target raised"
+msgstr "Objectif relevé"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Target lowered"
+msgstr "Objectif abaissé"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Target maintained"
+msgstr "Objectif maintenu"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "New target"
+msgstr "Nouvel objectif"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Showing the latest %1 of %2 actions"
+msgstr "Affichage des %1 dernières actions sur %2"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Showing %1 action"
+msgid_plural "Showing %1 actions"
+msgstr[0] "Affichage de %1 action"
+msgstr[1] "Affichage de %1 actions"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Click for more details"
+msgstr "Cliquer pour plus de détails"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Analyst price targets"
+msgstr "Objectifs de cours des analystes"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "Consensus %1"
+msgstr "Consensus %1"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "range %1 – %2"
+msgstr "plage %1 – %2"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "%1 analyst"
+msgid_plural "%1 analysts"
+msgstr[0] "%1 analyste"
+msgstr[1] "%1 analystes"
+
+#: contents/ui/single/AnalystOverlay.qml
+msgid "%1 action"
+msgid_plural "%1 actions"
+msgstr[0] "%1 action"
+msgstr[1] "%1 actions"
+
+#: contents/ui/single/AnalystOverlay.qml contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "… and %1 more"
+msgstr "… et %1 de plus"
+
+#: contents/ui/single/ChartControls.qml contents/ui/single/NewsPane.qml
+msgid "Refresh news"
+msgstr "Actualiser les actualités"
+
+#: contents/ui/single/ChartControls.qml
+msgctxt "@item:chart style"
+msgid "Line"
+msgstr "Ligne"
+
+#: contents/ui/single/ChartControls.qml
+msgctxt "@item:chart style"
+msgid "Candles"
+msgstr "Chandeliers"
+
+#: contents/ui/single/MarketStatusPopup.qml
+msgid "Market data"
+msgstr "Données du marché"
+
+#: contents/ui/single/MarketStatusPopup.qml
+msgid "Yahoo quote %1"
+msgstr "Cours Yahoo %1"
+
+#: contents/ui/single/MarketStatusPopup.qml
+msgid "may be delayed"
+msgstr "peut être différé"
+
+#: contents/ui/single/MarketStatusPopup.qml
+msgid "The market is open; waiting for its first regular quote."
+msgstr "Le marché est ouvert ; en attente de son premier cours régulier."
+
+#: contents/ui/single/NewsPane.qml
+msgid "More on Yahoo Finance"
+msgstr "Plus sur Yahoo Finance"
+
+#: contents/ui/single/NewsPane.qml
+msgid "More on BVB"
+msgstr "Plus sur BVB"
+
+#: contents/ui/single/NewsPane.qml
+msgid "More on Google"
+msgstr "Plus sur Google"
+
+#: contents/ui/single/NewsPane.qml
+msgid "Open on BVB"
+msgstr "Ouvrir sur BVB"
+
+#: contents/ui/single/NewsPane.qml
+msgid "Open on Google"
+msgstr "Ouvrir sur Google"
+
+#: contents/ui/single/QuoteBlock.qml
+msgctxt "@item:compact quote"
+msgid "Regular"
+msgstr "Régulier"
+
+#: contents/ui/single/StockHeader.qml
+msgctxt "@info:tooltip"
+msgid "Chart"
+msgstr "Graphique"
+
+#: contents/ui/single/StockHeader.qml
+msgctxt "@info:tooltip"
+msgid "News"
+msgstr "Actualités"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:news source"
+msgid "All"
+msgstr "Toutes"
+
+#: contents/ui/SingleStockView.qml
+msgid "Loading headlines…"
+msgstr "Chargement des titres…"
+
+#: contents/ui/SingleStockView.qml
+msgid "Headlines unavailable"
+msgstr "Titres indisponibles"
+
+#: contents/ui/SingleStockView.qml
+msgid "No headlines in the local language for %1"
+msgstr "Aucun titre dans la langue locale pour %1"
+
+#: contents/ui/SingleStockView.qml
+msgid "No English headlines for %1"
+msgstr "Aucun titre en anglais pour %1"
+
+#: contents/ui/SingleStockView.qml
+msgid "No recent headlines for %1"
+msgstr "Aucun titre récent pour %1"
+
+#: contents/ui/SingleStockView.qml
+msgid "Could not update headlines"
+msgstr "Impossible d’actualiser les titres"
+
+#: contents/ui/SingleStockView.qml contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
+msgid "Updated %1"
+msgstr "Mis à jour %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session status"
+msgid "Closed"
+msgstr "Fermé"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session status"
+msgid "Pre-market"
+msgstr "Pré-marché"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session status"
+msgid "Open"
+msgstr "Ouvert"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Closes today at %1"
+msgstr "Fermeture aujourd’hui à %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Closes tomorrow at %1"
+msgstr "Fermeture demain à %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Closes on %1 at %2"
+msgstr "Fermeture %1 à %2"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Opens today at %1"
+msgstr "Ouverture aujourd’hui à %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Opens tomorrow at %1"
+msgstr "Ouverture demain à %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Opens on %1 at %2"
+msgstr "Ouverture %1 à %2"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:compact quote"
+msgid "Pre-market"
+msgstr "Pré-marché"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:compact quote"
+msgid "After-hours"
+msgstr "Après-bourse"
+
+#: contents/ui/SingleStockView.qml
+msgid "Updated %1 · Next %2"
+msgstr "Mis à jour %1 · Prochaine %2"
+
+#: contents/ui/SingleStockView.qml
+msgid "Refresh %1 min"
+msgstr "Actualisation %1 min"
+
+#: contents/ui/SingleStockView.qml
+msgid "Yesterday's session"
+msgstr "Séance d’hier"
+
+#: contents/ui/SingleStockView.qml
+msgid "Session of %1"
+msgstr "Séance du %1"
+
+#: contents/ui/SingleStockView.qml
+msgid "Listed %1"
+msgstr "Coté depuis le %1"
+
+#: contents/ui/SingleStockView.qml
+msgid "Daily values, last month"
+msgstr "Valeurs quotidiennes, mois dernier"
+
+#: contents/ui/SingleStockView.qml
+msgid "Symbol %1 not found"
+msgstr "Symbole %1 introuvable"
+
+#: contents/ui/SingleStockView.qml
+msgid "No chart data for this range"
+msgstr "Aucune donnée de graphique pour cette période"
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
+msgid "session of %1"
+msgstr "séance du %1"
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml
+msgid "cache from %1"
+msgstr "cache du %1"
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "Loading…"
+msgstr "Chargement…"
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "Position"
+msgstr "Position"
+
+#: contents/ui/tooltip/SingleTooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "%1 share · avg %2"
+msgid_plural "%1 shares · avg %2"
+msgstr[0] "%1 action · moy. %2"
+msgstr[1] "%1 actions · moy. %2"
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgid "%1 stock"
+msgid_plural "%1 stocks"
+msgstr[0] "%1 action"
+msgstr[1] "%1 actions"
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgctxt "@item:market status"
+msgid "Closed"
+msgstr "Fermé"
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgctxt "@item:market status"
+msgid "Open"
+msgstr "Ouvert"
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgctxt "@item:market status"
+msgid "Pre"
+msgstr "Pré"
+
+#: contents/ui/tooltip/TooltipCard.qml contents/ui/tooltip/TooltipContent.qml
+msgctxt "@item:market status"
+msgid "After"
+msgstr "Après"
+
+#: contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Symbol"
+msgstr "Symbole"
+
+#: contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Market"
+msgstr "Marché"
+
+#: contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Price"
+msgstr "Cours"
+
+#: contents/ui/tooltip/TooltipCard.qml
+msgctxt "@title:column"
+msgid "Change"
+msgstr "Variation"
+
+#: contents/ui/tooltip/TooltipContent.qml
+msgid "Market Monitor"
+msgstr "Market Monitor"
+
+#: contents/ui/tooltip/TooltipContent.qml
+msgctxt "@info:tooltip"
+msgid "%1 · %2 · cached data from %3"
+msgstr "%1 · %2 · données en cache du %3"
+
+#: contents/ui/tooltip/TooltipContent.qml
+msgctxt "@info:tooltip"
+msgid "%1 · %2 · updated %3"
+msgstr "%1 · %2 · mis à jour %3"
+
+#: contents/ui/tooltip/TooltipContent.qml
+msgctxt "@info:tooltip"
+msgid "%1 · %2"
+msgstr "%1 · %2"
+
+#: contents/ui/tooltip/TooltipContent.qml
+msgid "loading…"
+msgstr "chargement…"
+
+#: contents/ui/tooltip/TooltipContent.qml
+msgid "Session"
+msgstr "Séance"
+
+#: contents/ui/tooltip/TooltipContent.qml
+msgid "Updated"
+msgstr "Mis à jour"

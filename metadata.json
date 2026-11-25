@@ -19,6 +19,7 @@
     "Name[ro]": "Monitor bursier",
     "Description": "Modernized market monitor for KDE with badge UI and custom colors.",
     "Description[ro]": "Monitor bursier modernizat pentru KDE, cu acțiuni, criptomonede și valute, interfață cu insigne și culori personalizate.",
+    "Description[fr]": "Moniteur de marché modernisé pour KDE, avec actions, cryptomonnaies et devises, interface à badges et couleurs personnalisées.",
     "Icon": "/icon.png",
     "Id": "io.github.steinhagen.marketmonitor",
     "Version": "1.5",

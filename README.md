@@ -21,7 +21,7 @@ A clean stock, crypto and currency widget for **KDE Plasma 6**, powered by Yahoo
 - **Smart updates:** configurable refresh interval, market-hours-only updates and weekend skipping, plus a quick retry after a failed request at startup.
 - **Stale fallback:** the last successful quotes are shown at launch (marked as cached, with their timestamp) while the first request is in flight, so a missing network does not leave the widget empty.
 - **Backup:** export and import the portfolio, watchlist and settings as JSON.
-- **Localized:** gettext/Ki18n support with a complete Romanian translation included.
+- **Localized:** gettext/Ki18n support with complete Romanian and French translations included.
 
 ## Installation
 
@@ -58,7 +58,7 @@ Ticker symbols must match [Yahoo Finance](https://finance.yahoo.com). For exampl
 
 ## Localization
 
-All user-visible text is translatable through Ki18n, and a Romanian translation ships with the widget. To add another language, see [translate/README.md](translate/README.md).
+All user-visible text is translatable through Ki18n, and Romanian and French translations ship with the widget. To add another language, see [translate/README.md](translate/README.md).
 
 ## Development
 

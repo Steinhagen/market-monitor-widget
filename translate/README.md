@@ -5,7 +5,8 @@ through [Ki18n](https://api.kde.org/ki18n-index.html). Every user-visible string
 the QML sources is wrapped in `i18n()` (or `i18nc()` / `i18np()` when it needs a
 context or a plural form), and the compiled catalogs are shipped inside the package.
 
-Romanian (`ro`) is the first language and is complete.
+Romanian (`ro`) is the first language and is complete; French (`fr`) is included
+as well.
 
 ## How Plasma finds the strings
 
@@ -33,7 +34,7 @@ the gettext catalog: they are translated inline in `metadata.json` with the
 | File | Purpose |
 | --- | --- |
 | `template.pot` | Extracted messages: the source of truth for translators. |
-| `<language>.po` | One catalog per language; `ro.po` is the Romanian one. |
+| `<language>.po` | One catalog per language; `ro.po` is Romanian, `fr.po` French. |
 | `merge.sh` | Re-extracts `template.pot` and merges changes into every `.po`. |
 | `build.sh` | Compiles every `.po` into `contents/locale/<language>/…/*.mo`. |
 
@@ -98,6 +99,7 @@ nix shell nixpkgs#gettext
 - **Plurals:** use `i18np()` (singular, plural, count, …). Romanian needs three
   forms, which `ro.po` declares with
   `nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);`.
+  French uses two, declared in `fr.po` as `nplurals=2; plural=(n > 1);`.
 - **Contexts:** `i18nc()` is used where the same English word means different
   things, e.g. `"closed"` (market status) or the short `"Pre"` / `"After"`
   session labels.

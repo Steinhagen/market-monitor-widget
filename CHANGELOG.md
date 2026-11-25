@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- A complete French translation, including the widget description shown in the
+  widget chooser.
+
 - The market-data card says when the regular session opens while the market is
   closed, and when it closes while the market is open. The time is the
   exchange's own session boundary shown in the local time zone, labelled
