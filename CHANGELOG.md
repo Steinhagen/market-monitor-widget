@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- The market-data card says when the regular session opens while the market is
+  closed, and when it closes while the market is open. The time is the
+  exchange's own session boundary shown in the local time zone, labelled
+  "today", "tomorrow" or with the weekday name. Symbols without session
+  metadata and 24/7 instruments keep the card unchanged.
+
 ### Fixed
 
 - The **All** news tab is ordered by date in the "local with English backup"

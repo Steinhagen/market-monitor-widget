@@ -64,6 +64,26 @@ TestCase {
         compare(drop.extendedQuoteFor("X"), undefined);
     }
 
+    function test_boundaryFor() {
+        var market = make();
+        var now = Math.floor(Date.now() / 1000);
+        var end = now + 3600;
+        market.setMarketSession("X", meta(now - 3600, end));
+        var boundary = market.boundaryFor("X");
+        compare(boundary.kind, "close");
+        compare(boundary.at, end);
+        compare(market.boundaryFor("missing"), null);
+    }
+
+    function test_sessionKeepsTheExchangeOffset() {
+        var market = make();
+        var now = Math.floor(Date.now() / 1000);
+        var session = meta(now - 3600, now + 3600);
+        session.gmtoffset = -18000;
+        market.setMarketSession("X", session);
+        compare(market.marketSessions.X.offset, -18000);
+    }
+
     function test_clears() {
         var market = make();
         var now = Math.floor(Date.now() / 1000);

@@ -129,6 +129,36 @@ Rectangle {
     readonly property color marketSessionColor: marketSession === "pre" && !marketClosed
         ? (applet.isLightTheme ? "#b47a12" : "#d9a441")
         : (marketSession === "open" ? applet.positiveColor : applet.secondaryTextColor)
+    // The next regular-session boundary: while the market is open the card names the
+    // close, otherwise the next open. The time is shown on the user's clock, with
+    // today/tomorrow when it is close enough and the weekday name otherwise.
+    readonly property var marketBoundary: applet.marketBoundaryFor(applet.singleTicker)
+    readonly property string marketSessionHint: {
+        var boundary = singleStockRoot.marketBoundary;
+        if (!boundary || !(boundary.at > 0)) return "";
+        var when = new Date(boundary.at * 1000);
+        var time = when.toLocaleTimeString(Qt.locale(), "HH:mm");
+        var days = singleStockRoot.localDayOffset(when);
+        if (boundary.kind === "close") {
+            if (days === 0) return i18nc("@item:market session", "Closes today at %1", time);
+            if (days === 1) return i18nc("@item:market session", "Closes tomorrow at %1", time);
+            return i18nc("@item:market session", "Closes on %1 at %2",
+                         when.toLocaleDateString(Qt.locale(), "dddd"), time);
+        }
+        if (days === 0) return i18nc("@item:market session", "Opens today at %1", time);
+        if (days === 1) return i18nc("@item:market session", "Opens tomorrow at %1", time);
+        return i18nc("@item:market session", "Opens on %1 at %2",
+                     when.toLocaleDateString(Qt.locale(), "dddd"), time);
+    }
+    // Whole local days from today to `when` (0 = today, 1 = tomorrow). Comparing local
+    // midnights keeps it correct across a daylight-saving change, where a day is not
+    // exactly 24 hours long.
+    function localDayOffset(when) {
+        var now = new Date();
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var target = new Date(when.getFullYear(), when.getMonth(), when.getDate());
+        return Math.round((target.getTime() - today.getTime()) / 86400000);
+    }
     readonly property string extendedQuoteLabel: {
         if (!hasExtendedQuote) return "";
         return (extendedQuote.kind === "pre"

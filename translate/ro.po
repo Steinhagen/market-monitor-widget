@@ -1404,6 +1404,36 @@ msgid "Open"
 msgstr "Deschisă"
 
 #: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Closes today at %1"
+msgstr "Se închide astăzi la %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Closes tomorrow at %1"
+msgstr "Se închide mâine la %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Closes on %1 at %2"
+msgstr "Se închide %1 la %2"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Opens today at %1"
+msgstr "Se deschide astăzi la %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Opens tomorrow at %1"
+msgstr "Se deschide mâine la %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Opens on %1 at %2"
+msgstr "Se deschide %1 la %2"
+
+#: contents/ui/SingleStockView.qml
 msgctxt "@item:compact quote"
 msgid "Pre-market"
 msgstr "Înaintea deschiderii"

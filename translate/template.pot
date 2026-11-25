@@ -1395,6 +1395,36 @@ msgid "Open"
 msgstr ""
 
 #: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Closes today at %1"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Closes tomorrow at %1"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Closes on %1 at %2"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Opens today at %1"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Opens tomorrow at %1"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Opens on %1 at %2"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
 msgctxt "@item:compact quote"
 msgid "Pre-market"
 msgstr ""

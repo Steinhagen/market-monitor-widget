@@ -144,6 +144,18 @@ Popup {
             }
         }
 
+        // When the regular session opens (while the market is closed) or closes
+        // (while it is open). Hidden when the exchange has no session metadata or
+        // trades around the clock.
+        Text {
+            Layout.fillWidth: true
+            visible: text !== ""
+            text: host.marketSessionHint
+            color: card.textColor
+            font.pixelSize: 11
+            wrapMode: Text.WordWrap
+        }
+
         Text {
             Layout.fillWidth: true
             visible: text !== ""

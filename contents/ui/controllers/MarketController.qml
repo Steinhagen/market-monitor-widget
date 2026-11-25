@@ -50,6 +50,9 @@ Item {
             "post": periods.post || null,
             "hasPrePost": meta.hasPrePostMarketData !== 0 && meta.hasPrePostMarketData !== false,
             "crypto": meta.instrumentType === "CRYPTOCURRENCY",
+            // The exchange's UTC offset, used to project the next open onto the
+            // exchange's own weekday when the metadata still describes today's session.
+            "offset": Number(meta.gmtoffset) || 0,
             // Time of the latest regular quote, used to tell a fresh open quote from
             // the previous close that Yahoo still returns during the first seconds.
             // Extended-hours responses can repeat an older time; never go backwards.
@@ -79,6 +82,16 @@ Item {
         // Read the clock so QML re-evaluates callers when a session boundary passes.
         if (marketClock < 0) return "";
         return Sessions.status(session, Math.floor(Date.now() / 1000));
+    }
+
+    // The next regular-session boundary for the market-data card: { kind: "open" or
+    // "close", at: epoch seconds }, or null when there is nothing to announce.
+    function boundaryFor(symbol) {
+        var session = marketSessions[symbol];
+        if (!session) return null;
+        // Read the clock so the hint re-evaluates when a session boundary passes.
+        if (marketClock < 0) return null;
+        return Sessions.nextBoundary(session, statusFor(symbol), Math.floor(Date.now() / 1000));
     }
 
     function hasPrePostDataFor(symbol) {

@@ -31,3 +31,45 @@ function awaitingFirstRegularQuote(session, nowSec) {
     if (nowSec < session.regular.start || nowSec >= session.regular.end) return false;
     return !(session.quoteTime > 0) || session.quoteTime < session.regular.start;
 }
+
+// The next regular-session boundary worth announcing: the close while the regular
+// session runs, the open whenever it does not. Returns { kind, at } with `at` in epoch
+// seconds, or null when there is nothing to announce (crypto has no closing time, and a
+// symbol without session metadata has no times at all).
+function nextBoundary(session, statusValue, nowSec) {
+    if (!session || !session.regular) return null;
+    if (session.crypto) return null;
+    if (statusValue === "open") {
+        var end = Number(session.regular.end) || 0;
+        return end > nowSec ? { kind: "close", at: end } : null;
+    }
+    var start = nextRegularStart(session, nowSec);
+    return start > 0 ? { kind: "open", at: start } : null;
+}
+
+// The next regular open after `nowSec`, in epoch seconds. The session metadata comes
+// from the exchange's current trading day, which stays that day through its after-hours
+// part; `regular.start` is already in the past then, so the open is projected onto the
+// following weekday at the same exchange-local clock time. Weekends are skipped in the
+// exchange's calendar (via its own UTC offset), not the user's, so a far-east session
+// is not mistaken for a weekday that has no session. Exchange holidays are unknown
+// here; the next quote refreshes the metadata and moves it to the real next session.
+function nextRegularStart(session, nowSec) {
+    var regular = session.regular;
+    if (!regular || !(regular.start > 0)) return 0;
+    if (regular.start > nowSec) return regular.start;
+    var offset = Number(session.offset) || 0;
+    var timeOfDay = ((regular.start + offset) % 86400 + 86400) % 86400;
+    var nowLocal = nowSec + offset;
+    var day = Math.floor(nowLocal / 86400);
+    for (var i = 0; i <= 8; i++) {
+        var candidateDay = day + i;
+        var candidate = candidateDay * 86400 + timeOfDay;
+        if (candidate <= nowLocal) continue;
+        // 1970-01-01 was a Thursday, so adding 3 makes Monday 0.
+        var weekday = ((candidateDay + 3) % 7 + 7) % 7;
+        if (weekday === 5 || weekday === 6) continue;   // Saturday, Sunday
+        return candidate - offset;
+    }
+    return 0;
+}
