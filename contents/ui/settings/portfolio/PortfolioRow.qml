@@ -8,9 +8,12 @@ import "../../core/Text.js" as TextUtil
 // component lays out the values and its edit\/remove menu.
 ColumnLayout {
     id: row
-    property var page
+    // The page is called `host`, not `page`: a property named `page` would shadow the
+    // `page` id of the settings page in the delegate binding (`page: page` binds the
+    // property to itself and leaves it undefined).
+    property var host
     property var lot
-    property var market: page ? page.lotMarketData(lot) : null
+    property var market: host ? host.lotMarketData(lot) : null
     Layout.fillWidth: true
     spacing: 0
 
@@ -23,9 +26,9 @@ ColumnLayout {
         spacing: Kirigami.Units.smallSpacing
 
         ColumnLayout {
-            Layout.preferredWidth: page.tableSymbolWidth
-            Layout.minimumWidth: page.tableSymbolWidth
-            Layout.maximumWidth: page.tableSymbolWidth
+            Layout.preferredWidth: host.tableSymbolWidth
+            Layout.minimumWidth: host.tableSymbolWidth
+            Layout.maximumWidth: host.tableSymbolWidth
             clip: true
             spacing: 0
 
@@ -57,7 +60,7 @@ ColumnLayout {
             elide: Text.ElideLeft
         }
         Label {
-            text: page.formatNumber(lot.averageCost || 0)
+            text: host.formatNumber(lot.averageCost || 0)
             Layout.preferredWidth: 65
             Layout.minimumWidth: 65
             Layout.maximumWidth: 65
@@ -73,38 +76,38 @@ ColumnLayout {
             elide: Text.ElideRight
         }
         Label {
-            text: page.formatLotDate(lot.addedDate)
+            text: host.formatLotDate(lot.addedDate)
             Layout.preferredWidth: 100
             Layout.minimumWidth: 100
             Layout.maximumWidth: 100
             elide: Text.ElideRight
         }
         Label {
-            text: page.lotValueText(lot)
-            Layout.preferredWidth: page.tableValueWidth
-            Layout.minimumWidth: page.tableValueWidth
-            Layout.maximumWidth: page.tableValueWidth
+            text: host.lotValueText(lot)
+            Layout.preferredWidth: host.tableValueWidth
+            Layout.minimumWidth: host.tableValueWidth
+            Layout.maximumWidth: host.tableValueWidth
             horizontalAlignment: Text.AlignRight
             textFormat: Text.PlainText
             elide: Text.ElideLeft
             color: market ? Kirigami.Theme.textColor : Kirigami.Theme.disabledTextColor
         }
         ColumnLayout {
-            Layout.preferredWidth: page.tableGainWidth
-            Layout.minimumWidth: page.tableGainWidth
-            Layout.maximumWidth: page.tableGainWidth
+            Layout.preferredWidth: host.tableGainWidth
+            Layout.minimumWidth: host.tableGainWidth
+            Layout.maximumWidth: host.tableGainWidth
             spacing: 0
 
             HoverHandler { id: gainHover }
             ToolTip.visible: gainHover.hovered
             ToolTip.text: TextUtil.plainText(market
                           ? i18n("Gain per share: %1",
-                                 page.moneyText(market.currency, market.perShare))
+                                 host.moneyText(market.currency, market.perShare))
                           : i18n("Quote unavailable."))
 
             Label {
                 Layout.fillWidth: true
-                text: page.lotGainText(lot)
+                text: host.lotGainText(lot)
                 color: market
                        ? (market.gain >= 0 ? Kirigami.Theme.positiveTextColor
                                            : Kirigami.Theme.negativeTextColor)
@@ -118,7 +121,7 @@ ColumnLayout {
             Label {
                 Layout.fillWidth: true
                 visible: market !== null
-                text: page.lotGainPercentText(lot)
+                text: host.lotGainPercentText(lot)
                 color: market
                        ? (market.gain >= 0 ? Kirigami.Theme.positiveTextColor
                                            : Kirigami.Theme.negativeTextColor)
@@ -144,11 +147,11 @@ ColumnLayout {
                 id: rowMenu
                 MenuItem {
                     text: i18n("Edit")
-                    onTriggered: page.editLot(lot._index)
+                    onTriggered: host.editLot(lot._index)
                 }
                 MenuItem {
                     text: i18n("Remove")
-                    onTriggered: page.removeLot(lot._index)
+                    onTriggered: host.removeLot(lot._index)
                 }
             }
         }

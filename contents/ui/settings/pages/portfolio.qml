@@ -716,7 +716,7 @@ Item {
                         model: page.filteredLots
 
                         delegate: PortfolioRow {
-                            page: page
+                            host: page
                             lot: modelData
                         }
                     }

@@ -20,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Portfolio rows are laid out in their columns again, and the row menu's
+  **Edit**/**Remove** actions work. The row component had a `page` property that
+  shadowed the settings page's `page` id in the table delegate, so the column
+  widths and every page-backed value (average cost, date, value, gain) were
+  undefined and the actions called into nothing. The row now receives the page
+  as `host`.
+
 - The **All** news tab is ordered by date in the "local with English backup"
   language mode. The English headlines were appended as a block after the local
   ones, so an older local headline could appear above a much newer backup
