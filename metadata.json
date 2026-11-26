@@ -22,7 +22,7 @@
     "Description[fr]": "Moniteur de marché modernisé pour KDE, avec actions, cryptomonnaies et devises, interface à badges et couleurs personnalisées.",
     "Icon": "/icon.png",
     "Id": "io.github.steinhagen.marketmonitor",
-    "Version": "1.5",
+    "Version": "1.6",
     "Website": "https://github.com/Steinhagen/market-monitor-widget",
     "License": "GPL-3.0+"
   },
