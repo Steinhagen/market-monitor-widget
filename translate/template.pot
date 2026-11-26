@@ -1396,32 +1396,62 @@ msgstr ""
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:market session"
-msgid "Closes today at %1"
+msgid "Market closes today at %1"
 msgstr ""
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:market session"
-msgid "Closes tomorrow at %1"
+msgid "Market closes tomorrow at %1"
 msgstr ""
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:market session"
-msgid "Closes on %1 at %2"
+msgid "Market closes on %1 at %2"
 msgstr ""
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:market session"
-msgid "Opens today at %1"
+msgid "Market opens today at %1"
 msgstr ""
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:market session"
-msgid "Opens tomorrow at %1"
+msgid "Market opens tomorrow at %1"
 msgstr ""
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:market session"
-msgid "Opens on %1 at %2"
+msgid "Market opens on %1 at %2"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "After-hours ends today at %1"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "After-hours ends tomorrow at %1"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "After-hours ends on %1 at %2"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Pre-market opens today at %1"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Pre-market opens tomorrow at %1"
+msgstr ""
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Pre-market opens on %1 at %2"
 msgstr ""
 
 #: contents/ui/SingleStockView.qml

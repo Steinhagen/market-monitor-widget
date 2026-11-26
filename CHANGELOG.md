@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   "today", "tomorrow" or with the weekday name. Symbols without session
   metadata and 24/7 instruments keep the card unchanged.
 
+- The same card also names the next pre-market opening while the market is
+  closed, and the end of the running after-hours session, on a second line
+  below the regular boundary. Exchanges without extended-hours windows keep the
+  single line.
+
 ### Fixed
 
 - Portfolio rows are laid out in their columns again, and the row menu's

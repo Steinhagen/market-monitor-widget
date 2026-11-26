@@ -88,4 +88,54 @@ TestCase {
         compare(Sessions.nextBoundary(session, "closed", start + 86400 - 5400).at,
                 start + 3 * 86400);
     }
+
+    function test_nextExtendedBoundary() {
+        // INTC, Wednesday 2026-11-25: pre 04:00-09:30, regular 09:30-16:00,
+        // post 16:00-20:00 New York (EST).
+        var preStart = 1795597200;
+        var regularStart = 1795617000;
+        var regularEnd = 1795640400;
+        var postEnd = 1795654800;
+        var session = {
+            pre: { start: preStart, end: regularStart },
+            regular: { start: regularStart, end: regularEnd },
+            post: { start: regularEnd, end: postEnd },
+            hasPrePost: true,
+            offset: -18000
+        };
+
+        // After-hours: the card names the end of the running session.
+        var boundary = Sessions.nextExtendedBoundary(session, "post", regularEnd + 3600);
+        compare(boundary.kind, "afterHoursEnd");
+        compare(boundary.at, postEnd);
+
+        // Closed before the pre-market: today's pre-market open.
+        boundary = Sessions.nextExtendedBoundary(session, "closed", preStart - 3600);
+        compare(boundary.kind, "preOpen");
+        compare(boundary.at, preStart);
+
+        // Closed after both sessions: tomorrow's pre-market open.
+        boundary = Sessions.nextExtendedBoundary(session, "closed", postEnd + 3600);
+        compare(boundary.kind, "preOpen");
+        compare(boundary.at, preStart + 86400);
+
+        // The regular session and the pre-market run on their own boundaries.
+        compare(Sessions.nextExtendedBoundary(session, "open", regularStart + 3600), null);
+        compare(Sessions.nextExtendedBoundary(session, "pre", preStart + 60), null);
+    }
+
+    function test_nextExtendedBoundaryWithoutData() {
+        compare(Sessions.nextExtendedBoundary(null, "closed", 1000), null);
+        compare(Sessions.nextExtendedBoundary({ hasPrePost: false,
+                                                regular: { start: 1000, end: 2000 } },
+                                              "closed", 500), null);
+        compare(Sessions.nextExtendedBoundary({ hasPrePost: true, crypto: true,
+                                                regular: { start: 1000, end: 2000 } },
+                                              "closed", 500), null);
+        // An exchange with after-hours data but no pre-market has nothing to announce
+        // while it is closed.
+        compare(Sessions.nextExtendedBoundary({ hasPrePost: true,
+                                                regular: { start: 1000, end: 2000 },
+                                                pre: null }, "closed", 2500), null);
+    }
 }

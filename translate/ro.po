@@ -591,7 +591,7 @@ msgstr "Program extins:"
 
 #: contents/ui/settings/pages/general.qml
 msgid "Show pre-market and after-hours values and market-closed status"
-msgstr "Afișează valorile înaintea deschiderii și după închidere, plus starea pieței"
+msgstr "Afișează valorile înaintea deschiderii și după închidere, plus starea de închidere a pieței"
 
 #: contents/ui/settings/pages/general.qml
 msgid "When Closed:"
@@ -599,7 +599,7 @@ msgstr "Când piața este închisă:"
 
 #: contents/ui/settings/pages/general.qml
 msgid "Keep showing the last pre-market/after-hours quote"
-msgstr "Continuă să afișezi ultima cotație înaintea deschiderii / după închidere"
+msgstr "Continuă să afișezi ultima cotație înaintea deschiderii/după închidere"
 
 #: contents/ui/settings/pages/importExport.qml
 msgid "The selected file is empty."
@@ -1405,33 +1405,63 @@ msgstr "Deschisă"
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:market session"
-msgid "Closes today at %1"
-msgstr "Se închide astăzi la %1"
+msgid "Market closes today at %1"
+msgstr "Piața se închide astăzi la %1"
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:market session"
-msgid "Closes tomorrow at %1"
-msgstr "Se închide mâine la %1"
+msgid "Market closes tomorrow at %1"
+msgstr "Piața se închide mâine la %1"
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:market session"
-msgid "Closes on %1 at %2"
-msgstr "Se închide %1 la %2"
+msgid "Market closes on %1 at %2"
+msgstr "Piața se închide %1 la %2"
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:market session"
-msgid "Opens today at %1"
-msgstr "Se deschide astăzi la %1"
+msgid "Market opens today at %1"
+msgstr "Piața se deschide astăzi la %1"
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:market session"
-msgid "Opens tomorrow at %1"
-msgstr "Se deschide mâine la %1"
+msgid "Market opens tomorrow at %1"
+msgstr "Piața se deschide mâine la %1"
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:market session"
-msgid "Opens on %1 at %2"
-msgstr "Se deschide %1 la %2"
+msgid "Market opens on %1 at %2"
+msgstr "Piața se deschide %1 la %2"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "After-hours ends today at %1"
+msgstr "Ședința de după închidere se termină astăzi la %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "After-hours ends tomorrow at %1"
+msgstr "Ședința de după închidere se termină mâine la %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "After-hours ends on %1 at %2"
+msgstr "Ședința de după închidere se termină %1 la %2"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Pre-market opens today at %1"
+msgstr "Ședința dinaintea deschiderii începe astăzi la %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Pre-market opens tomorrow at %1"
+msgstr "Ședința dinaintea deschiderii începe mâine la %1"
+
+#: contents/ui/SingleStockView.qml
+msgctxt "@item:market session"
+msgid "Pre-market opens on %1 at %2"
+msgstr "Ședința dinaintea deschiderii începe %1 la %2"
 
 #: contents/ui/SingleStockView.qml
 msgctxt "@item:compact quote"
@@ -1575,6 +1605,30 @@ msgstr "Sesiune"
 #: contents/ui/tooltip/TooltipContent.qml
 msgid "Updated"
 msgstr "Actualizat"
+
+#~ msgctxt "@item:market session"
+#~ msgid "Closes today at %1"
+#~ msgstr "Se închide astăzi la %1"
+
+#~ msgctxt "@item:market session"
+#~ msgid "Closes tomorrow at %1"
+#~ msgstr "Se închide mâine la %1"
+
+#~ msgctxt "@item:market session"
+#~ msgid "Closes on %1 at %2"
+#~ msgstr "Se închide %1 la %2"
+
+#~ msgctxt "@item:market session"
+#~ msgid "Opens today at %1"
+#~ msgstr "Se deschide astăzi la %1"
+
+#~ msgctxt "@item:market session"
+#~ msgid "Opens tomorrow at %1"
+#~ msgstr "Se deschide mâine la %1"
+
+#~ msgctxt "@item:market session"
+#~ msgid "Opens on %1 at %2"
+#~ msgstr "Se deschide %1 la %2"
 
 #~ msgid "Local headlines first; English headlines from Google and Yahoo are appended as backup."
 #~ msgstr "Întâi știrile locale; titlurile în engleză de la Google și Yahoo sunt adăugate ca rezervă."

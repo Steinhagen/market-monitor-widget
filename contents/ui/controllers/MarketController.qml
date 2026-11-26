@@ -94,6 +94,16 @@ Item {
         return Sessions.nextBoundary(session, statusFor(symbol), Math.floor(Date.now() / 1000));
     }
 
+    // The extended-session boundary beside it: { kind: "afterHoursEnd" or "preOpen",
+    // at: epoch seconds }, or null.
+    function extendedBoundaryFor(symbol) {
+        var session = marketSessions[symbol];
+        if (!session) return null;
+        if (marketClock < 0) return null;
+        return Sessions.nextExtendedBoundary(session, statusFor(symbol),
+                                             Math.floor(Date.now() / 1000));
+    }
+
     function hasPrePostDataFor(symbol) {
         var session = marketSessions[symbol];
         return session ? session.hasPrePost : true;

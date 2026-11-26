@@ -156,6 +156,18 @@ Popup {
             wrapMode: Text.WordWrap
         }
 
+        // The extended-session boundary beside the regular one: the next pre-market
+        // open while the market is closed, or the end of the running after-hours
+        // session. Exchanges without extended-hours windows leave it empty.
+        Text {
+            Layout.fillWidth: true
+            visible: text !== ""
+            text: host.marketExtendedHint
+            color: card.mutedTextColor
+            font.pixelSize: 11
+            wrapMode: Text.WordWrap
+        }
+
         Text {
             Layout.fillWidth: true
             visible: text !== ""

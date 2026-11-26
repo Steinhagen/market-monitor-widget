@@ -84,6 +84,44 @@ TestCase {
         compare(market.marketSessions.X.offset, -18000);
     }
 
+    function test_extendedBoundaryFor() {
+        var market = make();
+        var now = Math.floor(Date.now() / 1000);
+
+        // The regular session ended an hour ago; the after-hours session ends in an
+        // hour, so the card names that end.
+        var postEnd = now + 3600;
+        market.setMarketSession("X", {
+            currentTradingPeriod: {
+                regular: { start: now - 7200, end: now - 3600 },
+                post: { start: now - 3600, end: postEnd }
+            },
+            hasPrePostMarketData: true,
+            gmtoffset: 0,
+            instrumentType: "EQUITY"
+        });
+        var boundary = market.extendedBoundaryFor("X");
+        compare(boundary.kind, "afterHoursEnd");
+        compare(boundary.at, postEnd);
+
+        // Closed, with the pre-market still ahead: its open is the extended boundary.
+        var preStart = now + 3600;
+        market.setMarketSession("Y", {
+            currentTradingPeriod: {
+                pre: { start: preStart, end: now + 7200 },
+                regular: { start: now + 7200, end: now + 10800 }
+            },
+            hasPrePostMarketData: true,
+            gmtoffset: 0,
+            instrumentType: "EQUITY"
+        });
+        boundary = market.extendedBoundaryFor("Y");
+        compare(boundary.kind, "preOpen");
+        compare(boundary.at, preStart);
+
+        compare(market.extendedBoundaryFor("missing"), null);
+    }
+
     function test_clears() {
         var market = make();
         var now = Math.floor(Date.now() / 1000);

@@ -47,19 +47,38 @@ function nextBoundary(session, statusValue, nowSec) {
     return start > 0 ? { kind: "open", at: start } : null;
 }
 
-// The next regular open after `nowSec`, in epoch seconds. The session metadata comes
-// from the exchange's current trading day, which stays that day through its after-hours
-// part; `regular.start` is already in the past then, so the open is projected onto the
-// following weekday at the same exchange-local clock time. Weekends are skipped in the
-// exchange's calendar (via its own UTC offset), not the user's, so a far-east session
-// is not mistaken for a weekday that has no session. Exchange holidays are unknown
-// here; the next quote refreshes the metadata and moves it to the real next session.
+// The next regular open after `nowSec`, in epoch seconds.
 function nextRegularStart(session, nowSec) {
-    var regular = session.regular;
-    if (!regular || !(regular.start > 0)) return 0;
-    if (regular.start > nowSec) return regular.start;
-    var offset = Number(session.offset) || 0;
-    var timeOfDay = ((regular.start + offset) % 86400 + 86400) % 86400;
+    return nextStart(session.regular, Number(session.offset) || 0, nowSec);
+}
+
+// The extended-session boundary to show beside the regular one: the end of the running
+// after-hours session, or the next pre-market open while the market is closed. Only
+// exchanges that report extended-hours windows have these, so indices and other
+// instruments without them have nothing to announce.
+function nextExtendedBoundary(session, statusValue, nowSec) {
+    if (!session || !session.hasPrePost) return null;
+    if (session.crypto) return null;
+    if (statusValue === "post") {
+        var end = session.post ? Number(session.post.end) || 0 : 0;
+        return end > nowSec ? { kind: "afterHoursEnd", at: end } : null;
+    }
+    if (statusValue !== "closed") return null;
+    var start = nextStart(session.pre, Number(session.offset) || 0, nowSec);
+    return start > 0 ? { kind: "preOpen", at: start } : null;
+}
+
+// The next start of `period` after `nowSec`, in epoch seconds. The session metadata
+// comes from the exchange's current trading day, which stays that day through its
+// after-hours part; a start already in the past is projected onto the following
+// weekday at the same exchange-local clock time. Weekends are skipped in the exchange's
+// calendar (via its own UTC offset), not the user's, so a far-east session is not
+// mistaken for a weekday that has no session. Exchange holidays are unknown here; the
+// next quote refreshes the metadata and moves it to the real next session.
+function nextStart(period, offset, nowSec) {
+    if (!period || !(period.start > 0)) return 0;
+    if (period.start > nowSec) return period.start;
+    var timeOfDay = ((period.start + offset) % 86400 + 86400) % 86400;
     var nowLocal = nowSec + offset;
     var day = Math.floor(nowLocal / 86400);
     for (var i = 0; i <= 8; i++) {

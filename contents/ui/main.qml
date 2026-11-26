@@ -596,6 +596,7 @@ PlasmoidItem {
     function hasPrePostDataFor(symbol) { return app.market.hasPrePostDataFor(symbol); }
     function marketStatusFor(symbol) { return app.market.statusFor(symbol); }
     function marketBoundaryFor(symbol) { return app.market.boundaryFor(symbol); }
+    function marketExtendedBoundaryFor(symbol) { return app.market.extendedBoundaryFor(symbol); }
     function isMarketClosedFor(symbol) { return app.market.isMarketClosedFor(symbol); }
     function awaitingFirstRegularQuote(symbol) { return app.market.awaitingFirstRegularQuote(symbol); }
     function extendedQuote(symbol) { return app.market.extendedQuoteFor(symbol); }

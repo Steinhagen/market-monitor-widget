@@ -140,14 +140,35 @@ Rectangle {
         var time = when.toLocaleTimeString(Qt.locale(), "HH:mm");
         var days = singleStockRoot.localDayOffset(when);
         if (boundary.kind === "close") {
-            if (days === 0) return i18nc("@item:market session", "Closes today at %1", time);
-            if (days === 1) return i18nc("@item:market session", "Closes tomorrow at %1", time);
-            return i18nc("@item:market session", "Closes on %1 at %2",
+            if (days === 0) return i18nc("@item:market session", "Market closes today at %1", time);
+            if (days === 1) return i18nc("@item:market session", "Market closes tomorrow at %1", time);
+            return i18nc("@item:market session", "Market closes on %1 at %2",
                          when.toLocaleDateString(Qt.locale(), "dddd"), time);
         }
-        if (days === 0) return i18nc("@item:market session", "Opens today at %1", time);
-        if (days === 1) return i18nc("@item:market session", "Opens tomorrow at %1", time);
-        return i18nc("@item:market session", "Opens on %1 at %2",
+        if (days === 0) return i18nc("@item:market session", "Market opens today at %1", time);
+        if (days === 1) return i18nc("@item:market session", "Market opens tomorrow at %1", time);
+        return i18nc("@item:market session", "Market opens on %1 at %2",
+                     when.toLocaleDateString(Qt.locale(), "dddd"), time);
+    }
+    // The extended-session boundary shown beside the regular one: the end of the
+    // running after-hours session, or the next pre-market open while the market is
+    // closed. Exchanges without extended-hours windows leave it empty.
+    readonly property var marketExtendedBoundary: applet.marketExtendedBoundaryFor(applet.singleTicker)
+    readonly property string marketExtendedHint: {
+        var boundary = singleStockRoot.marketExtendedBoundary;
+        if (!boundary || !(boundary.at > 0)) return "";
+        var when = new Date(boundary.at * 1000);
+        var time = when.toLocaleTimeString(Qt.locale(), "HH:mm");
+        var days = singleStockRoot.localDayOffset(when);
+        if (boundary.kind === "afterHoursEnd") {
+            if (days === 0) return i18nc("@item:market session", "After-hours ends today at %1", time);
+            if (days === 1) return i18nc("@item:market session", "After-hours ends tomorrow at %1", time);
+            return i18nc("@item:market session", "After-hours ends on %1 at %2",
+                         when.toLocaleDateString(Qt.locale(), "dddd"), time);
+        }
+        if (days === 0) return i18nc("@item:market session", "Pre-market opens today at %1", time);
+        if (days === 1) return i18nc("@item:market session", "Pre-market opens tomorrow at %1", time);
+        return i18nc("@item:market session", "Pre-market opens on %1 at %2",
                      when.toLocaleDateString(Qt.locale(), "dddd"), time);
     }
     // Whole local days from today to `when` (0 = today, 1 = tomorrow). Comparing local
